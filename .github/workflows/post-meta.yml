@@ -1,0 +1,49 @@
+name: Post to Instagram + Facebook
+
+on:
+  schedule:
+    # Every 2 hours = 12 posts/day. GitHub's scheduler is best-effort and can
+    # fire late under load; that's fine here, slots are independent.
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Generate and host the card but don't post"
+        type: boolean
+        default: false
+
+# Needed to force-push the gh-pages branch that hosts the card images.
+permissions:
+  contents: write
+
+concurrency:
+  # Two runs pushing an orphan gh-pages commit at once would clobber each
+  # other's manifest, so slots queue instead of overlapping.
+  group: publish-assets
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Generate and publish
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          ASSETS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ASSETS_REPO: ${{ github.repository }}
+          PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+        run: python run_meta.py ${{ inputs.dry_run && '--dry-run' || '' }}

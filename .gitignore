@@ -1,0 +1,17 @@
+# secrets -- never commit
+.env
+.env.*
+!.env.example
+
+# generated output
+404_card*.svg
+404_card*.png
+_layout_*.png
+
+# auto-downloaded fonts
+*.ttf
+
+__pycache__/
+*.pyc
+.venv/
+venv/

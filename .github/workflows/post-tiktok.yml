@@ -1,0 +1,48 @@
+name: Post to TikTok
+
+on:
+  schedule:
+    # Every 6 hours = 4 posts/day, offset 25 minutes past the hour so the
+    # Meta run at the same slot has finished hosting its card first.
+    - cron: "25 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Show what would be posted without posting"
+        type: boolean
+        default: false
+
+# Writes the manifest back to gh-pages to mark the card as reposted.
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-assets
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Repost latest card
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          # Lets the job persist a rotated refresh token back into secrets.
+          # Without it, the pipeline breaks the first time TikTok rotates.
+          GH_SECRETS_TOKEN: ${{ secrets.GH_SECRETS_TOKEN }}
+          ASSETS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ASSETS_REPO: ${{ github.repository }}
+          PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+        run: python run_tiktok.py ${{ inputs.dry_run && '--dry-run' || '' }}
