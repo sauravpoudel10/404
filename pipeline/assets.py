@@ -22,6 +22,7 @@ import shutil
 import stat
 import subprocess
 import tempfile
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -220,3 +221,27 @@ def latest_published_card(manifest: dict) -> dict | None:
     if not published:
         return None
     return max(published, key=lambda c: c["created_at"])
+
+
+def wait_until_live(url: str, timeout: int = 300) -> bool:
+    """Block until the published image is actually served over HTTPS.
+
+    Pushing to gh-pages does not make a file reachable -- GitHub Pages still
+    has to build and deploy, which takes roughly 30-60s. Instagram and TikTok
+    both fetch the image themselves, so posting the instant the push returns
+    races the deploy and fails with an unhelpful "media could not be fetched".
+    """
+    import requests
+
+    started = time.time()
+    delay = 3
+    while time.time() - started < timeout:
+        try:
+            if requests.head(url, timeout=15, allow_redirects=True).status_code == 200:
+                print(f"  live after {int(time.time() - started)}s")
+                return True
+        except requests.RequestException:
+            pass
+        time.sleep(delay)
+        delay = min(delay * 1.5, 15)
+    return False

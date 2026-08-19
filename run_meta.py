@@ -51,6 +51,15 @@ def main():
     card = assets.publish_card(jpeg, content)
     print(f"  {card['url']}")
 
+    # Instagram fetches this URL itself, so it has to be genuinely reachable
+    # before we hand it over -- the push returning is not the same as Pages
+    # having deployed.
+    print("→ waiting for Pages to deploy")
+    if not assets.wait_until_live(card["url"]):
+        sys.exit(f"Image never became reachable at {card['url']} — not posting. "
+                 "Check that Pages is serving from the "
+                 f"'{assets.config.ASSETS_BRANCH}' branch.")
+
     if args.dry_run:
         print("\n--dry-run: hosted but not posted.")
         print(json.dumps({"card": card, "caption": content["caption"]}, indent=2))
