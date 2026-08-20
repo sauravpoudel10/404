@@ -21,6 +21,11 @@ Reels are video-only, so the square card is composed onto a blurred 1080x1920
 backdrop and encoded to a 7-second H.264 MP4 (`pipeline/video.py`). ffmpeg
 ships with the `imageio-ffmpeg` wheel — nothing to install.
 
+Drop royalty-free tracks in `audio/` and one is picked per Reel, looped to
+length with a fade in/out; leave it empty and Reels are silent. See
+`audio/README.md` — Instagram's own catalogue is not reachable via the API,
+and commercial music baked into the file gets the Reel muted by Content ID.
+
 TikTok's schedule is commented out in its workflow: an unaudited app can only
 post privately, so a timer just generates failed runs. Re-enable the cron once
 the app passes audit.

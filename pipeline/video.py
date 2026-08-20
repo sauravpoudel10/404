@@ -12,6 +12,7 @@ this behaves identically on Windows and on the Actions runner.
 """
 
 import io
+import random
 import subprocess
 import tempfile
 from pathlib import Path
@@ -19,11 +20,27 @@ from pathlib import Path
 import imageio_ffmpeg
 from PIL import Image, ImageEnhance, ImageFilter
 
+from . import config
+
 REEL_W, REEL_H = 1080, 1920
 DURATION = 7          # inside the 5-90s window Reels requires
 FPS = 30
 BLUR_RADIUS = 45
 BACKDROP_DIM = 0.55   # darken the backdrop so the card stays dominant
+
+# Drop royalty-free tracks in audio/ and a random one is used per Reel.
+# With the folder empty the Reel gets a silent track instead -- Instagram has
+# historically rejected videos with no audio stream at all, so there is
+# always an audio stream, it just may be silence.
+#
+# Use only music you are licensed for. Instagram's own catalogue is NOT
+# reachable through the publishing API, and a commercial track baked into
+# the file gets the Reel auto-muted or pulled by Content ID. Meta Sound
+# Collection is free and licensed for business accounts.
+AUDIO_DIR = config.ROOT / "audio"
+AUDIO_EXTS = (".mp3", ".m4a", ".aac", ".wav", ".ogg", ".flac")
+MUSIC_VOLUME = 0.7
+FADE = 0.6
 
 
 def build_frame(card_jpeg: bytes) -> Image.Image:
@@ -45,32 +62,48 @@ def build_frame(card_jpeg: bytes) -> Image.Image:
     return backdrop
 
 
+def pick_track() -> Path | None:
+    """A random licensed track, or None to fall back to silence."""
+    if not AUDIO_DIR.is_dir():
+        return None
+    tracks = sorted(p for p in AUDIO_DIR.iterdir()
+                    if p.is_file() and p.suffix.lower() in AUDIO_EXTS)
+    return random.choice(tracks) if tracks else None
+
+
 def render_reel(card_jpeg: bytes) -> bytes:
     """Return an H.264 MP4 of the card, ready for Instagram Reels."""
     frame = build_frame(card_jpeg)
+    track = pick_track()
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         still, out = tmp / "frame.png", tmp / "reel.mp4"
         frame.save(still)
 
-        proc = subprocess.run(
-            [
-                imageio_ffmpeg.get_ffmpeg_exe(), "-y",
-                "-loop", "1", "-framerate", str(FPS), "-i", str(still),
-                # Instagram has historically rejected videos with no audio
-                # stream, so give it a silent one rather than find out.
-                "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
-                "-t", str(DURATION),
+        cmd = [imageio_ffmpeg.get_ffmpeg_exe(), "-y",
+               "-loop", "1", "-framerate", str(FPS), "-i", str(still)]
+
+        if track is not None:
+            # -stream_loop -1 so a track shorter than the clip repeats rather
+            # than leaving silence at the end.
+            cmd += ["-stream_loop", "-1", "-i", str(track),
+                    "-af", (f"afade=t=in:st=0:d={FADE},"
+                            f"afade=t=out:st={DURATION - FADE}:d={FADE},"
+                            f"volume={MUSIC_VOLUME}"),
+                    "-c:a", "aac", "-b:a", "128k"]
+        else:
+            cmd += ["-f", "lavfi",
+                    "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+                    "-c:a", "aac", "-b:a", "64k"]
+
+        cmd += ["-t", str(DURATION),
                 "-c:v", "libx264", "-preset", "medium", "-crf", "20",
                 "-pix_fmt", "yuv420p",          # required for broad playback
                 "-movflags", "+faststart",      # metadata first, so IG can stream it
-                "-c:a", "aac", "-b:a", "64k",
-                "-shortest",
-                str(out),
-            ],
-            capture_output=True, text=True,
-        )
+                "-shortest", str(out)]
+
+        proc = subprocess.run(cmd, capture_output=True, text=True)
         if proc.returncode != 0:
             raise RuntimeError(f"ffmpeg failed:\n{proc.stderr[-1500:]}")
         return out.read_bytes()
