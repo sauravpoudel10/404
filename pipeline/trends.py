@@ -16,7 +16,7 @@ from anthropic import Anthropic
 
 from . import config
 
-MAX_SEARCHES = 4
+MAX_SEARCHES = 2
 
 SYSTEM = """You find the single most-discussed news story of the moment and \
 write a "404 Media" style stat card about it.
@@ -182,9 +182,9 @@ def find_story(exclude_ids: list[str]) -> dict:
             model=config.COPY_MODEL,
             max_tokens=4000,
             system=SYSTEM.format(topics=config.TOPICS, max_searches=MAX_SEARCHES),
-            # max_uses is the single biggest cost control here. Uncapped, this
-            # ran 14 searches per card -- billed per search AND ~3-4k tokens of
-            # results each, which was ~85% of the spend. Four is plenty.
+            # Cost control. Searches bill at $0.01 each AND drag ~5-12k tokens
+            # of results into context, so at this volume the search fee alone
+            # outweighs the token cost. Uncapped this ran 14 per card.
             tools=[_search_tool()],
             output_config=_output_config(),
             messages=messages,
