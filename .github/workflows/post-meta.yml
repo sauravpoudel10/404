@@ -41,6 +41,9 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: Lint (catch undefined names before spending a run)
+        run: python -m pyflakes pipeline/ run_meta.py run_tweets.py run_tiktok.py automate.py
+
       - name: Generate and publish
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

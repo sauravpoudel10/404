@@ -22,6 +22,20 @@ TWEETS_URL = "https://api.x.com/2/tweets"
 MAX_LEN = 280
 
 
+def _session() -> OAuth1Session:
+    """Build an OAuth 1.0a session from the four X credentials."""
+    def req(name: str) -> str:
+        value = os.environ.get(name, "").strip()
+        if not value:
+            raise SystemExit(f"Missing required credential: {name}")
+        return value
+
+    return OAuth1Session(
+        req("X_API_KEY"), req("X_API_SECRET"),
+        req("X_ACCESS_TOKEN"), req("X_ACCESS_TOKEN_SECRET"),
+    )
+
+
 def clean_text(text: str) -> str:
     """Strip links and hashtags, then fit inside X's 280-char limit."""
     return sanitize(text, limit=MAX_LEN)
