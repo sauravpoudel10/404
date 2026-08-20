@@ -66,6 +66,34 @@ def post_instagram(image_url: str, caption: str) -> str:
     return published["id"]
 
 
+_page_token_cache: str | None = None
+
+
+def _page_token() -> str:
+    """Exchange the system-user token for a Page access token.
+
+    Posting to a Page requires a token whose subject is the Page itself.
+    A system-user token is a *user* token: Instagram publishing accepts it,
+    but /{page-id}/photos does not, and Meta reports the mismatch as
+    "(#200) The permission(s) publish_actions are not available" — which
+    describes a permission removed in 2018 and has nothing to do with the
+    actual problem. Don't chase that message; it just means wrong token type.
+    """
+    global _page_token_cache
+    if _page_token_cache is None:
+        resp = requests.get(
+            f"{config.GRAPH_API}/{config.FB_PAGE_ID()}",
+            params={"fields": "access_token", "access_token": config.META_TOKEN()},
+            timeout=30,
+        ).json()
+        if "access_token" not in resp:
+            raise RuntimeError(
+                f"Could not derive a Page access token: {resp.get('error', resp)}"
+            )
+        _page_token_cache = resp["access_token"]
+    return _page_token_cache
+
+
 def post_facebook(image_url: str, caption: str) -> str:
     """Publish to the Page's photo feed.
 
@@ -76,6 +104,6 @@ def post_facebook(image_url: str, caption: str) -> str:
         "url": image_url,
         "caption": caption,
         "published": "true",
-        "access_token": config.META_TOKEN(),
+        "access_token": _page_token(),
     })
     return published.get("post_id") or published["id"]
