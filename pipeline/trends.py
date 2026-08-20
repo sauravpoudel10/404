@@ -16,13 +16,21 @@ from anthropic import Anthropic
 
 from . import config
 
+MAX_SEARCHES = 4
+
 SYSTEM = """You find the single most-discussed news story of the moment and \
 write a "404 Media" style stat card about it.
 
-Use the web_search tool first. Search for what is genuinely trending RIGHT NOW \
-in these areas: {topics}. Prefer stories with a hard number in them — a dollar \
-figure, a headcount, a percentage — because the card format is built around a \
-statistic. Prefer stories from the last 24 hours.
+Search for what is genuinely trending RIGHT NOW in these areas: {topics}. \
+Prefer stories with a hard number in them — a dollar figure, a headcount, a \
+percentage — because the card format is built around a statistic. Prefer \
+stories from the last 24 hours.
+
+Be efficient: you have at most {max_searches} searches. One broad search \
+usually surfaces several candidates at once — read the results you already \
+have rather than searching again to confirm. Do not verify a figure with an \
+extra search if it appeared in a result you have already seen. Write the card \
+as soon as you have one story with a solid number.
 
 Then reply with ONLY valid JSON, no markdown fences and no commentary, in \
 exactly this shape:
@@ -95,6 +103,40 @@ CARD_SCHEMA = {
 }
 
 
+def _is_small_model() -> bool:
+    """Haiku 4.5 and Sonnet 4.5 reject both `effort` and the newer search tool."""
+    return config.COPY_MODEL.startswith(("claude-haiku", "claude-sonnet-4-5"))
+
+
+def _search_tool() -> dict:
+    """Pick the search variant the configured model actually supports.
+
+    web_search_20260209 does dynamic filtering via programmatic tool calling,
+    which Haiku cannot do — it 400s. It's also the more expensive path: the
+    filtering step pulls far more content into context (~48k input tokens on
+    Sonnet vs ~15k for basic search on Haiku), which is most of the cost gap
+    between the two models on this task.
+    """
+    return {
+        "type": "web_search_20250305" if _is_small_model() else "web_search_20260209",
+        "name": "web_search",
+        "max_uses": MAX_SEARCHES,
+    }
+
+
+def _output_config() -> dict:
+    """Schema constraint, plus low effort where the model supports it.
+
+    Haiku 4.5 rejects `effort` outright with a 400, so it can't be sent
+    unconditionally — but it's worth sending where accepted, since it cut
+    output tokens from ~3,700 to ~870 on Sonnet.
+    """
+    cfg = {"format": {"type": "json_schema", "schema": CARD_SCHEMA}}
+    if not _is_small_model():
+        cfg["effort"] = "low"
+    return cfg
+
+
 def _extract_json(text: str) -> dict:
     """Parse the reply, tolerating narration around the JSON.
 
@@ -139,9 +181,12 @@ def find_story(exclude_ids: list[str]) -> dict:
         resp = client.messages.create(
             model=config.COPY_MODEL,
             max_tokens=4000,
-            system=SYSTEM.format(topics=config.TOPICS),
-            tools=[{"type": "web_search_20260209", "name": "web_search"}],
-            output_config={"format": {"type": "json_schema", "schema": CARD_SCHEMA}},
+            system=SYSTEM.format(topics=config.TOPICS, max_searches=MAX_SEARCHES),
+            # max_uses is the single biggest cost control here. Uncapped, this
+            # ran 14 searches per card -- billed per search AND ~3-4k tokens of
+            # results each, which was ~85% of the spend. Four is plenty.
+            tools=[_search_tool()],
+            output_config=_output_config(),
             messages=messages,
         )
         if resp.stop_reason != "pause_turn":

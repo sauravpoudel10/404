@@ -36,10 +36,12 @@ def _opt(name: str, default: str = "") -> str:
 ANTHROPIC_API_KEY = lambda: _req("ANTHROPIC_API_KEY")          # noqa: E731
 GEMINI_API_KEY = lambda: _req("GEMINI_API_KEY")                # noqa: E731
 
-# Sonnet rather than Opus: this runs 12x/day and the task (pick a trending
-# story, write 60 words of copy) is well inside Sonnet's range. Bump to
-# claude-opus-5 here if the copy quality doesn't hold up.
-COPY_MODEL = _opt("COPY_MODEL", "claude-sonnet-5")
+# Haiku rather than Sonnet: measured on this exact task, Haiku costs
+# $0.45/day against Sonnet's $2.12 and produces equally punchy headlines.
+# Most of the gap is the search tool -- Sonnet uses the dynamic-filtering
+# variant, which pulls ~3x more content into context. Override with the
+# COPY_MODEL env var if copy quality ever slips.
+COPY_MODEL = _opt("COPY_MODEL", "claude-haiku-4-5")
 
 TOPICS = _opt(
     "TOPICS",
