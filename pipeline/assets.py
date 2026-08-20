@@ -233,27 +233,58 @@ def latest_published_card(manifest: dict) -> dict | None:
     return max(published, key=lambda c: c["created_at"])
 
 
-def wait_until_live(url: str, timeout: int = 300) -> bool:
-    """Block until the published image is actually served over HTTPS.
+def wait_until_live(url: str, timeout: int = 900) -> bool:
+    """Block until the published file is genuinely fetchable over HTTPS.
 
-    Pushing to gh-pages does not make a file reachable -- GitHub Pages still
-    has to build and deploy, which takes roughly 30-60s. Instagram and TikTok
-    both fetch the image themselves, so posting the instant the push returns
-    races the deploy and fails with an unhelpful "media could not be fetched".
+    Pushing to gh-pages does not make a file reachable -- Pages still has to
+    build and deploy. Instagram, TikTok and X all fetch the media themselves,
+    so posting the moment the push returns races the deploy and fails with an
+    unhelpful "media could not be fetched".
+
+    Two things this has to get right:
+
+    1. CDN-cached 404s. Polling the clean URL immediately after the push makes
+       GitHub's CDN cache a 404 for it, and we then keep reading that stale
+       404 long after the file went live. Each poll therefore carries a unique
+       cache-buster and no-cache headers.
+    2. What the *platform* will see. The cache-buster is ours alone, so once
+       the file appears we re-check the clean URL -- the exact string handed
+       to Instagram -- and only report success when that serves 200 too.
+
+    The timeout is generous because Pages builds queue: every card push and
+    every hourly tweet-state push triggers a rebuild, so a deploy can sit
+    behind others for several minutes.
     """
     import requests
 
+    headers = {"Cache-Control": "no-cache", "Pragma": "no-cache"}
     started = time.time()
     delay = 3
+
     while time.time() - started < timeout:
+        elapsed = int(time.time() - started)
         try:
-            if requests.head(url, timeout=15, allow_redirects=True).status_code == 200:
-                print(f"  live after {int(time.time() - started)}s")
-                return True
+            probe = requests.get(
+                url, params={"_cb": f"{time.time():.0f}"}, headers=headers,
+                timeout=20, allow_redirects=True, stream=True,
+            )
+            probe.close()
+            if probe.status_code == 200:
+                # Confirm on the clean URL, which is what the platforms fetch.
+                for _ in range(10):
+                    clean = requests.head(url, headers=headers, timeout=20,
+                                          allow_redirects=True)
+                    if clean.status_code == 200:
+                        print(f"  live after {int(time.time() - started)}s")
+                        return True
+                    time.sleep(3)      # let a cached 404 age out
+                print(f"  [{elapsed}s] deployed, but clean URL still cached as "
+                      f"{clean.status_code}; retrying")
         except requests.RequestException:
             pass
         time.sleep(delay)
-        delay = min(delay * 1.5, 15)
+        delay = min(delay * 1.5, 20)
+
     return False
 
 
