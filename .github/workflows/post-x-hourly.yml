@@ -1,0 +1,57 @@
+name: Hourly tweet
+
+on:
+  schedule:
+    # Every hour at :40 — deliberately offset from the card runs (which fire
+    # at :00 on even hours and take several minutes), so the two jobs aren't
+    # queueing behind each other on the shared assets branch.
+    - cron: "40 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Show the next tweet without posting"
+        type: boolean
+        default: false
+      regenerate:
+        description: "Discard today's pool and generate a fresh one"
+        type: boolean
+        default: false
+
+# Writes the tweet pool back to the gh-pages branch.
+permissions:
+  contents: write
+
+concurrency:
+  # Shared with the card workflows: all of them force-push gh-pages, and two
+  # concurrent orphan pushes would clobber each other's state.
+  group: publish-assets
+  cancel-in-progress: false
+
+jobs:
+  tweet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Post next tweet
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          ASSETS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ASSETS_REPO: ${{ github.repository }}
+          PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+        run: >
+          python run_tweets.py
+          ${{ inputs.dry_run && '--dry-run' || '' }}
+          ${{ inputs.regenerate && '--regenerate' || '' }}

@@ -180,7 +180,8 @@ def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None) -> dict:
             "url": f"{config.PUBLIC_BASE_URL}/{rel}",
             "created_at": stamp.isoformat(),
             "caption": content.get("caption", ""),
-            "posted": {"instagram": False, "facebook": False, "tiktok": False},
+            "posted": {"instagram": False, "facebook": False,
+                       "x": False, "tiktok": False},
         }
 
         if mp4 is not None:
@@ -254,3 +255,28 @@ def wait_until_live(url: str, timeout: int = 300) -> bool:
         time.sleep(delay)
         delay = min(delay * 1.5, 15)
     return False
+
+
+def read_json(name: str, default: dict | None = None) -> dict:
+    """Read a JSON file from the assets branch."""
+    with tempfile.TemporaryDirectory() as tmp:
+        path = _clone(Path(tmp)) / name
+        if not path.exists():
+            return default if default is not None else {}
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return default if default is not None else {}
+
+
+def write_json(name: str, data: dict, message: str):
+    """Write a JSON file onto the assets branch, preserving everything else.
+
+    Deliberately does NOT prune cards -- expiry belongs to publish_card, and
+    running it here would delete images mid-cycle behind Instagram's back.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        repo = _clone(Path(tmp))
+        (repo / name).write_text(json.dumps(data, indent=2), encoding="utf-8")
+        _copy_static(repo)
+        _push(repo, message)

@@ -6,3 +6,4 @@ requests>=2.32
 python-dotenv>=1.0
 pynacl>=1.5
 imageio-ffmpeg>=0.5
+requests-oauthlib>=2.0

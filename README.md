@@ -4,9 +4,14 @@ Finds a trending story, renders a "404 Media" style stat card, hosts it on
 GitHub Pages, and posts it to Instagram, Facebook, and TikTok on a schedule.
 
 ```
-run_meta.py     every 2h (12/day)  trending story -> card -> Instagram + Facebook
+run_meta.py     every 2h (12/day)  trending story -> card -> Instagram + Facebook + X
+run_tweets.py   every 1h (24/day)  next tweet from the day's pre-generated pool -> X
 run_tiktok.py   manual only        reposts the newest IG-published card to TikTok
 ```
+
+X mirrors Instagram's format: video on Reel slots, image otherwise. The hourly
+tweets are text-only and come from a pool of 24 built by a single model call
+each day, so 24 posts cost one API call rather than 24.
 
 Instagram alternates format by slot: even-4 hours (00, 04, 08, 12, 16, 20 UTC)
 publish a **Reel**, the rest publish a **feed post** — six of each per day.

@@ -20,7 +20,7 @@ sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from datetime import datetime, timezone  # noqa: E402
 
-from pipeline import assets, cards, meta, trends, video  # noqa: E402
+from pipeline import assets, cards, meta, trends, video, x  # noqa: E402
 
 
 def main():
@@ -89,17 +89,22 @@ def main():
     caption = content["caption"]
     posted, failures = {}, []
 
-    # Facebook always gets the square image; only Instagram alternates format.
+    # Instagram and X both alternate image/video by slot; Facebook always
+    # gets the square image. Meta fetches by URL, X takes raw bytes.
     targets = [
-        ("instagram", meta.post_instagram_reel, card["video_url"]) if as_reel
-        else ("instagram", meta.post_instagram, card["url"]),
-        ("facebook", meta.post_facebook, card["url"]),
+        ("instagram",
+         (lambda: meta.post_instagram_reel(card["video_url"], caption)) if as_reel
+         else (lambda: meta.post_instagram(card["url"], caption))),
+        ("facebook", lambda: meta.post_facebook(card["url"], caption)),
+        ("x",
+         (lambda: x.post_card(caption, mp4=mp4)) if as_reel
+         else (lambda: x.post_card(caption, jpeg=jpeg))),
     ]
 
-    for name, fn, url in targets:
+    for name, fn in targets:
         try:
             print(f"→ posting to {name}")
-            post_id = fn(url, caption)
+            post_id = fn()
             posted[name] = True
             print(f"  ok: {post_id}")
         except Exception as e:
