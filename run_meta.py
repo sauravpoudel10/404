@@ -20,7 +20,7 @@ sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from datetime import datetime, timezone  # noqa: E402
 
-from pipeline import assets, cards, meta, trends, video, x  # noqa: E402
+from pipeline import assets, cards, meta, text, trends, video, x  # noqa: E402
 
 
 def main():
@@ -86,7 +86,8 @@ def main():
         print(json.dumps({"card": card, "caption": content["caption"]}, indent=2))
         return
 
-    caption = content["caption"]
+    # One sanitise for every destination: no hashtags, no links.
+    caption = text.sanitize(content["caption"])
     posted, failures = {}, []
 
     # Instagram and X both alternate image/video by slot; Facebook always

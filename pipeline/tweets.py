@@ -28,9 +28,9 @@ Search first, then write {count} tweets grounded in what you found.
 
 Every tweet must:
 - Stand alone. No threads, no replies, no "1/", no references to other tweets.
-- Be under 260 characters INCLUDING hashtags.
+- Be under 260 characters.
 - Lead with the most striking fact, not a wind-up.
-- Contain at most 2 hashtags, at the end.
+- Contain NO hashtags. Not one.
 - Contain NO links or URLs of any kind.
 - Use no emoji.
 

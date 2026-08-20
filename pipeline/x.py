@@ -11,48 +11,20 @@ simple way returns a bare 400 with no explanation.
 """
 
 import os
-import re
 import time
 
 from requests_oauthlib import OAuth1Session
+
+from .text import sanitize
 
 UPLOAD_URL = "https://api.x.com/2/media/upload"
 TWEETS_URL = "https://api.x.com/2/tweets"
 MAX_LEN = 280
 
-# X bills $0.015 per post but $0.20 if it contains a link -- 13x more. A
-# stray URL in generated copy would quietly cost 13x, so strip them.
-URL_RE = re.compile(r"https?://\S+|\bwww\.\S+", re.I)
-
-
-def _session() -> OAuth1Session:
-    def req(name: str) -> str:
-        value = os.environ.get(name, "").strip()
-        if not value:
-            raise SystemExit(f"Missing required credential: {name}")
-        return value
-
-    return OAuth1Session(
-        req("X_API_KEY"), req("X_API_SECRET"),
-        req("X_ACCESS_TOKEN"), req("X_ACCESS_TOKEN_SECRET"),
-    )
-
 
 def clean_text(text: str) -> str:
-    """Strip links and fit inside 280 chars without eating the hashtags."""
-    text = URL_RE.sub("", text)
-    text = re.sub(r"[ \t]+", " ", text).strip()
-    if len(text) <= MAX_LEN:
-        return text
-
-    # Preserve trailing hashtags: trim the prose, not the tags.
-    tags = re.findall(r"#\w+", text)
-    tail = " " + " ".join(tags) if tags else ""
-    body = URL_RE.sub("", re.sub(r"(\s*#\w+)+\s*$", "", text)).strip()
-    budget = MAX_LEN - len(tail) - 1
-    if budget < 40:                    # absurdly tag-heavy: just hard-trim
-        return text[:MAX_LEN].rstrip()
-    return (body[:budget].rsplit(" ", 1)[0].rstrip(" ,.;:—-") + tail).strip()
+    """Strip links and hashtags, then fit inside X's 280-char limit."""
+    return sanitize(text, limit=MAX_LEN)
 
 
 def upload_image(jpeg: bytes) -> str:

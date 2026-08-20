@@ -46,7 +46,7 @@ exactly this shape:
     {{"text": "...", "color": "blue|red|green"}}
   ],
   "image_prompt": "one or two sentences describing a photograph",
-  "caption": "social caption, 1-2 sentences plus 3-5 relevant hashtags"
+  "caption": "social caption, 1-2 plain sentences"
 }}
 
 Rules for the description array:
@@ -62,6 +62,9 @@ Rules for image_prompt:
 - Describe a real-looking editorial PHOTOGRAPH, concrete and visual, shot on a \
 wide 16:9 frame with cinematic lighting and a moody, desaturated palette.
 - Absolutely no text, letters, numbers, logos, watermarks or captions anywhere.
+
+Rules for caption:
+- 1-2 sentences of plain prose. No hashtags, no links, no emoji.
 
 Rules for story_id:
 - Stable and specific to the story itself, not the date. Two runs that find the \
