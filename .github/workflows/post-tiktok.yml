@@ -1,10 +1,15 @@
 name: Post to TikTok
 
+# NOTE: the schedule is intentionally disabled.
+# TikTok forces every post from an unaudited app to private, so running this
+# on a timer only produces failed runs and self-only posts. Re-enable by
+# uncommenting the cron below once the app has passed TikTok's audit and
+# TIKTOK_REFRESH_TOKEN is set as a repository secret.
 on:
-  schedule:
-    # Every 6 hours = 4 posts/day, offset 25 minutes past the hour so the
-    # Meta run at the same slot has finished hosting its card first.
-    - cron: "25 */6 * * *"
+  # schedule:
+  #   # Every 6 hours = 4 posts/day, offset 25 minutes past the hour so the
+  #   # Meta run at the same slot has finished hosting its card first.
+  #   - cron: "25 */6 * * *"
   workflow_dispatch:
     inputs:
       dry_run:

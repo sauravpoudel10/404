@@ -118,7 +118,10 @@ def _prune(repo: Path, manifest: dict) -> dict:
         if created >= cutoff:
             keep.append(card)
         else:
+            # Both artifacts, or expired Reels linger on the branch forever.
             (repo / card["file"]).unlink(missing_ok=True)
+            if card.get("video_file"):
+                (repo / card["video_file"]).unlink(missing_ok=True)
     manifest["cards"] = keep
 
     # story_ids outlive their images: the dedupe window should be longer than
@@ -157,8 +160,8 @@ def read_manifest() -> dict:
         return _load_manifest(_clone(Path(tmp)))
 
 
-def publish_card(jpeg: bytes, content: dict) -> dict:
-    """Upload one card, expire stale ones, return the new card record."""
+def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None) -> dict:
+    """Upload one card (and optionally its Reel), expire stale ones."""
     stamp = datetime.now(timezone.utc)
     slug = f"{stamp:%Y%m%d-%H%M%S}-{content['story_id'][:40]}"
     rel = f"{CARDS_DIR}/{slug}.jpg"
@@ -179,6 +182,12 @@ def publish_card(jpeg: bytes, content: dict) -> dict:
             "caption": content.get("caption", ""),
             "posted": {"instagram": False, "facebook": False, "tiktok": False},
         }
+
+        if mp4 is not None:
+            video_rel = f"{CARDS_DIR}/{slug}.mp4"
+            (repo / video_rel).write_bytes(mp4)
+            card["video_file"] = video_rel
+            card["video_url"] = f"{config.PUBLIC_BASE_URL}/{video_rel}"
         manifest["cards"].append(card)
         manifest["history"].append(
             {"story_id": content["story_id"], "seen_at": stamp.isoformat()}

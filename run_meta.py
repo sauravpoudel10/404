@@ -18,7 +18,9 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from pipeline import assets, cards, meta, trends  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+
+from pipeline import assets, cards, meta, trends, video  # noqa: E402
 
 
 def main():
@@ -27,7 +29,18 @@ def main():
                         help="realtime image generation instead of the Batch API")
     parser.add_argument("--dry-run", action="store_true",
                         help="generate and host the card but don't post anywhere")
+    parser.add_argument("--mode", choices=("auto", "reel", "post"), default="auto",
+                        help="Instagram format; 'auto' alternates by slot")
     args = parser.parse_args()
+
+    # Slots run at even hours (0,2,4...22). Alternating on hour % 4 splits
+    # them evenly: 0,4,8,12,16,20 are Reels and 2,6,10,14,18,22 are feed
+    # posts -- six of each per day.
+    if args.mode == "auto":
+        as_reel = datetime.now(timezone.utc).hour % 4 == 0
+    else:
+        as_reel = args.mode == "reel"
+    print(f"→ slot format: {'REEL' if as_reel else 'feed post'}")
 
     print("→ reading manifest")
     manifest = assets.read_manifest()
@@ -47,18 +60,26 @@ def main():
     jpeg = cards.render_jpeg(content, use_batch=not args.no_batch)
     print(f"  {len(jpeg) / 1024:.0f} KB JPEG")
 
+    mp4 = None
+    if as_reel:
+        print("→ rendering reel (1080x1920 MP4)")
+        mp4 = video.render_reel(jpeg)
+        print(f"  {len(mp4) / 1024:.0f} KB MP4")
+
     print("→ publishing to GitHub Pages")
-    card = assets.publish_card(jpeg, content)
+    card = assets.publish_card(jpeg, content, mp4=mp4)
     print(f"  {card['url']}")
+    if mp4:
+        print(f"  {card['video_url']}")
 
     # Instagram fetches this URL itself, so it has to be genuinely reachable
     # before we hand it over -- the push returning is not the same as Pages
     # having deployed.
     print("→ waiting for Pages to deploy")
-    if not assets.wait_until_live(card["url"]):
-        sys.exit(f"Image never became reachable at {card['url']} — not posting. "
-                 "Check that Pages is serving from the "
-                 f"'{assets.config.ASSETS_BRANCH}' branch.")
+    for url in [card["url"]] + ([card["video_url"]] if mp4 else []):
+        if not assets.wait_until_live(url):
+            sys.exit(f"Never became reachable at {url} — not posting. Check that "
+                     f"Pages is serving from the '{assets.config.ASSETS_BRANCH}' branch.")
 
     if args.dry_run:
         print("\n--dry-run: hosted but not posted.")
@@ -68,10 +89,17 @@ def main():
     caption = content["caption"]
     posted, failures = {}, []
 
-    for name, fn in (("instagram", meta.post_instagram), ("facebook", meta.post_facebook)):
+    # Facebook always gets the square image; only Instagram alternates format.
+    targets = [
+        ("instagram", meta.post_instagram_reel, card["video_url"]) if as_reel
+        else ("instagram", meta.post_instagram, card["url"]),
+        ("facebook", meta.post_facebook, card["url"]),
+    ]
+
+    for name, fn, url in targets:
         try:
             print(f"→ posting to {name}")
-            post_id = fn(card["url"], caption)
+            post_id = fn(url, caption)
             posted[name] = True
             print(f"  ok: {post_id}")
         except Exception as e:

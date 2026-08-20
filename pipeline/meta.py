@@ -94,6 +94,35 @@ def _page_token() -> str:
     return _page_token_cache
 
 
+def post_instagram_reel(video_url: str, caption: str) -> str:
+    """Publish a Reel.
+
+    Same three-step handshake as a photo, but media_type=REELS and a video
+    URL. Transcoding takes far longer than fetching a JPEG, so the container
+    poll gets a much longer budget — a Reel container routinely sits in
+    IN_PROGRESS for a minute or more.
+    """
+    token = config.META_TOKEN()
+    ig_user = config.IG_USER_ID()
+
+    container = _post(f"{ig_user}/media", {
+        "media_type": "REELS",
+        "video_url": video_url,
+        "caption": caption,
+        "share_to_feed": "true",
+        "access_token": token,
+    })
+    creation_id = container["id"]
+
+    _wait_for_container(creation_id, token, timeout=600)
+
+    published = _post(f"{ig_user}/media_publish", {
+        "creation_id": creation_id,
+        "access_token": token,
+    })
+    return published["id"]
+
+
 def post_facebook(image_url: str, caption: str) -> str:
     """Publish to the Page's photo feed.
 

@@ -11,6 +11,11 @@ on:
         description: "Generate and host the card but don't post"
         type: boolean
         default: false
+      mode:
+        description: "Instagram format (auto alternates by slot)"
+        type: choice
+        options: [auto, reel, post]
+        default: auto
 
 # Needed to force-push the gh-pages branch that hosts the card images.
 permissions:
@@ -46,4 +51,4 @@ jobs:
           ASSETS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ASSETS_REPO: ${{ github.repository }}
           PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
-        run: python run_meta.py ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: python run_meta.py ${{ inputs.dry_run && '--dry-run' || '' }} --mode ${{ inputs.mode || 'auto' }}

@@ -5,8 +5,20 @@ GitHub Pages, and posts it to Instagram, Facebook, and TikTok on a schedule.
 
 ```
 run_meta.py     every 2h (12/day)  trending story -> card -> Instagram + Facebook
-run_tiktok.py   every 6h (4/day)   reposts the newest IG-published card to TikTok
+run_tiktok.py   manual only        reposts the newest IG-published card to TikTok
 ```
+
+Instagram alternates format by slot: even-4 hours (00, 04, 08, 12, 16, 20 UTC)
+publish a **Reel**, the rest publish a **feed post** — six of each per day.
+Facebook always gets the square image. Override with `--mode reel|post`.
+
+Reels are video-only, so the square card is composed onto a blurred 1080x1920
+backdrop and encoded to a 7-second H.264 MP4 (`pipeline/video.py`). ffmpeg
+ships with the `imageio-ffmpeg` wheel — nothing to install.
+
+TikTok's schedule is commented out in its workflow: an unaudited app can only
+post privately, so a timer just generates failed runs. Re-enable the cron once
+the app passes audit.
 
 TikTok generates no image of its own — it reuses the most recent card that
 actually reached Instagram.
