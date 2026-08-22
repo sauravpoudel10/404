@@ -37,7 +37,8 @@ actually reached Instagram.
 
 | Module | Job |
 |---|---|
-| `pipeline/trends.py` | One Claude call with the server-side `web_search` tool: finds a trending story and writes the card copy, schema-constrained so the JSON always parses |
+| `pipeline/feeds.py` | Free RSS headlines — replaces the paid web-search tool, which was the largest line on the bill |
+| `pipeline/trends.py` | One Claude call over those headlines: picks a trending story and writes the card copy, schema-constrained so the JSON always parses |
 | `automate.py` | Renders the SVG card (Gemini generates the background photo) and rasterizes it |
 | `pipeline/cards.py` | Converts to JPEG — Instagram rejects PNG |
 | `pipeline/assets.py` | Publishes to the `gh-pages` branch, expires cards after 48h, holds the manifest that doubles as pipeline state |

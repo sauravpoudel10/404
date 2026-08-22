@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 
 from anthropic import Anthropic
 
-from . import assets, config, trends
+from . import assets, config, feeds, trends
 from .text import normalise_list
 
 POOL_FILE = "tweets.json"
@@ -29,7 +29,6 @@ POOL_FILE = "tweets.json"
 # Counts are fixed so the daily X spend doesn't move: 24 posts either way.
 KIND_COUNTS = {"reply_bait": 6, "list": 6, "normal": 12}
 POOL_SIZE = sum(KIND_COUNTS.values())
-MAX_SEARCHES = 2          # per call, so two calls cost about one old call
 
 COMMON_RULES = """
 Rules for every tweet:
@@ -138,12 +137,6 @@ def _call(system: str, user: str, kinds: list[str]) -> list[dict]:
         model=config.COPY_MODEL,
         max_tokens=16000,
         system=system,
-        tools=[{
-            "type": ("web_search_20250305" if trends._is_small_model()
-                     else "web_search_20260209"),
-            "name": "web_search",
-            "max_uses": MAX_SEARCHES,
-        }],
         output_config=cfg,
         messages=[{"role": "user", "content": user}],
     )
@@ -170,17 +163,35 @@ def clean_list_rows(tweet: dict) -> dict:
 
 
 def generate_pool(count: int = POOL_SIZE) -> list[dict]:
-    """Two grounded calls: Musk-adjacent, then everything else."""
+    """Two grounded calls: Musk-adjacent, then everything else.
+
+    Each is grounded on free RSS rather than the paid web-search tool,
+    and on a DIFFERENT slice of it -- which is also what stops the
+    general tweets drifting onto Tesla.
+    """
     n_reply = KIND_COUNTS["reply_bait"]
     n_list = KIND_COUNTS["list"]
     n_normal = count - n_reply - n_list
 
-    out = _call(REPLY_BAIT_SYSTEM.format(count=n_reply),
-                f"Write today's {n_reply} tweets.", ["reply_bait"])
+    musk = feeds.as_context(feeds.fetch(only=["musk"]), limit=45)
+    general = feeds.as_context(feeds.fetch(exclude=["musk"]), limit=90)
+    print(f"  RSS: {len(musk.splitlines())} musk / "
+          f"{len(general.splitlines())} general headlines (no search fee)")
+
+    sep = chr(10) * 2          # blank line between context and task
+
+    out = _call(
+        REPLY_BAIT_SYSTEM.format(count=n_reply),
+        f"Current headlines:{sep}{musk}{sep}Write today's {n_reply} tweets.",
+        ["reply_bait"],
+    )
     out += _call(
         GENERAL_SYSTEM.format(n_list=n_list, n_normal=n_normal,
                               total=n_list + n_normal),
-        f"Write today's {n_list + n_normal} tweets.", ["list", "normal"])
+        f"Current headlines:{sep}{general}{sep}"
+        f"Write today's {n_list + n_normal} tweets.",
+        ["list", "normal"],
+    )
     return [clean_list_rows(t) for t in out]
 
 

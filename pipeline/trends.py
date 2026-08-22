@@ -1,8 +1,9 @@
 """Find a trending story and write the card copy for it, in one Claude call.
 
-Uses Claude's server-side web_search tool, so there's no separate news API
-key to manage — the search runs on Anthropic's side and bills to the same
-ANTHROPIC_API_KEY.
+Story discovery comes from free RSS (see feeds.py), not the paid web-search
+tool. Search billed $0.01 per query and pulled 5-12k tokens of results into
+context on every one of the twelve daily runs; headlines cost nothing and
+are about a fifth the size.
 
 The call returns the same JSON shape automate.py already renders, plus a
 `story_id` used to keep the pipeline from posting the same story twice
@@ -14,23 +15,14 @@ import re
 
 from anthropic import Anthropic
 
-from . import config
-
-MAX_SEARCHES = 2
+from . import config, feeds
 
 SYSTEM = """You find the single most-discussed news story of the moment and \
 write a "404 Media" style stat card about it.
 
-Search for what is genuinely trending RIGHT NOW in these areas: {topics}. \
-Prefer stories with a hard number in them — a dollar figure, a headcount, a \
-percentage — because the card format is built around a statistic. Prefer \
-stories from the last 24 hours.
+You will be given a list of current headlines. Pick the single biggest story in these areas: {topics}.
 
-Be efficient: you have at most {max_searches} searches. One broad search \
-usually surfaces several candidates at once — read the results you already \
-have rather than searching again to confirm. Do not verify a figure with an \
-extra search if it appeared in a result you have already seen. Write the card \
-as soon as you have one story with a solid number.
+Strongly prefer a story whose headline or summary carries a hard number - a dollar figure, a headcount, a percentage - because the card is built around a statistic. Where several qualify, take the one with the widest interest.
 
 Then reply with ONLY valid JSON, no markdown fences and no commentary, in \
 exactly this shape:
@@ -71,7 +63,7 @@ Rules for story_id:
 - Stable and specific to the story itself, not the date. Two runs that find the \
 same underlying story must produce the same story_id.
 
-Only state figures you actually saw in a search result. Never invent a statistic."""
+Use ONLY facts and figures that appear in the headlines you were given. You have no other source. If the headline gives no number, either pick a different story or write the card without inventing one. Never state a figure that is not in front of you."""
 
 
 # Constraining generation to this schema is what makes the parse reliable.
@@ -110,22 +102,6 @@ CARD_SCHEMA = {
 def _is_small_model() -> bool:
     """Haiku 4.5 and Sonnet 4.5 reject both `effort` and the newer search tool."""
     return config.COPY_MODEL.startswith(("claude-haiku", "claude-sonnet-4-5"))
-
-
-def _search_tool() -> dict:
-    """Pick the search variant the configured model actually supports.
-
-    web_search_20260209 does dynamic filtering via programmatic tool calling,
-    which Haiku cannot do — it 400s. It's also the more expensive path: the
-    filtering step pulls far more content into context (~48k input tokens on
-    Sonnet vs ~15k for basic search on Haiku), which is most of the cost gap
-    between the two models on this task.
-    """
-    return {
-        "type": "web_search_20250305" if _is_small_model() else "web_search_20260209",
-        "name": "web_search",
-        "max_uses": MAX_SEARCHES,
-    }
 
 
 def _output_config() -> dict:
@@ -174,22 +150,21 @@ def find_story(exclude_ids: list[str]) -> dict:
             + "\n".join(f"- {sid}" for sid in exclude_ids[-40:])
         )
 
+    headlines = feeds.fetch(exclude=["musk"])
+    print(f"  {len(headlines)} headlines from free RSS (no search fee)")
+
     messages = [{
         "role": "user",
-        "content": "Find the top trending story right now and write the card." + avoid,
+        "content": ("Current headlines:\n\n" + feeds.as_context(headlines)
+                    + "\n\nPick the biggest story and write the card." + avoid),
     }]
 
-    # Server-side tools can stop with pause_turn when the search loop hits its
-    # iteration cap; re-sending the turn resumes it where it left off.
-    for _ in range(4):
+    # No server tools any more, so no pause_turn to resume -- one call.
+    for _ in range(1):
         resp = client.messages.create(
             model=config.COPY_MODEL,
             max_tokens=4000,
-            system=SYSTEM.format(topics=config.TOPICS, max_searches=MAX_SEARCHES),
-            # Cost control. Searches bill at $0.01 each AND drag ~5-12k tokens
-            # of results into context, so at this volume the search fee alone
-            # outweighs the token cost. Uncapped this ran 14 per card.
-            tools=[_search_tool()],
+            system=SYSTEM.format(topics=config.TOPICS),
             output_config=_output_config(),
             messages=messages,
         )
