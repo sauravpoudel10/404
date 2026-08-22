@@ -1,13 +1,19 @@
 """A day's worth of standalone tweets, generated once and drained hourly.
 
-One Haiku call produces 24 tweets about VC, asset managers, market
-statistics and politics; the hourly job pops the next unused one. Generating
-in bulk is what makes this cheap — 1 API call a day instead of 24.
+24 tweets a day in three shapes: 6 reply-bait posts on subjects Elon Musk
+engages with, 6 ranked statistics lists with country flags, and 12 plain
+one-fact posts. Generating in bulk is what keeps this cheap -- two API calls
+a day rather than 24.
 
-The generation call is grounded with web search on purpose. These post
-automatically to a public account, and a model inventing a plausible-looking
-fund size or market share would be publishing fabricated financial claims
-under your name. Figures must come from something it actually read.
+The two groups are generated SEPARATELY on purpose. Asking for all three
+kinds in one call anchored every search on Tesla and SpaceX, and the lists
+and plain posts came back as more Musk coverage. Splitting the calls keeps
+the general-interest tweets genuinely general.
+
+Generation is grounded with web search. These publish to a public account
+with no human review, so a model inventing a fund size -- or putting the
+wrong country's flag against a real one -- is publishing a false financial
+claim under your name.
 """
 
 import json
@@ -16,67 +22,122 @@ from datetime import datetime, timezone
 from anthropic import Anthropic
 
 from . import assets, config, trends
+from .text import normalise_list
 
 POOL_FILE = "tweets.json"
-POOL_SIZE = 24
-MAX_SEARCHES = 3
 
-SYSTEM = """You write standalone tweets for a media account covering venture \
-capital, asset management, market statistics, and politics.
+# Counts are fixed so the daily X spend doesn't move: 24 posts either way.
+KIND_COUNTS = {"reply_bait": 6, "list": 6, "normal": 12}
+POOL_SIZE = sum(KIND_COUNTS.values())
+MAX_SEARCHES = 2          # per call, so two calls cost about one old call
 
-Search first, then write {count} tweets grounded in what you found.
-
-Every tweet must:
+COMMON_RULES = """
+Rules for every tweet:
 - Stand alone. No threads, no replies, no "1/", no references to other tweets.
-- Be under 260 characters.
-- Lead with the most striking fact, not a wind-up.
-- Contain NO hashtags. Not one.
-- Contain NO links or URLs of any kind.
-- Use no emoji.
+- NO hashtags. Not one.
+- NO links or URLs of any kind.
 
-CRITICAL — accuracy: every number, company name, fund size, percentage or \
-date must come from a search result you actually read in this conversation. \
-If you are not certain of a figure, write the tweet without it rather than \
-approximating. Do not invent statistics, and do not describe a trend as \
-larger or smaller than your sources support. These publish automatically \
-with no human review.
+CRITICAL - accuracy: every number, company name, fund size, percentage, \
+ranking or date must come from a search result you actually read in this \
+conversation. If you are not certain of a figure, leave that row or that \
+tweet out rather than approximating. These publish automatically with no \
+human review."""
 
-Vary the subject matter across the {count} tweets — do not write {count} \
-variations of one story. Mix firm-level news, market-wide statistics, \
-policy/regulatory developments, and notable funding rounds."""
+REPLY_BAIT_SYSTEM = """You write standalone tweets for a media account \
+covering business, technology and finance.
 
-POOL_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "tweets": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "text": {"type": "string"},
-                    "topic": {"type": "string"},
+Write exactly {count} tweets on subjects Elon Musk actively engages with: \
+Tesla, SpaceX, Starlink, xAI, X itself, EV and battery economics, launch \
+cadence, robotaxis, humanoid robots, AI compute buildouts, semiconductors.
+
+Each tweet:
+- Leads with a specific, verified number or a concrete development.
+- Ends with ONE genuine, answerable question about that number or decision.
+- Is under 260 characters. No emoji.
+- Does NOT @mention or tag anyone. No "hey @elonmusk", no baiting, no \
+insults, no provocation, no flattery. A question worth answering is what \
+earns a reply; anything else reads as spam and gets the account muted.
+
+Spread them across at least four different subjects - not {count} posts \
+about one company.
+""" + COMMON_RULES
+
+GENERAL_SYSTEM = """You write standalone tweets for a media account covering \
+venture capital, asset management, market statistics and politics.
+
+Write exactly {n_list} tweets of kind "list" and {n_normal} of kind "normal".
+
+=== kind "list" ===
+A ranked table, in this exact shape:
+
+Title of the ranking:
+
+<flag> Name: value
+<flag> Name: value
+
+- Line 1 is the title ending in a colon, then a blank line, then the rows.
+- EVERY row ranks the SAME metric in the SAME unit. A row measuring \
+something else does not belong - "AI share of global VC: 50%" cannot sit in \
+a table of funding totals.
+- EVERY row ends in a real number with its unit ("$412B", "55.0M", "39.8%"). \
+No prose values like "aggressive EU push".
+- Rows sorted strictly largest to smallest. $30B comes before $20B, which \
+comes before $305M.
+- Every row starts with the flag of the country the entity belongs to, or is \
+headquartered in. NEVER derive a flag from initials, an abbreviation or a \
+ticker: "GM" is General Motors, an American company, so the flag is the \
+United States - not Gambia. Decide the country first, then its flag.
+- Rankings compare DIFFERENT entities. A table where every row is the same \
+country is not a ranking; pick a subject with real geographic spread.
+- 6 to 8 rows. The whole tweet under 275 characters including flags.
+
+=== kind "normal" ===
+One striking fact per tweet, fact first, under 260 characters, no emoji.
+
+=== subjects ===
+Cover clearly different ground across these {total} tweets: sovereign wealth \
+funds, IPOs and M&A, private equity, banking, commodities, housing, \
+demographics, government debt, trade, healthcare, energy, defence, shipping.
+
+Do NOT write about Tesla, SpaceX, xAI or Elon Musk - those are covered \
+elsewhere. No more than two tweets about any one company.
+""" + COMMON_RULES
+
+
+def _schema(kinds: list[str]) -> dict:
+    return {
+        "type": "object",
+        "properties": {
+            "tweets": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "text": {"type": "string"},
+                        "topic": {"type": "string"},
+                        "kind": {"type": "string", "enum": kinds},
+                    },
+                    "required": ["text", "topic", "kind"],
+                    "additionalProperties": False,
                 },
-                "required": ["text", "topic"],
-                "additionalProperties": False,
-            },
-        }
-    },
-    "required": ["tweets"],
-    "additionalProperties": False,
-}
+            }
+        },
+        "required": ["tweets"],
+        "additionalProperties": False,
+    }
 
 
-def generate_pool(count: int = POOL_SIZE) -> list[dict]:
+def _call(system: str, user: str, kinds: list[str]) -> list[dict]:
     client = Anthropic(api_key=config.ANTHROPIC_API_KEY())
 
-    cfg = {"format": {"type": "json_schema", "schema": POOL_SCHEMA}}
+    cfg = {"format": {"type": "json_schema", "schema": _schema(kinds)}}
     if not trends._is_small_model():
         cfg["effort"] = "low"
 
     resp = client.messages.create(
         model=config.COPY_MODEL,
-        max_tokens=8000,
-        system=SYSTEM.format(count=count),
+        max_tokens=16000,
+        system=system,
         tools=[{
             "type": ("web_search_20250305" if trends._is_small_model()
                      else "web_search_20260209"),
@@ -84,14 +145,68 @@ def generate_pool(count: int = POOL_SIZE) -> list[dict]:
             "max_uses": MAX_SEARCHES,
         }],
         output_config=cfg,
-        messages=[{"role": "user",
-                   "content": f"Write today's {count} tweets."}],
+        messages=[{"role": "user", "content": user}],
     )
-
     text = "".join(b.text for b in resp.content if b.type == "text")
     start, end = text.find("{"), text.rfind("}")
     data = json.loads(text[start:end + 1])
-    return [t for t in data["tweets"] if t.get("text", "").strip()]
+    return [t for t in data.get("tweets", []) if t.get("text", "").strip()]
+
+
+def clean_list_rows(tweet: dict) -> dict:
+    """Drop ranking rows that carry no number.
+
+    The model occasionally fills a row with prose ("aggressive EU push")
+    instead of a figure, which reads as a broken ranking. Rows without a
+    digit go; the title and the numbered rows survive.
+    """
+    if tweet.get("kind") != "list":
+        return tweet
+    lines = tweet.get("text", "").split("\n")
+    kept = [ln for i, ln in enumerate(lines)
+            if i == 0 or not ln.strip() or any(c.isdigit() for c in ln)]
+    tweet["text"] = normalise_list("\n".join(kept).rstrip())
+    return tweet
+
+
+def generate_pool(count: int = POOL_SIZE) -> list[dict]:
+    """Two grounded calls: Musk-adjacent, then everything else."""
+    n_reply = KIND_COUNTS["reply_bait"]
+    n_list = KIND_COUNTS["list"]
+    n_normal = count - n_reply - n_list
+
+    out = _call(REPLY_BAIT_SYSTEM.format(count=n_reply),
+                f"Write today's {n_reply} tweets.", ["reply_bait"])
+    out += _call(
+        GENERAL_SYSTEM.format(n_list=n_list, n_normal=n_normal,
+                              total=n_list + n_normal),
+        f"Write today's {n_list + n_normal} tweets.", ["list", "normal"])
+    return [clean_list_rows(t) for t in out]
+
+
+def interleave(generated: list[dict]) -> list[dict]:
+    """Spread the kinds across the day instead of posting them in blocks.
+
+    Drained one per hour, an unshuffled pool would post six ranked lists back
+    to back and then six Musk-adjacent ones. Two normal, a list, a reply-bait
+    keeps the timeline varied whatever order the model returned.
+    """
+    buckets: dict[str, list[dict]] = {}
+    for t in generated:
+        buckets.setdefault(t.get("kind", "normal"), []).append(t)
+
+    order, pattern = [], ["normal", "normal", "list", "reply_bait"]
+    while any(buckets.values()):
+        placed = False
+        for kind in pattern:
+            if buckets.get(kind):
+                order.append(buckets[kind].pop(0))
+                placed = True
+        if not placed:
+            for rest in buckets.values():
+                order.extend(rest)
+                rest.clear()
+    return order
 
 
 def _empty_pool() -> dict:
@@ -109,11 +224,12 @@ def refill(force: bool = False) -> dict:
     if not force and remaining and not stale:
         return pool
 
-    generated = generate_pool()
+    generated = interleave(generate_pool())
     pool = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "tweets": [
             {"id": i, "text": t["text"], "topic": t.get("topic", ""),
+             "kind": t.get("kind", "normal"),
              "used": False, "posted_at": None, "post_id": None}
             for i, t in enumerate(generated)
         ],

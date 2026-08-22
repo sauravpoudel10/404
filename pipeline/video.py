@@ -42,7 +42,7 @@ AUDIO_EXTS = (".mp3", ".m4a", ".aac", ".wav", ".ogg", ".flac")
 # Normalise instead of a fixed multiplier: the bundled pads are quiet and a
 # track from Meta Sound Collection is mastered loud, so a single volume
 # factor would make one inaudible or the other overpowering.
-MUSIC_LUFS = -15          # target integrated loudness; -19 was inaudible on a phone
+MUSIC_LUFS = -10          # ~2x the previous level; see note on platform normalisation
 MUSIC_PEAK = -1.5         # true-peak ceiling
 FADE = 0.6
 
