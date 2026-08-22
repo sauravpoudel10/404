@@ -50,8 +50,8 @@ exactly this shape:
 }}
 
 Rules for the description array:
-- Concatenating every part's text must read as ONE natural paragraph (3-4 \
-sentences worth), so include spaces at the edges of each part where a space belongs.
+- Concatenating every part's text must read as ONE natural paragraph of 2-3 short \
+sentences, 120-165 characters TOTAL. It is set in large type on the card, so anything longer gets shrunk to fit and loses its impact. Include spaces at the edges of each part where a space belongs.
 - color 'blue' = the main subject/behavior being highlighted.
 - color 'red' = whatever it's being unfavorably compared against.
 - color 'green' = the key hard number/statistic.
@@ -60,7 +60,8 @@ sentences worth), so include spaces at the edges of each part where a space belo
 
 Rules for image_prompt:
 - Describe a real-looking editorial PHOTOGRAPH, concrete and visual, shot on a \
-wide 16:9 frame with cinematic lighting and a moody, desaturated palette.
+wide 16:9 frame.
+- Ask for a BRIGHT, well-lit, vivid image: daylight, bright interiors, strong clean light, rich saturated colour. Explicitly avoid dark, dim, moody, murky, night-time or heavily shadowed scenes -- the card is seen as a thumbnail, and dark frames disappear in the feed.
 - Absolutely no text, letters, numbers, logos, watermarks or captions anywhere.
 
 Rules for caption:

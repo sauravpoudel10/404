@@ -39,7 +39,11 @@ BACKDROP_DIM = 0.55   # darken the backdrop so the card stays dominant
 # Collection is free and licensed for business accounts.
 AUDIO_DIR = config.ROOT / "audio"
 AUDIO_EXTS = (".mp3", ".m4a", ".aac", ".wav", ".ogg", ".flac")
-MUSIC_VOLUME = 0.7
+# Normalise instead of a fixed multiplier: the bundled pads are quiet and a
+# track from Meta Sound Collection is mastered loud, so a single volume
+# factor would make one inaudible or the other overpowering.
+MUSIC_LUFS = -19          # target integrated loudness, under the voice-less bed
+MUSIC_PEAK = -1.5         # true-peak ceiling
 FADE = 0.6
 
 
@@ -88,14 +92,16 @@ def render_reel(card_jpeg: bytes) -> bytes:
             # -stream_loop -1 so a track shorter than the clip repeats rather
             # than leaving silence at the end.
             cmd += ["-stream_loop", "-1", "-i", str(track),
-                    "-af", (f"afade=t=in:st=0:d={FADE},"
-                            f"afade=t=out:st={DURATION - FADE}:d={FADE},"
-                            f"volume={MUSIC_VOLUME}"),
-                    "-c:a", "aac", "-b:a", "128k"]
+                    "-af", (f"loudnorm=I={MUSIC_LUFS}:TP={MUSIC_PEAK}:LRA=11,"
+                            f"afade=t=in:st=0:d={FADE},"
+                            f"afade=t=out:st={DURATION - FADE}:d={FADE}"),
+                    # loudnorm resamples to 96kHz and the bundled beds are
+                    # mono; pin both to what the platforms expect.
+                    "-c:a", "aac", "-b:a", "128k", "-ar", "48000", "-ac", "2"]
         else:
             cmd += ["-f", "lavfi",
-                    "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
-                    "-c:a", "aac", "-b:a", "64k"]
+                    "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
+                    "-c:a", "aac", "-b:a", "64k", "-ar", "48000", "-ac", "2"]
 
         cmd += ["-t", str(DURATION),
                 "-c:v", "libx264", "-preset", "medium", "-crf", "20",

@@ -58,7 +58,7 @@ IMAGE_MODEL = "models/gemini-3.1-flash-lite-image"
 IMAGE_ASPECT_RATIO = "16:9"   # photo band is 1080x620, close enough to slice
 
 CANVAS = 1080                 # square canvas, like the reference image
-PHOTO_HEIGHT = 620            # height of the top photo band
+PHOTO_HEIGHT = 455            # height of the top photo band
 OUTPUT_PATH = "404_card.svg"
 
 # Batch polling. A batch job is asynchronous by design; these bounds only
@@ -68,18 +68,20 @@ BATCH_TIMEOUT_SECONDS = 30 * 60
 
 MARGIN_X = 90                 # left margin used by every text block
 LOGO_Y = 90
-CATEGORY_Y = 660
+CATEGORY_Y = 500
 HEADLINE_FONT_SIZE = 84
 HEADLINE_MIN_FONT_SIZE = 46
-BODY_FONT_SIZE = 32
-BODY_MIN_FONT_SIZE = 24
+BODY_FONT_SIZE = 48
+BODY_MIN_FONT_SIZE = 38                # preferred floor (~1.2x the old size)
+BODY_HARD_MIN_FONT_SIZE = 26           # absolute floor, only to avoid overflow
 BODY_LINE_HEIGHT_RATIO = 1.44          # line height as a multiple of font size
-BODY_CHAR_WIDTH_RATIO = 0.5625         # word-wrap budget: 50 chars at size 32
+BODY_CHAR_WIDTH_RATIO = 0.478          # tuned so lines fill the full text width
 
 # Vertical rhythm below the photo. The headline is NOT placed at a fixed y:
 # it hangs off the bottom of the category underline by CATEGORY_UNDERLINE_GAP
 # measured to the top of its capitals, so a 2-line headline can never end up
 # struck through by the underline. See layout_blocks().
+SCRIM_HEIGHT = 190            # top gradient keeping the wordmark readable
 CATEGORY_UNDERLINE_GAP = 26
 HEADLINE_BODY_GAP = 55
 BODY_BOTTOM_MARGIN = 55
@@ -549,7 +551,11 @@ def layout_card(headline_lines, tokens) -> Layout:
     underline_bottom = CATEGORY_Y + 23
     limit = CANVAS - BODY_BOTTOM_MARGIN
     max_width = CANVAS - 2 * MARGIN_X
+    # Two tiers: shrink to the preferred floor while also shrinking the
+    # headline, and only if that still overflows keep going to the hard
+    # floor. Running off the bottom of the card is worse than small type.
     body_steps = list(range(BODY_FONT_SIZE, BODY_MIN_FONT_SIZE - 1, -1))
+    rescue_steps = list(range(BODY_MIN_FONT_SIZE - 1, BODY_HARD_MIN_FONT_SIZE - 1, -1))
 
     headline_scale = 1.0
     while True:
@@ -563,11 +569,14 @@ def layout_card(headline_lines, tokens) -> Layout:
             y += size * 1.1
         body_start = baselines[-1] + HEADLINE_BODY_GAP
 
-        for body_size in body_steps:
+        exhausted = headline_scale <= 0.6
+        steps = body_steps + (rescue_steps if exhausted else [])
+
+        for body_size in steps:
             line_height = body_size * BODY_LINE_HEIGHT_RATIO
             lines = wrap_tokens(tokens, body_max_chars(body_size))
             fits = body_start + (len(lines) - 1) * line_height <= limit
-            if fits or (body_size == body_steps[-1] and headline_scale <= 0.6):
+            if fits or (exhausted and body_size == steps[-1]):
                 return Layout(sizes, baselines, body_size, line_height, lines, body_start)
 
         headline_scale -= 0.05
@@ -587,6 +596,52 @@ def render_headline(lines, sizes, baselines, headline_font):
 # --------------------------------------------------------------------------
 # STEP 4 - build the final SVG
 # --------------------------------------------------------------------------
+# Target mean luminance for the photo band, 0-255. The lift is ADAPTIVE:
+# a dark frame gets brightened toward this, a frame that is already bright
+# is left alone. A fixed multiplier blows out the highlights on the bright
+# images the prompt now asks for -- pure white cleanroom, no detail.
+PHOTO_TARGET_LUMA = 132
+PHOTO_MAX_LIFT = 1.55     # never lift more than this, however dark the source
+PHOTO_CONTRAST = 1.04
+PHOTO_SATURATION = 1.10
+
+
+def brighten_photo(image_b64: str, mime: str) -> tuple[str, str]:
+    """Lift a dark photo toward a consistent exposure; leave bright ones be.
+
+    Image models still return underexposed frames for editorial prompts even
+    when asked for daylight, and a dark card disappears in the feed. Scaling
+    by measured luminance rather than a fixed factor means both a murky
+    night shot and a bright cleanroom land at a similar, usable exposure.
+    """
+    import base64 as _b64
+    import io as _io
+
+    from PIL import Image, ImageEnhance, ImageStat
+
+    try:
+        im = Image.open(_io.BytesIO(_b64.b64decode(image_b64))).convert("RGB")
+
+        mean = ImageStat.Stat(im.convert("L")).mean[0]
+        lift = 1.0 if mean >= PHOTO_TARGET_LUMA else min(
+            PHOTO_TARGET_LUMA / max(mean, 1.0), PHOTO_MAX_LIFT
+        )
+
+        if lift > 1.01:
+            im = ImageEnhance.Brightness(im).enhance(lift)
+        im = ImageEnhance.Contrast(im).enhance(PHOTO_CONTRAST)
+        im = ImageEnhance.Color(im).enhance(PHOTO_SATURATION)
+
+        print(f"  photo luma {mean:.0f} -> lift x{lift:.2f}")
+        buf = _io.BytesIO()
+        im.save(buf, format="JPEG", quality=90, optimize=True)
+        return _b64.b64encode(buf.getvalue()).decode("utf-8"), "image/jpeg"
+    except Exception as e:
+        # A failed enhance must never cost us the whole card.
+        print(f"Could not brighten photo ({e}); using it as generated.")
+        return image_b64, mime
+
+
 def build_svg(content: dict, image: tuple[str, str] | None) -> str:
     category_text = f'{content["category_left"].upper()} × {content["category_right"].upper()}'
     underline_width = max(120, len(category_text) * 13.5)
@@ -595,7 +650,7 @@ def build_svg(content: dict, image: tuple[str, str] | None) -> str:
 
     # --- background: generated photo, or a flat dark fallback ------------
     if image:
-        image_b64, mime = image
+        image_b64, mime = brighten_photo(*image)
         background = (
             f'<image href="data:{mime};base64,{image_b64}" '
             f'x="0" y="0" width="{CANVAS}" height="{PHOTO_HEIGHT}" '
@@ -635,6 +690,10 @@ def build_svg(content: dict, image: tuple[str, str] | None) -> str:
 
   <!-- gradient blend from photo into the black lower section -->
   <defs>
+    <linearGradient id="topscrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
     <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
       <stop offset="100%" stop-color="#000000" stop-opacity="1"/>
@@ -643,6 +702,9 @@ def build_svg(content: dict, image: tuple[str, str] | None) -> str:
   </defs>
   <rect x="0" y="{PHOTO_HEIGHT - 90}" width="{CANVAS}" height="90" fill="url(#fade)"/>
   <rect x="0" y="{PHOTO_HEIGHT}" width="{CANVAS}" height="{CANVAS - PHOTO_HEIGHT}" fill="#000000"/>
+
+  <!-- scrim so the wordmark stays legible over a bright photo -->
+  <rect x="0" y="0" width="{CANVAS}" height="{SCRIM_HEIGHT}" fill="url(#topscrim)"/>
 
   <!-- 404 wordmark -->
   <text x="{MARGIN_X}" y="{LOGO_Y}" font-family="{headline_font}"
