@@ -1,0 +1,197 @@
+{
+  "generated_at": "2026-08-22T02:05:15.865421+00:00",
+  "tweets": [
+    {
+      "id": 0,
+      "text": "Higgsfield's $400M Series B values the generative media startup at $5.4B, quadrupling from its $1.3B valuation months earlier. DST Global led.",
+      "topic": "Mega-Rounds",
+      "used": true,
+      "posted_at": "2026-08-22T02:05:19.289741+00:00",
+      "post_id": "2090983621934841943"
+    },
+    {
+      "id": 1,
+      "text": "Gravis Robotics raised $200M in Series A from SoftBank, sole investor. The Zurich-based voice AI firm attracted a single large check.",
+      "topic": "AI Funding",
+      "used": true,
+      "posted_at": "2026-08-22T03:24:27.402550+00:00",
+      "post_id": "2091003534624149786"
+    },
+    {
+      "id": 2,
+      "text": "Muon Space closed $250M Series C, reaching $1.5B valuation. Google and Salesforce Ventures backed the Mountain View satellite infrastructure firm.",
+      "topic": "Space Tech",
+      "used": true,
+      "posted_at": "2026-08-22T04:16:45.427309+00:00",
+      "post_id": "2091016697138319572"
+    },
+    {
+      "id": 3,
+      "text": "Castelion secured over $1B in structured financing from Carlyle, JPMorgan Chase and Andreessen Horowitz, including $250M credit facility.",
+      "topic": "Defense Tech",
+      "used": true,
+      "posted_at": "2026-08-22T05:04:13.824234+00:00",
+      "post_id": "2091028642017034461"
+    },
+    {
+      "id": 4,
+      "text": "Rillet raised $100M Series C at $1B valuation, led by ICONIQ. The mobility and robotics startup now has over $200M total funding.",
+      "topic": "Robotics",
+      "used": true,
+      "posted_at": "2026-08-22T06:00:04.827818+00:00",
+      "post_id": "2091042699981812012"
+    },
+    {
+      "id": 5,
+      "text": "Navi landed $100M in its first institutional financing from Prosus at $1.3B valuation. The Bengaluru fintech prepares for eventual IPO.",
+      "topic": "International Fintech",
+      "used": true,
+      "posted_at": "2026-08-22T07:18:21.821432+00:00",
+      "post_id": "2091062397930762344"
+    },
+    {
+      "id": 6,
+      "text": "Network Bio launched with $50M from Section 32, Thiel Bio and others, linking biobanks to train disease-specific AI systems.",
+      "topic": "Biotech AI",
+      "used": true,
+      "posted_at": "2026-08-22T07:59:43.931793+00:00",
+      "post_id": "2091072812618334543"
+    },
+    {
+      "id": 7,
+      "text": "Velaura AI raised $110M Series A at over $1B valuation, led by Seligman Ventures. The power-efficient compute startup attracts semiconductor backers.",
+      "topic": "Semiconductor AI",
+      "used": true,
+      "posted_at": "2026-08-22T09:02:36.817729+00:00",
+      "post_id": "2091088636225987005"
+    },
+    {
+      "id": 8,
+      "text": "Abcuro closed $66M Series D led by New Leaf Venture Partners, with Bain Capital Life Sciences, RA Capital and Sanofi Ventures joining.",
+      "topic": "Healthcare Tech",
+      "used": true,
+      "posted_at": "2026-08-22T09:58:20.428890+00:00",
+      "post_id": "2091102657998192788"
+    },
+    {
+      "id": 9,
+      "text": "Apollo Atomics, MIT spinoff, closed oversubscribed $31M seed led by FCVC. Y Combinator and Robinhood Ventures backed the nuclear tech startup.",
+      "topic": "Deep Tech",
+      "used": true,
+      "posted_at": "2026-08-22T10:58:02.182032+00:00",
+      "post_id": "2091117683085344793"
+    },
+    {
+      "id": 10,
+      "text": "MaxQ Medical raised $31.5M Series A from Atlantic Blue Ventures, S3 Ventures and Olympus Innovation Ventures for surgical urology technology.",
+      "topic": "Medtech",
+      "used": true,
+      "posted_at": "2026-08-22T11:56:24.185485+00:00",
+      "post_id": "2091132370564895120"
+    },
+    {
+      "id": 11,
+      "text": "Quartr closed 15.6M euro Series A from Altos Ventures and SEB, adding to 7M seed. The Stockholm fintech offers AI-driven investment data.",
+      "topic": "Fintech Europe",
+      "used": true,
+      "posted_at": "2026-08-22T13:18:18.608163+00:00",
+      "post_id": "2091152983463546982"
+    },
+    {
+      "id": 12,
+      "text": "ALSO closed $150M Series D led by Prysm Capital. The defense tech firm's robotics and advanced manufacturing play continues momentum.",
+      "topic": "Defense Tech",
+      "used": true,
+      "posted_at": "2026-08-22T13:57:52.400774+00:00",
+      "post_id": "2091162940141605086"
+    },
+    {
+      "id": 13,
+      "text": "AI-related assets now represent 16% of global private equity holdings, with physical infrastructure buildout still accelerating.",
+      "topic": "PE Trends",
+      "used": true,
+      "posted_at": "2026-08-22T14:57:18.432199+00:00",
+      "post_id": "2091177896740306949"
+    },
+    {
+      "id": 14,
+      "text": "Evergreen fund assets topped $500B in 2026, driven by private credit growth. These structures now outperform closed-end PE and real estate peers.",
+      "topic": "Alternative Assets",
+      "used": true,
+      "posted_at": "2026-08-22T15:56:04.983970+00:00",
+      "post_id": "2091192688523514056"
+    },
+    {
+      "id": 15,
+      "text": "Renaissance IPO Index up 18.6% year-to-date versus S&P 500 up 12.5%. CoreWeave and Astera Labs lead the index through August 20.",
+      "topic": "IPO Performance",
+      "used": true,
+      "posted_at": "2026-08-22T16:59:03.571505+00:00",
+      "post_id": "2091208536885719052"
+    },
+    {
+      "id": 16,
+      "text": "103 IPOs in 2026 through August 22. June peaked with 19 IPOs. Year-to-date count trails 2025's pace but momentum is building.",
+      "topic": "IPO Statistics",
+      "used": true,
+      "posted_at": "2026-08-22T17:56:55.761639+00:00",
+      "post_id": "2091223100864311771"
+    },
+    {
+      "id": 17,
+      "text": "US IPO proceeds jumped 86% in Q1 2026 to $22B across 99 deals versus $11.8B across 84 IPOs in Q1 2025.",
+      "topic": "IPO Market",
+      "used": true,
+      "posted_at": "2026-08-22T19:03:10.196691+00:00",
+      "post_id": "2091239772052181315"
+    },
+    {
+      "id": 18,
+      "text": "Traditional IPOs raised $114.1B through June 30, 2026, more than seven times the $14.8B in first half of 2025.",
+      "topic": "Capital Markets",
+      "used": true,
+      "posted_at": "2026-08-22T19:55:19.001353+00:00",
+      "post_id": "2091252893693198464"
+    },
+    {
+      "id": 19,
+      "text": "SPAC IPO issuance accelerated to highest level since 2021, with 118 SPAC IPOs raising $20.9B in first half versus $11.8B in same 2025 period.",
+      "topic": "SPACs",
+      "used": true,
+      "posted_at": "2026-08-22T20:58:28.145688+00:00",
+      "post_id": "2091268786808840528"
+    },
+    {
+      "id": 20,
+      "text": "Trade sales now represent 71% of private equity exit value in 2026 versus the historical 67%, as corporate acquirers hunt PE-backed assets.",
+      "topic": "PE Exits",
+      "used": false,
+      "posted_at": null,
+      "post_id": null
+    },
+    {
+      "id": 21,
+      "text": "Top quartile buyout funds achieved 24% IRR over the last decade, beating S&P 500's 15% and MSCI World's 13%.",
+      "topic": "PE Returns",
+      "used": false,
+      "posted_at": null,
+      "post_id": null
+    },
+    {
+      "id": 22,
+      "text": "Global IPO pipeline skews larger and later-stage, driven by financial sponsors exiting mature PE portfolios and broader sector participation.",
+      "topic": "IPO Pipeline",
+      "used": false,
+      "posted_at": null,
+      "post_id": null
+    },
+    {
+      "id": 23,
+      "text": "Mega-deal concentration remains extreme: 2026 funding totals are record-setting while concentrated heavily among unicorns and mega-rounds.",
+      "topic": "Funding Patterns",
+      "used": false,
+      "posted_at": null,
+      "post_id": null
+    }
+  ]
+}
