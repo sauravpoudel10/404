@@ -12,6 +12,7 @@ across the day's twelve runs.
 
 import json
 import re
+from datetime import datetime, timezone
 
 from anthropic import Anthropic
 
@@ -20,7 +21,9 @@ from . import config, feeds
 SYSTEM = """You find the single most-discussed news story of the moment and \
 write a "404 Media" style stat card about it.
 
-You will be given a list of current headlines. Pick the single biggest story in these areas: {topics}.
+You will be given a list of current headlines. Pick the single biggest story in them.
+
+The audience is mainly American, so prefer stories that matter to a US reader - but the beat is wide: finance and markets, startups and funding, billionaires and big personalities, SpaceX and space, Musk, Trump and policy, Europe, Asia, and the everyday economics ordinary people feel - wages, housing, jobs, prices. A story about a factory town or a jobs report is as good as one about a mega-round.
 
 Strongly prefer a story whose headline or summary carries a hard number - a dollar figure, a headcount, a percentage - because the card is built around a statistic. Where several qualify, take the one with the widest interest.
 
@@ -150,8 +153,10 @@ def find_story(exclude_ids: list[str]) -> dict:
             + "\n".join(f"- {sid}" for sid in exclude_ids[-40:])
         )
 
-    headlines = feeds.fetch(exclude=["musk"])
-    print(f"  {len(headlines)} headlines from free RSS (no search fee)")
+    slot = datetime.now(timezone.utc).hour
+    topics = feeds.rotation_for(slot)
+    headlines = feeds.fetch(only=topics)
+    print(f"  slot {slot:02d}:00 reads {topics} -> {len(headlines)} headlines")
 
     messages = [{
         "role": "user",
@@ -164,7 +169,7 @@ def find_story(exclude_ids: list[str]) -> dict:
         resp = client.messages.create(
             model=config.COPY_MODEL,
             max_tokens=4000,
-            system=SYSTEM.format(topics=config.TOPICS),
+            system=SYSTEM,
             output_config=_output_config(),
             messages=messages,
         )

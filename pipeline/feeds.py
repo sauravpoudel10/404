@@ -1,16 +1,18 @@
 """Free news headlines, used instead of the paid web-search tool.
 
-Anthropic's web_search bills $0.01 per search AND pulls 5-12k tokens of
-results into context. At twelve cards a day plus the tweet pool that was
-the single largest line on the bill.
+Anthropic's web_search bills $0.01 per query AND pulls 5-12k tokens of
+results into context. At twelve cards a day plus the tweet pool that was the
+single largest line on the bill. RSS does the same job for nothing.
 
-RSS gives the same job for nothing: a few hundred current headlines with
-summaries, fetched in about a second, no API key. The model then picks a
-story and writes the card from that context, so there is no search fee at
-all and the input is roughly a fifth the size.
+Two things stop the cards repeating themselves:
 
-The trade is reach: RSS sees what these feeds publish, not the whole web.
-For "what is trending in business right now" that is the same thing.
+1. Breadth. A handful of business queries all surface the same story, which
+   is how five consecutive cards ended up about Shein. There are now a dozen
+   feeds across America, Europe, Asia, space, billionaires and cost-of-
+   living, so there is always somewhere else to go.
+2. Rotation. Each of the twelve daily slots reads a DIFFERENT pair of feeds
+   (see `rotation_for`). Consecutive cards therefore cannot see the same
+   headline list, which matters more than any instruction in the prompt.
 """
 
 import re
@@ -22,19 +24,62 @@ import requests
 
 UA = {"User-Agent": "Mozilla/5.0 (compatible; 404-pipeline/1.0)"}
 
+
+def _gnews(query: str, days: int = 1) -> str:
+    return (f"https://news.google.com/rss/search?q={query}+when:{days}d"
+            "&hl=en-US&gl=US&ceid=US:en")
+
+
 FEEDS = {
-    "business": "https://news.google.com/rss/search?q=business+OR+finance+OR+markets+when:1d&hl=en-US&gl=US&ceid=US:en",
-    "tech": "https://news.google.com/rss/search?q=technology+OR+startup+OR+AI+when:1d&hl=en-US&gl=US&ceid=US:en",
-    "money": "https://news.google.com/rss/search?q=funding+OR+acquisition+OR+IPO+OR+earnings+when:1d&hl=en-US&gl=US&ceid=US:en",
-    "politics": "https://news.google.com/rss/search?q=politics+OR+policy+OR+regulation+when:1d&hl=en-US&gl=US&ceid=US:en",
+    # money
+    "markets": _gnews("stock+market+OR+earnings+OR+wall+street"),
+    "startups": _gnews("startup+funding+OR+venture+capital+OR+IPO"),
+    "billionaires": _gnews("billionaire+OR+richest+OR+net+worth+OR+fortune"),
+    "deals": _gnews("acquisition+OR+merger+OR+buyout"),
+    # places
+    "america": _gnews("United+States+economy+OR+American+business"),
+    "us_local": _gnews("small+business+OR+community+OR+hometown+OR+American+workers"),
+    "europe": _gnews("Europe+economy+OR+European+Union+business"),
+    "asia": _gnews("Asia+economy+OR+China+business+OR+India+business+OR+Japan+economy"),
+    # people and power
+    "trump": _gnews("Trump+policy+OR+White+House+economy", days=2),
+    "politics": _gnews("politics+OR+policy+OR+regulation"),
+    # frontier
+    "space": _gnews("SpaceX+OR+NASA+OR+rocket+launch+OR+satellite", days=2),
+    "tech": _gnews("technology+OR+artificial+intelligence+OR+semiconductor"),
+    # everyday life
+    "citizen": _gnews("cost+of+living+OR+wages+OR+housing+OR+jobs+report"),
     "cnbc": "https://www.cnbc.com/id/10001147/device/rss/rss.html",
-    # Kept separate so the reply-bait tweets can be sourced without dragging
-    # Tesla and SpaceX into every other tweet in the pool.
-    "musk": "https://news.google.com/rss/search?q=Tesla+OR+SpaceX+OR+xAI+OR+Starlink+when:2d&hl=en-US&gl=US&ceid=US:en",
+    # Kept out of the default set so Tesla/SpaceX don't colonise every card;
+    # the reply-bait tweets ask for it explicitly.
+    "musk": _gnews("Tesla+OR+SpaceX+OR+xAI+OR+Starlink", days=2),
 }
+
+# One entry per two-hour slot. Each run reads a different pair, so two
+# consecutive cards are drawing from different pools entirely.
+ROTATION = [
+    ["america", "billionaires"],     # 00:00
+    ["startups", "tech"],            # 02:00
+    ["markets", "europe"],           # 04:00
+    ["citizen", "us_local"],         # 06:00
+    ["space", "tech"],               # 08:00
+    ["deals", "markets"],            # 10:00
+    ["trump", "politics"],           # 12:00
+    ["asia", "markets"],             # 14:00
+    ["billionaires", "startups"],    # 16:00
+    ["us_local", "america"],         # 18:00
+    ["europe", "citizen"],           # 20:00
+    ["cnbc", "deals"],               # 22:00
+]
 
 TAG_RE = re.compile(r"<[^>]+>")
 WS_RE = re.compile(r"\s+")
+
+
+def rotation_for(hour: int) -> list[str]:
+    """Feeds this slot should read. Always includes one broad feed."""
+    picked = ROTATION[(hour // 2) % len(ROTATION)]
+    return list(dict.fromkeys(picked + ["cnbc"]))
 
 
 def _clean(text: str | None) -> str:
@@ -55,11 +100,12 @@ def _published(item: ET.Element) -> datetime | None:
 
 
 def fetch(max_age_hours: int = 36, per_feed: int = 40,
-          only: list[str] | None = None, exclude: list[str] | None = None) -> list[dict]:
+          only: list[str] | None = None,
+          exclude: list[str] | None = None) -> list[dict]:
     """Return recent headlines, newest first, deduped.
 
-    `only` / `exclude` select feeds by topic so one caller can ask for the
-    Musk feed and another can ask for everything but.
+    `only` / `exclude` select feeds by name, so one caller can ask for the
+    Musk feed and another for everything but.
     """
     cutoff = datetime.now(timezone.utc) - timedelta(hours=max_age_hours)
     seen: set[str] = set()
