@@ -39,11 +39,14 @@ BACKDROP_DIM = 0.55   # darken the backdrop so the card stays dominant
 # Collection is free and licensed for business accounts.
 AUDIO_DIR = config.ROOT / "audio"
 AUDIO_EXTS = (".mp3", ".m4a", ".aac", ".wav", ".ogg", ".flac")
-# Normalise instead of a fixed multiplier: the bundled pads are quiet and a
-# track from Meta Sound Collection is mastered loud, so a single volume
-# factor would make one inaudible or the other overpowering.
-MUSIC_LUFS = -10          # ~2x the previous level; see note on platform normalisation
-MUSIC_PEAK = -1.5         # true-peak ceiling
+# The bundled tracks are already compressed and loudness-normalised at
+# generation (tools/make_beds.py), so a fixed gain here is predictable.
+# loudnorm was used here originally and undershot badly -- asked -9 LUFS,
+# delivered -17.6 -- because single-pass loudnorm cannot measure a 7s
+# excerpt properly. The limiter catches peaks from louder third-party
+# tracks dropped into audio/.
+MUSIC_GAIN = 2.2          # ~+7dB over the normalised source
+MUSIC_CEILING = 0.95      # limiter ceiling, just under clipping
 FADE = 0.6
 
 
@@ -92,7 +95,8 @@ def render_reel(card_jpeg: bytes) -> bytes:
             # -stream_loop -1 so a track shorter than the clip repeats rather
             # than leaving silence at the end.
             cmd += ["-stream_loop", "-1", "-i", str(track),
-                    "-af", (f"loudnorm=I={MUSIC_LUFS}:TP={MUSIC_PEAK}:LRA=11,"
+                    "-af", (f"volume={MUSIC_GAIN},"
+                            f"alimiter=limit={MUSIC_CEILING},"
                             f"afade=t=in:st=0:d={FADE},"
                             f"afade=t=out:st={DURATION - FADE}:d={FADE}"),
                     # loudnorm resamples to 96kHz and the bundled beds are
