@@ -77,7 +77,7 @@ def _kick(buf: list[float], start: int, gain: float = 0.9):
         buf[start + i] += math.sin(2 * math.pi * freq * t) * math.exp(-t * 11) * gain
 
 
-def _hat(buf: list[float], start: int, gain: float = 0.16):
+def _hat(buf: list[float], start: int, gain: float = 0.26):
     dur = int(0.045 * SR)
     for i in range(dur):
         if start + i >= len(buf):
@@ -98,14 +98,14 @@ def build(name: str, prog_name: str, root: float, bpm: int) -> Path:
         bar_start = int(b * bar * SR)
 
         # pad: root + fifth + octave, held across the bar
-        for mult, gain in ((1.0, 0.16), (1.5, 0.11), (2.0, 0.07)):
+        for mult, gain in ((1.0, 0.22), (1.5, 0.16), (2.0, 0.11)):
             _note(buf, bar_start, int(bar * SR), chord_root * mult, gain,
-                  harmonics=(1.0, 0.3))
+                  harmonics=(1.0, 0.45, 0.22, 0.11))
 
         # bass on beats 1 and 3
         for k in (0, 2):
             _note(buf, bar_start + int(k * beat * SR), int(beat * SR * 0.9),
-                  chord_root / 2, 0.30, harmonics=(1.0, 0.45, 0.2))
+                  chord_root / 2, 0.42, harmonics=(1.0, 0.6, 0.35, 0.18, 0.09))
 
         # drums
         for k in range(BEATS_PER_BAR):
@@ -119,10 +119,14 @@ def build(name: str, prog_name: str, root: float, bpm: int) -> Path:
         for k, mult in enumerate(steps):
             at = bar_start + int(k * (beat / 2) * SR)
             _note(buf, at, int(beat * SR * 0.45), chord_root * 2 * mult,
-                  0.10, harmonics=(1.0, 0.25))
+                  0.15, harmonics=(1.0, 0.4, 0.2))
+
+    # Soft saturation. Rounding the peaks generates harmonics, which is what
+    # makes a track sound loud -- raw gain just runs out of headroom.
+    buf = [math.tanh(v * 1.6) for v in buf]
 
     peak = max(abs(v) for v in buf) or 1.0
-    scale = 0.89 / peak
+    scale = 0.95 / peak
 
     wav_path = OUT / f"{name}.wav"
     with wave.open(str(wav_path), "wb") as w:
@@ -142,8 +146,8 @@ def build(name: str, prog_name: str, root: float, bpm: int) -> Path:
     mp3_path = OUT / f"{name}.mp3"
     proc = subprocess.run(
         [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-i", str(wav_path),
-         "-af", ("acompressor=threshold=-20dB:ratio=4:attack=5:release=120,"
-                 "loudnorm=I=-12:TP=-1.0:LRA=7"),
+         "-af", ("acompressor=threshold=-24dB:ratio=6:attack=3:release=90,"
+                 "loudnorm=I=-9:TP=-0.5:LRA=5"),
          "-c:a", "libmp3lame", "-q:a", "3", str(mp3_path)],
         capture_output=True, text=True,
     )

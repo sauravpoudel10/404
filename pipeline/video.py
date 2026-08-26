@@ -45,8 +45,8 @@ AUDIO_EXTS = (".mp3", ".m4a", ".aac", ".wav", ".ogg", ".flac")
 # delivered -17.6 -- because single-pass loudnorm cannot measure a 7s
 # excerpt properly. The limiter catches peaks from louder third-party
 # tracks dropped into audio/.
-MUSIC_GAIN = 2.2          # ~+7dB over the normalised source
-MUSIC_CEILING = 0.95      # limiter ceiling, just under clipping
+MUSIC_GAIN = 3.5          # past this the limiter just squashes: 7.0 buys only 0.7dB more
+MUSIC_CEILING = 0.97      # limiter ceiling, just under clipping
 FADE = 0.6
 
 
