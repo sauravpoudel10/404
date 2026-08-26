@@ -38,7 +38,8 @@ FEEDS = {
     "deals": _gnews("acquisition+OR+merger+OR+buyout"),
     # places
     "america": _gnews("United+States+economy+OR+American+business"),
-    "us_local": _gnews("small+business+OR+community+OR+hometown+OR+American+workers"),
+    "us_local": _gnews("factory+OR+plant+opening+OR+hiring+OR+layoffs+OR+"
+                       "small+business+OR+American+workers+OR+hometown"),
     "europe": _gnews("Europe+economy+OR+European+Union+business"),
     "asia": _gnews("Asia+economy+OR+China+business+OR+India+business+OR+Japan+economy"),
     # people and power
@@ -48,7 +49,9 @@ FEEDS = {
     "space": _gnews("SpaceX+OR+NASA+OR+rocket+launch+OR+satellite", days=2),
     "tech": _gnews("technology+OR+artificial+intelligence+OR+semiconductor"),
     # everyday life
-    "citizen": _gnews("cost+of+living+OR+wages+OR+housing+OR+jobs+report"),
+    "citizen": _gnews("cost+of+living+OR+wages+OR+rent+OR+grocery+prices+OR+"
+                      "gas+prices+OR+jobs+report+OR+social+security+OR+"
+                      "health+insurance+cost"),
     "cnbc": "https://www.cnbc.com/id/10001147/device/rss/rss.html",
     # Kept out of the default set so Tesla/SpaceX don't colonise every card;
     # the reply-bait tweets ask for it explicitly.
@@ -58,18 +61,18 @@ FEEDS = {
 # One entry per two-hour slot. Each run reads a different pair, so two
 # consecutive cards are drawing from different pools entirely.
 ROTATION = [
-    ["america", "billionaires"],     # 00:00
-    ["startups", "tech"],            # 02:00
-    ["markets", "europe"],           # 04:00
+    ["america", "citizen"],          # 00:00
+    ["us_local", "tech"],            # 02:00
+    ["markets", "citizen"],          # 04:00
     ["citizen", "us_local"],         # 06:00
-    ["space", "tech"],               # 08:00
-    ["deals", "markets"],            # 10:00
+    ["space", "america"],            # 08:00
+    ["deals", "us_local"],           # 10:00
     ["trump", "politics"],           # 12:00
-    ["asia", "markets"],             # 14:00
-    ["billionaires", "startups"],    # 16:00
+    ["asia", "america"],             # 14:00
+    ["billionaires", "citizen"],     # 16:00
     ["us_local", "america"],         # 18:00
     ["europe", "citizen"],           # 20:00
-    ["cnbc", "deals"],               # 22:00
+    ["startups", "markets"],         # 22:00
 ]
 
 TAG_RE = re.compile(r"<[^>]+>")
@@ -156,3 +159,80 @@ def as_context(headlines: list[dict], limit: int = 90) -> str:
             line += f" :: {h['summary']}"
         lines.append(line)
     return "\n".join(lines)
+
+
+# --- suppressing stories already covered ------------------------------------
+# Excluding by story_id alone does not work: the model writes a slightly
+# different slug for the same story every time, so "dicks-sporting-goods-
+# 25-percent-drop" never matches "dicks-sporting-goods-30-percent-crash" and
+# the same company ran five days straight. Filtering the HEADLINES before the
+# model ever sees them is what actually stops it.
+
+STOP = {
+    "the", "and", "for", "with", "from", "that", "this", "have", "has", "was",
+    "are", "its", "into", "over", "after", "amid", "says", "said", "new",
+    "more", "than", "will", "billion", "million", "trillion", "percent",
+    "stock", "shares", "market", "markets", "year", "years", "week", "day",
+    "report", "reports", "first", "second", "third", "record", "high", "low",
+    "drop", "falls", "fall", "rise", "rises", "jump", "surge", "crash", "up",
+    "down", "deal", "plan", "plans", "could", "would", "about", "how", "why",
+    # generic long words, so they never count as a distinctive name
+    "company", "companies", "workers", "economy", "economic", "prices",
+    "growth", "revenue", "profit", "profits", "quarter", "global", "united",
+    "states", "american", "america", "government", "federal", "business",
+    "industry", "investors", "billionaire", "another", "against", "before",
+    "during", "between", "million", "billions", "biggest", "largest",
+    # short filler now that three-letter words count
+    "its", "new", "now", "one", "two", "but", "not", "all", "can", "may",
+    "out", "top", "get", "see", "big", "hit", "cut", "set", "end", "key",
+    "use", "own", "far", "yet", "off", "per", "via", "amid", "who", "you",
+}
+WORD_RE = re.compile(r"[a-z]+")
+
+
+def _keywords(text: str) -> set[str]:
+    """Significant words: what the story is ABOUT, not how it moved.
+
+    Three letters, not four: acronyms carry the subject in this beat -- gdp,
+    cpi, ipo, fed, oil, tax. Cutting at four made "GDP hits 1.5%" and "GDP
+    slumps to 1.5%" look like unrelated stories.
+    """
+    return {w for w in WORD_RE.findall(text.lower())
+            if len(w) >= 3 and w not in STOP}
+
+
+def drop_covered(headlines: list[dict], covered: list[str],
+                 overlap: int = 2, name_len: int = 6) -> list[dict]:
+    """Remove headlines that clearly retell a story already posted.
+
+    `covered` is the recent story_ids -- kebab-case slugs, which tokenise
+    into exactly the words we want to match on.
+
+    Two words in common is the general test, but one distinctive name is
+    enough on its own. "volkswagen-50000-job-cuts" and "Volkswagen to cut
+    50,000 jobs" share only "volkswagen" once the generic words are stripped,
+    and requiring two let the same story run three slots straight.
+    """
+    if not covered:
+        return headlines
+    signatures = [_keywords(c.replace("-", " ")) for c in covered]
+    signatures = [sig for sig in signatures if sig]
+
+    kept = []
+    for h in headlines:
+        words = _keywords(h["title"])
+        repeat = False
+        for sig in signatures:
+            shared = words & sig
+            if not shared:
+                continue
+            # A signature with only one or two significant words IS that word
+            # -- "us-gdp-1-5-percent" reduces to {gdp}, so demanding two
+            # matches would never fire.
+            need = 1 if len(sig) <= 2 else overlap
+            if len(shared) >= need or any(len(w) >= name_len for w in shared):
+                repeat = True
+                break
+        if not repeat:
+            kept.append(h)
+    return kept

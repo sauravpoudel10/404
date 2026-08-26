@@ -156,7 +156,12 @@ def find_story(exclude_ids: list[str]) -> dict:
     slot = datetime.now(timezone.utc).hour
     topics = feeds.rotation_for(slot)
     headlines = feeds.fetch(only=topics)
-    print(f"  slot {slot:02d}:00 reads {topics} -> {len(headlines)} headlines")
+    fresh = feeds.drop_covered(headlines, exclude_ids)
+    print(f"  slot {slot:02d}:00 reads {topics} -> {len(headlines)} headlines, "
+          f"{len(headlines) - len(fresh)} already covered")
+    # Keep a floor: if suppression empties the slot, better a near-repeat
+    # than no card at all.
+    headlines = fresh if len(fresh) >= 15 else headlines
 
     messages = [{
         "role": "user",
