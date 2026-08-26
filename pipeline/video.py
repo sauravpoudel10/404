@@ -39,14 +39,12 @@ BACKDROP_DIM = 0.55   # darken the backdrop so the card stays dominant
 # Collection is free and licensed for business accounts.
 AUDIO_DIR = config.ROOT / "audio"
 AUDIO_EXTS = (".mp3", ".m4a", ".aac", ".wav", ".ogg", ".flac")
-# The bundled tracks are already compressed and loudness-normalised at
-# generation (tools/make_beds.py), so a fixed gain here is predictable.
-# loudnorm was used here originally and undershot badly -- asked -9 LUFS,
-# delivered -17.6 -- because single-pass loudnorm cannot measure a 7s
-# excerpt properly. The limiter catches peaks from louder third-party
-# tracks dropped into audio/.
-MUSIC_GAIN = 3.5          # past this the limiter just squashes: 7.0 buys only 0.7dB more
-MUSIC_CEILING = 0.97      # limiter ceiling, just under clipping
+# Tracks are levelled per file rather than by a fixed gain. The library
+# spans -8 to -16 LUFS; one multiplier would either flatten the loud ones
+# into the limiter or leave the quiet ones inaudible.
+MUSIC_TARGET_LUFS = -9.0    # platforms normalise to about -14 anyway
+MUSIC_CEILING = 0.89        # ~-1dBFS: leaves room for inter-sample peaks after AAC
+MAX_BOOST_DB = 12.0         # don't dredge up noise from a very quiet file
 FADE = 0.6
 
 
@@ -78,6 +76,30 @@ def pick_track() -> Path | None:
     return random.choice(tracks) if tracks else None
 
 
+def _probe(track: Path) -> tuple[float, float]:
+    """Return (integrated LUFS, duration seconds) for a track."""
+    proc = subprocess.run(
+        [imageio_ffmpeg.get_ffmpeg_exe(), "-i", str(track),
+         "-af", "ebur128=framelog=verbose", "-f", "null", "-"],
+        capture_output=True, text=True,
+    )
+    lufs, duration = -14.0, 0.0
+    for line in proc.stderr.splitlines():
+        line = line.strip()
+        if line.startswith("I:") and "LUFS" in line:
+            try:
+                lufs = float(line.split()[1])
+            except (IndexError, ValueError):
+                pass
+        elif "Duration:" in line:
+            try:
+                h, m, sec = line.split("Duration:")[1].split(",")[0].strip().split(":")
+                duration = int(h) * 3600 + int(m) * 60 + float(sec)
+            except (IndexError, ValueError):
+                pass
+    return lufs, duration
+
+
 def render_reel(card_jpeg: bytes) -> bytes:
     """Return an H.264 MP4 of the card, ready for Instagram Reels."""
     frame = build_frame(card_jpeg)
@@ -92,11 +114,23 @@ def render_reel(card_jpeg: bytes) -> bytes:
                "-loop", "1", "-framerate", str(FPS), "-i", str(still)]
 
         if track is not None:
-            # -stream_loop -1 so a track shorter than the clip repeats rather
-            # than leaving silence at the end.
-            cmd += ["-stream_loop", "-1", "-i", str(track),
-                    "-af", (f"volume={MUSIC_GAIN},"
-                            f"alimiter=limit={MUSIC_CEILING},"
+            lufs, duration = _probe(track)
+            gain_db = max(-12.0, min(MAX_BOOST_DB, MUSIC_TARGET_LUFS - lufs))
+
+            # Most of these run minutes long, so always starting at 0:00 would
+            # mean every Reel used the same intro. Start somewhere random and
+            # the same song gives a different 7 seconds each time.
+            offset = 0.0
+            if duration > DURATION + 12:
+                offset = random.uniform(4.0, duration - DURATION - 4.0)
+
+            print(f"  music: {track.name} @ {lufs:.1f} LUFS "
+                  f"{gain_db:+.1f}dB from {offset:.0f}s")
+
+            cmd += ["-ss", f"{offset:.2f}",
+                    "-stream_loop", "-1", "-i", str(track),
+                    "-af", (f"volume={gain_db:.2f}dB,"
+                            f"alimiter=limit={MUSIC_CEILING}:level=disabled,"
                             f"afade=t=in:st=0:d={FADE},"
                             f"afade=t=out:st={DURATION - FADE}:d={FADE}"),
                     # loudnorm resamples to 96kHz and the bundled beds are
