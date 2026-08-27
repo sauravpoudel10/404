@@ -22,6 +22,10 @@ from datetime import datetime, timezone  # noqa: E402
 
 from pipeline import assets, cards, meta, text, trends, video, x  # noqa: E402
 
+# Minimum spacing between cards. The cron fires hourly; this is what
+# actually sets the cadence.
+MIN_GAP_MINUTES = 100
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -31,21 +35,37 @@ def main():
                         help="generate and host the card but don't post anywhere")
     parser.add_argument("--mode", choices=("auto", "reel", "post"), default="auto",
                         help="Instagram format; 'auto' alternates by slot")
+    parser.add_argument("--force", action="store_true",
+                        help="post even if the last card is recent")
     args = parser.parse_args()
-
-    # Slots run at even hours (0,2,4...22). Alternating on hour % 4 splits
-    # them evenly: 0,4,8,12,16,20 are Reels and 2,6,10,14,18,22 are feed
-    # posts -- six of each per day.
-    if args.mode == "auto":
-        as_reel = datetime.now(timezone.utc).hour % 4 == 0
-    else:
-        as_reel = args.mode == "reel"
-    print(f"→ slot format: {'REEL' if as_reel else 'feed post'}")
 
     print("→ reading manifest")
     manifest = assets.read_manifest()
     seen = assets.recent_story_ids(manifest)
     print(f"  {len(seen)} stories covered in the last 14 days")
+
+    # The workflow fires hourly because GitHub drops scheduled events; the
+    # spacing is enforced here instead of by cron.
+    if not args.force and not args.dry_run and manifest.get("cards"):
+        last = max(c["created_at"] for c in manifest["cards"])
+        age = (datetime.now(timezone.utc)
+               - datetime.fromisoformat(last)).total_seconds() / 60
+        if age < MIN_GAP_MINUTES:
+            print(f"  last card was {age:.0f} min ago "
+                  f"(< {MIN_GAP_MINUTES}); nothing to do.")
+            return
+        print(f"  last card was {age:.0f} min ago -- posting")
+
+    # Alternate off the PREVIOUS card, not the clock. The cron now fires
+    # hourly and the throttle decides which ones post, so hour % 4 no longer
+    # alternates -- it would clump Reels together.
+    if args.mode == "auto":
+        cards_by_time = sorted(manifest.get("cards", []),
+                               key=lambda c: c["created_at"])
+        as_reel = not (cards_by_time and cards_by_time[-1].get("video_file"))
+    else:
+        as_reel = args.mode == "reel"
+    print(f"→ slot format: {'REEL' if as_reel else 'feed post'}")
 
     print("→ searching for a trending story")
     content = trends.find_story(seen)

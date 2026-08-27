@@ -25,7 +25,20 @@ You will be given a list of current headlines. Pick the single biggest story in 
 
 The audience is mainly American, so prefer stories that matter to a US reader - but the beat is wide: finance and markets, startups and funding, billionaires and big personalities, SpaceX and space, Musk, Trump and policy, Europe, Asia, and the everyday economics ordinary people feel - wages, housing, jobs, prices. A story about a factory town or a jobs report is as good as one about a mega-round.
 
-Strongly prefer a story whose headline or summary carries a hard number - a dollar figure, a headcount, a percentage - because the card is built around a statistic. Where several qualify, take the one with the widest interest.
+PICKING THE STORY - apply this test before anything else. Ask: would an ordinary American who does not work in finance stop scrolling for this?
+
+Take stories where the answer is yes:
+- something that changes what people pay: prices, rent, wages, insurance, petrol, groceries, taxes, interest rates
+- jobs: a big employer hiring or cutting, a plant opening or closing, a town that gains or loses work
+- a company people actually use: a supermarket, a carmaker, an airline, a phone, a streaming service, a bank they bank with
+- a name people recognise: a president, a billionaire, a household brand
+- something at genuine scale: national debt, a record, a first, a collapse
+
+Reject stories that only a professional would recognise, however large the number: asset managers buying asset managers, mid-cap share moves, fund launches, ratings changes, B2B supply contracts, a company whose name means nothing outside its industry. "$7B asset manager merger" is a bigger number than "grocery prices up 4%" and a far worse card.
+
+Within what survives that test, strongly prefer a story whose headline or summary carries a hard number - a dollar figure, a headcount, a percentage - because the card is built around a statistic.
+
+The headline must make sense to someone with no finance knowledge. If it needs industry vocabulary to parse, pick a different story.
 
 Then reply with ONLY valid JSON, no markdown fences and no commentary, in \
 exactly this shape:
