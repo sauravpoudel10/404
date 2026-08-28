@@ -1,0 +1,77 @@
+name: Pulse
+
+# GitHub's scheduler cannot be relied on for this. Measured over 24h against
+# an hourly cron: the tweet job fired 2 times out of 24, and the card job 2
+# out of 12 -- every run that fired succeeded, they simply were not started.
+# Asking more often did not help; scheduled events are best-effort and get
+# dropped under load.
+#
+# So this job keeps its own clock. It wakes every few minutes for ~5.5 hours,
+# asks each runner to post (they self-throttle to their own cadence), and then
+# re-dispatches itself before the 6h job limit. The cron below only has to
+# land occasionally to restart the chain if it ever breaks.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"        # safety net only; one landing restarts the chain
+  workflow_dispatch:
+
+permissions:
+  contents: write                 # push cards to gh-pages
+  actions: write                  # re-dispatch this workflow at the end
+
+concurrency:
+  # One chain at a time. A restart supersedes the old chain rather than
+  # queueing behind it -- two chains would double-post.
+  group: pulse
+  cancel-in-progress: true
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350          # under the 6h ceiling, leaving room to re-arm
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Lint (catch undefined names before spending a run)
+        run: python -m pyflakes pipeline/ run_meta.py run_tweets.py run_tiktok.py automate.py
+
+      - name: Post on a loop
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          META_SYSTEM_USER_TOKEN: ${{ secrets.META_SYSTEM_USER_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          ASSETS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ASSETS_REPO: ${{ github.repository }}
+          PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+        run: |
+          set +e                       # one bad cycle must not end the chain
+          END=$(( SECONDS + 5*3600 ))  # ~5h, leaving margin under the timeout
+          while [ $SECONDS -lt $END ]; do
+            echo "::group::cycle at $(date -u +%H:%M:%S)"
+            python run_tweets.py
+            python run_meta.py
+            echo "::endgroup::"
+            sleep 600                  # 10 min; the runners decide what posts
+          done
+
+      - name: Re-arm the chain
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run pulse.yml --repo "${{ github.repository }}" \
+            || echo "re-dispatch failed; the cron safety net will restart it"

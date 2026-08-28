@@ -1,11 +1,10 @@
 name: Hourly tweet
 
+# Schedule intentionally disabled: pulse.yml is the scheduler now.
+# GitHub dropped ~92% of scheduled events here (2 fires out of 24 in a
+# day), so timing is kept by a long-running job rather than by cron.
+# Manual dispatch still works, and pulse calls this script directly.
 on:
-  schedule:
-    # Every hour at :40 — deliberately offset from the card runs (which fire
-    # at :00 on even hours and take several minutes), so the two jobs aren't
-    # queueing behind each other on the shared assets branch.
-    - cron: "40 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:

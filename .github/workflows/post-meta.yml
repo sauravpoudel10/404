@@ -1,12 +1,10 @@
 name: Post to Instagram + Facebook
 
+# Schedule intentionally disabled: pulse.yml is the scheduler now.
+# GitHub dropped ~92% of scheduled events here (2 fires out of 24 in a
+# day), so timing is kept by a long-running job rather than by cron.
+# Manual dispatch still works, and pulse calls this script directly.
 on:
-  schedule:
-    # Fires hourly, but the job posts at most once every MIN_GAP_MINUTES, so
-    # the cadence is still ~12/day. GitHub drops scheduled events under load
-    # -- measured gaps of 3h and once 9.4h against a 2h cron -- so asking
-    # twice as often is what actually keeps the spacing near 2h.
-    - cron: "0 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:

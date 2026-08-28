@@ -12,7 +12,13 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from pipeline import tweets, x  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+
+from pipeline import assets, tweets, x  # noqa: E402
+
+# The scheduler fires this far more often than hourly, because GitHub drops
+# most scheduled events; the spacing is enforced here instead.
+MIN_GAP_MINUTES = 55
 
 
 def main():
@@ -21,7 +27,22 @@ def main():
                         help="show the next tweet without posting")
     parser.add_argument("--regenerate", action="store_true",
                         help="discard the current pool and build a fresh one")
+    parser.add_argument("--force", action="store_true",
+                        help="post even if the last tweet is recent")
     args = parser.parse_args()
+
+    if not args.force and not args.dry_run:
+        pool = assets.read_json(tweets.POOL_FILE, {"tweets": []})
+        stamps = [t["posted_at"] for t in pool.get("tweets", [])
+                  if t.get("posted_at")]
+        if stamps:
+            age = (datetime.now(timezone.utc)
+                   - datetime.fromisoformat(max(stamps))).total_seconds() / 60
+            if age < MIN_GAP_MINUTES:
+                print(f"last tweet was {age:.0f} min ago "
+                      f"(< {MIN_GAP_MINUTES}); nothing to do.")
+                return
+            print(f"last tweet was {age:.0f} min ago -- posting")
 
     if args.regenerate:
         print("→ regenerating pool")
