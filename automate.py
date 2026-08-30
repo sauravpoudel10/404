@@ -94,6 +94,52 @@ BODY_MAX_LINES = 5
 # Text owns the top of the card; the photo carries everything below this.
 TEXT_ZONE_BOTTOM = 790
 
+# --- the classic square card ----------------------------------------------
+# The original 404 layout: a photo band across the top, the category tag and
+# its underline, then an all-caps condensed headline over the paragraph.
+# Kept intact and rendered at its own size; the two styles alternate.
+CLASSIC_CANVAS = 1080
+CLASSIC_PHOTO_HEIGHT = 455
+CLASSIC_MARGIN_X = 90
+CLASSIC_LOGO_Y = 90
+CLASSIC_CATEGORY_Y = 500
+CLASSIC_SCRIM_HEIGHT = 190
+CLASSIC_CATEGORY_UNDERLINE_GAP = 26
+CLASSIC_HEADLINE_FONT_SIZE = 84
+CLASSIC_HEADLINE_MIN_FONT_SIZE = 46
+CLASSIC_HEADLINE_BODY_GAP = 55
+CLASSIC_BODY_FONT_SIZE = 48
+CLASSIC_BODY_MIN_FONT_SIZE = 38          # preferred floor
+CLASSIC_BODY_HARD_MIN_FONT_SIZE = 26     # absolute floor, only to avoid overflow
+CLASSIC_BODY_LINE_HEIGHT_RATIO = 1.44
+CLASSIC_BODY_CHAR_WIDTH_RATIO = 0.478    # tuned so lines fill the text width
+CLASSIC_BODY_BOTTOM_MARGIN = 55
+# 'Anton' is named explicitly because the PNG renderer loads the .ttf by its
+# real family name rather than through @font-face -- see render_png().
+CLASSIC_HEADLINE_FONT_STACK = (
+    "'Anton', Impact, 'Arial Black', 'Helvetica Neue', sans-serif"
+)
+
+STYLES = ("classic", "feature")
+DEFAULT_STYLE = "feature"
+
+
+def canvas_for(style: str) -> tuple[int, int]:
+    """(width, height) of a card in this style."""
+    if style == "classic":
+        return CLASSIC_CANVAS, CLASSIC_CANVAS
+    return CANVAS_W, CANVAS_H
+
+
+def aspect_for(style: str) -> str:
+    """The aspect ratio to ask the image model for.
+
+    The classic card slices a wide band out of the top of the frame; the
+    feature card uses the whole thing, so it wants a portrait source.
+    """
+    return "16:9" if style == "classic" else IMAGE_ASPECT_RATIO
+
+
 # Two static weights cut out of Inter's variable font (see ensure_fonts).
 # They are separate FAMILIES rather than two weights of one family because
 # resvg matches on family name and will not synthesise a bold.
@@ -106,6 +152,11 @@ EMBED_FONTS = True
 FONT_FILES = {
     "bold": str(SCRIPT_DIR / f"{BOLD_FAMILY}.ttf"),
     "text": str(SCRIPT_DIR / f"{TEXT_FAMILY}.ttf"),
+    "anton": str(SCRIPT_DIR / "Anton-Regular.ttf"),   # classic headline
+}
+FONT_DOWNLOAD_URLS = {
+    "anton": "https://raw.githubusercontent.com/google/fonts/main/ofl/anton/"
+             "Anton-Regular.ttf",
 }
 FONT_WEIGHTS = {"bold": 800, "text": 400}
 INTER_VARIABLE_URL = (
@@ -151,10 +202,27 @@ def ensure_fonts():
     missing = {k: p for k, p in FONT_FILES.items() if not os.path.exists(p)}
     if not missing:
         return
+
+    # Anton ships as a static file, so it is a straight download.
+    for key, url in FONT_DOWNLOAD_URLS.items():
+        if key not in missing:
+            continue
+        try:
+            resp = requests.get(url, timeout=30)
+            resp.raise_for_status()
+            Path(missing[key]).write_bytes(resp.content)
+            print(f"Downloaded {os.path.basename(missing[key])}")
+        except Exception as e:
+            print(f"Could not download {os.path.basename(missing[key])} ({e}); "
+                  "using system font fallback.")
+
+    cut = {k: v for k, v in missing.items() if k in FONT_WEIGHTS}
+    if not cut:
+        return
     try:
         resp = requests.get(INTER_VARIABLE_URL, timeout=60)
         resp.raise_for_status()
-        for key, path in missing.items():
+        for key, path in cut.items():
             _cut_static_weight(resp.content, FONT_WEIGHTS[key],
                                Path(path).stem, path)
             print(f"Built {os.path.basename(path)}")
@@ -273,10 +341,11 @@ def generate_content(topic: str) -> dict:
 # (base64_string, mime_type) tuples, with None where generation failed.
 # The batch path is the default because it is ~50% cheaper; --no-batch exists
 # for when you'd rather pay full price than wait.
-IMAGE_GEN_CONFIG = {
-    "response_modalities": ["IMAGE"],
-    "image_config": {"aspect_ratio": IMAGE_ASPECT_RATIO},
-}
+def image_gen_config(aspect: str = IMAGE_ASPECT_RATIO) -> dict:
+    return {
+        "response_modalities": ["IMAGE"],
+        "image_config": {"aspect_ratio": aspect},
+    }
 
 
 def _gemini_client():
@@ -296,7 +365,7 @@ def _extract_image(response):
     return None
 
 
-def generate_backgrounds_batch(prompts: list[str]) -> list[tuple[str, str] | None]:
+def generate_backgrounds_batch(prompts: list[str], aspect: str = IMAGE_ASPECT_RATIO) -> list[tuple[str, str] | None]:
     """Submit every image prompt as ONE Gemini batch job, then wait for it."""
     client = _gemini_client()
 
@@ -305,7 +374,7 @@ def generate_backgrounds_batch(prompts: list[str]) -> list[tuple[str, str] | Non
         src=[
             {
                 "contents": [{"role": "user", "parts": [{"text": p}]}],
-                "config": IMAGE_GEN_CONFIG,
+                "config": image_gen_config(aspect),
             }
             for p in prompts
         ],
@@ -346,7 +415,7 @@ def generate_backgrounds_batch(prompts: list[str]) -> list[tuple[str, str] | Non
     return results
 
 
-def generate_backgrounds_sync(prompts: list[str]) -> list[tuple[str, str] | None]:
+def generate_backgrounds_sync(prompts: list[str], aspect: str = IMAGE_ASPECT_RATIO) -> list[tuple[str, str] | None]:
     """Realtime generateContent, one call per prompt. Fast, full price."""
     client = _gemini_client()
     results = []
@@ -354,7 +423,7 @@ def generate_backgrounds_sync(prompts: list[str]) -> list[tuple[str, str] | None
         print(f"  generating image {i}/{len(prompts)} ...")
         try:
             resp = client.models.generate_content(
-                model=IMAGE_MODEL, contents=prompt, config=IMAGE_GEN_CONFIG
+                model=IMAGE_MODEL, contents=prompt, config=image_gen_config(aspect)
             )
             results.append(_extract_image(resp))
         except Exception as e:
@@ -363,14 +432,15 @@ def generate_backgrounds_sync(prompts: list[str]) -> list[tuple[str, str] | None
     return results
 
 
-def generate_backgrounds(prompts: list[str], use_batch: bool):
+def generate_backgrounds(prompts: list[str], use_batch: bool,
+                         aspect: str = IMAGE_ASPECT_RATIO):
     if not GEMINI_API_KEY:
         print("No GEMINI_API_KEY set -- using plain dark backgrounds instead.")
         return [None] * len(prompts)
     try:
         if use_batch:
-            return generate_backgrounds_batch(prompts)
-        return generate_backgrounds_sync(prompts)
+            return generate_backgrounds_batch(prompts, aspect)
+        return generate_backgrounds_sync(prompts, aspect)
     except Exception as e:
         print(f"Image generation failed ({e}) -- using plain dark backgrounds instead.")
         return [None] * len(prompts)
@@ -384,11 +454,40 @@ def generate_backgrounds(prompts: list[str], use_batch: bool):
 # "...combined" immediately followed by a white part "." with NO space --
 # renders glued together with no phantom space, while words that really are
 # separated by whitespace in the source still get exactly one rendered space.
+# Characters that legitimately butt up against the previous part with no
+# space: closing punctuation on the left of the join, and openers/prefixes on
+# the right of it. Anything else joining two words means the model simply
+# forgot the space -- which renders as "is<red>burning through cash</red>while".
+_ATTACH_AFTER = set(".,;:!?%)]}\'\u2019\u201d/-\u2013\u2014")
+_ATTACH_BEFORE = set("([{$\u201c\u2018/-\u2013\u2014")
+
+
+def _needs_space(left: str, right: str) -> bool:
+    """True when two adjacent parts have run together mid-sentence."""
+    if not left or not right:
+        return False
+    a, b = left[-1], right[0]
+    if a.isspace() or b.isspace():
+        return False
+    if b in _ATTACH_AFTER or a in _ATTACH_BEFORE:
+        return False
+    return True
+
+
 def build_color_map(parts):
-    """Flatten description parts into one string + (start, end, color) spans."""
+    """Flatten description parts into one string + (start, end, color) spans.
+
+    The prompt asks for a space at the edge of each part where one belongs,
+    and the model does not always oblige. Repairing the join here is safe:
+    the highlights are phrases, so two word characters meeting across a
+    boundary is a missing space rather than a deliberate mid-word split.
+    """
     text, spans, pos = "", [], 0
     for part in parts:
         t = part["text"]
+        if _needs_space(text, t):
+            text += " "
+            pos += 1
         color = part.get("color", "white")
         spans.append((pos, pos + len(t), color))
         text += t
@@ -458,8 +557,13 @@ def line_to_tspans(line_tokens):
 # STEP 3b - font loading, pixel measurement, and auto-fit layout
 # --------------------------------------------------------------------------
 def font_available() -> bool:
-    """True when both card fonts are on disk, so text can be measured exactly."""
-    return bool(EMBED_FONTS and all(os.path.exists(p) for p in FONT_FILES.values()))
+    """True when both Inter weights are on disk, so text can be measured exactly."""
+    return bool(EMBED_FONTS and all(os.path.exists(FONT_FILES[k])
+                                    for k in ("bold", "text")))
+
+
+def anton_available() -> bool:
+    return bool(EMBED_FONTS and os.path.exists(FONT_FILES["anton"]))
 
 
 def embed_font_css() -> str:
@@ -672,6 +776,225 @@ def brighten_photo(image_b64: str, mime: str) -> tuple[str, str]:
         return image_b64, mime
 
 
+# --------------------------------------------------------------------------
+# STEP 3c - the classic square card: layout and renderer
+# --------------------------------------------------------------------------
+# This is the original design, unchanged in behaviour. It measures the
+# headline against Anton and wraps the paragraph on an estimated character
+# count, which is what it was tuned against; the feature card measures both
+# in pixels instead. Keeping them separate is deliberate -- retuning the old
+# layout to new machinery would change a look that already works.
+CONSERVATIVE_CHAR_FACTOR = 0.72  # safe even for chunky fonts like Arial Black
+
+
+def classic_split_headline(text):
+    """Split a long headline into at most 2 lines (by word boundaries)."""
+    words = text.split()
+    if len(text) <= 22 or len(words) < 2:
+        return [text]
+    mid = len(words) // 2
+    return [" ".join(words[:mid]), " ".join(words[mid:])]
+
+
+def _classic_measure(text, font_size):
+    from PIL import ImageFont
+    font = ImageFont.truetype(FONT_FILES["anton"], size=int(round(font_size)))
+    box = font.getbbox(text)
+    return box[2] - box[0]
+
+
+def _classic_conservative(line, max_width, base_size, min_size):
+    est_width = len(line) * base_size * CONSERVATIVE_CHAR_FACTOR
+    if est_width <= max_width:
+        return base_size
+    return max(min_size, max_width / (len(line) * CONSERVATIVE_CHAR_FACTOR))
+
+
+def classic_headline_sizes(lines, max_width, base_size, min_size=40):
+    """A font size per line that fits inside max_width.
+
+    With Anton present the measurement is the truth, because both output
+    paths really use that file -- the browser via @font-face, the PNG via a
+    directly loaded font file. Without it, no font is knowable ahead of
+    time, so the estimate is deliberately pessimistic.
+    """
+    sizes = []
+    for line in lines:
+        if anton_available():
+            width = _classic_measure(line, base_size)
+            size = base_size if width <= max_width else max(
+                min_size, max_width / width * base_size
+            )
+        else:
+            size = _classic_conservative(line, max_width, base_size, min_size)
+        sizes.append(size)
+    return sizes
+
+
+def classic_cap_height(size):
+    """Height of a capital above the baseline, from Anton where we have it."""
+    if anton_available():
+        from PIL import ImageFont
+        font = ImageFont.truetype(FONT_FILES["anton"], int(round(size)))
+        ascent, _ = font.getmetrics()
+        return ascent - font.getbbox("AH")[1]
+    return size * 0.75
+
+
+def classic_body_max_chars(font_size):
+    width = CLASSIC_CANVAS - 2 * CLASSIC_MARGIN_X
+    return max(20, int(width / (font_size * CLASSIC_BODY_CHAR_WIDTH_RATIO)))
+
+
+class ClassicLayout(NamedTuple):
+    headline_sizes: list[float]
+    headline_baselines: list[float]
+    body_size: float
+    body_line_height: float
+    body_lines: list
+    body_start_y: float
+
+
+def layout_classic(headline_lines, tokens) -> ClassicLayout:
+    """Stack the headline and paragraph below the category tag.
+
+    The headline hangs off the underline by its cap height, so it can never
+    be struck through by it. If the two blocks together would still run off
+    the canvas, the body is stepped down first (re-wrapping at each size,
+    since smaller text fits more characters per line) and the headline only
+    after that.
+    """
+    underline_bottom = CLASSIC_CATEGORY_Y + 23
+    limit = CLASSIC_CANVAS - CLASSIC_BODY_BOTTOM_MARGIN
+    max_width = CLASSIC_CANVAS - 2 * CLASSIC_MARGIN_X
+    body_steps = list(range(CLASSIC_BODY_FONT_SIZE,
+                            CLASSIC_BODY_MIN_FONT_SIZE - 1, -1))
+    rescue_steps = list(range(CLASSIC_BODY_MIN_FONT_SIZE - 1,
+                              CLASSIC_BODY_HARD_MIN_FONT_SIZE - 1, -1))
+
+    headline_scale = 1.0
+    while True:
+        base = CLASSIC_HEADLINE_FONT_SIZE * headline_scale
+        sizes = classic_headline_sizes(headline_lines, max_width, base,
+                                       CLASSIC_HEADLINE_MIN_FONT_SIZE)
+
+        y = (underline_bottom + CLASSIC_CATEGORY_UNDERLINE_GAP
+             + classic_cap_height(sizes[0]))
+        baselines = []
+        for size in sizes:
+            baselines.append(y)
+            y += size * 1.1
+        body_start = baselines[-1] + CLASSIC_HEADLINE_BODY_GAP
+
+        exhausted = headline_scale <= 0.6
+        steps = body_steps + (rescue_steps if exhausted else [])
+
+        for body_size in steps:
+            line_height = body_size * CLASSIC_BODY_LINE_HEIGHT_RATIO
+            lines = wrap_tokens(tokens, classic_body_max_chars(body_size))
+            fits = body_start + (len(lines) - 1) * line_height <= limit
+            if fits or (exhausted and body_size == steps[-1]):
+                return ClassicLayout(sizes, baselines, body_size,
+                                     line_height, lines, body_start)
+
+        headline_scale -= 0.05
+
+
+def render_headline_classic(lines, sizes, baselines, headline_font):
+    out = []
+    for line, size, y in zip(lines, sizes, baselines):
+        out.append(
+            f'<text x="{CLASSIC_MARGIN_X}" y="{y:.1f}" '
+            f'font-family="{headline_font}" '
+            f'font-size="{size:.1f}" font-weight="900" fill="#FFFFFF">'
+            f'{escape(line)}</text>'
+        )
+    return "\n  ".join(out)
+
+
+def build_svg_classic(content: dict, image: tuple[str, str] | None) -> str:
+    category_text = (f'{content["category_left"].upper()} '
+                     f'\u00d7 {content["category_right"].upper()}')
+    underline_width = max(120, len(category_text) * 13.5)
+    headline_font = (f"'Anton', {CLASSIC_HEADLINE_FONT_STACK}"
+                     if anton_available() else CLASSIC_HEADLINE_FONT_STACK)
+    _, body_font = font_families()
+    font_css = embed_font_css()
+
+    if image:
+        image_b64, mime = brighten_photo(*image)
+        background = (
+            f'<image href="data:{mime};base64,{image_b64}" '
+            f'x="0" y="0" width="{CLASSIC_CANVAS}" '
+            f'height="{CLASSIC_PHOTO_HEIGHT}" '
+            f'preserveAspectRatio="xMidYMid slice"/>'
+        )
+    else:
+        background = (f'<rect x="0" y="0" width="{CLASSIC_CANVAS}" '
+                      f'height="{CLASSIC_PHOTO_HEIGHT}" fill="#111318"/>')
+
+    headline_lines = classic_split_headline(content["headline"].upper())
+    desc_text, desc_spans = build_color_map(content["description"])
+    tokens = get_word_tokens(desc_text, desc_spans)
+
+    layout = layout_classic(headline_lines, tokens)
+    headline_svg = render_headline_classic(
+        headline_lines, layout.headline_sizes, layout.headline_baselines,
+        headline_font,
+    )
+
+    body_svg = ""
+    for i, line in enumerate(layout.body_lines):
+        y = layout.body_start_y + i * layout.body_line_height
+        body_svg += (
+            f'  <text x="{CLASSIC_MARGIN_X}" y="{y:.1f}" xml:space="preserve" '
+            f'font-family="{body_font}" font-size="{layout.body_size:.1f}" '
+            f'font-weight="500" fill="#FFFFFF">{line_to_tspans(line)}</text>\n'
+        )
+
+    return f'''<svg width="{CLASSIC_CANVAS}" height="{CLASSIC_CANVAS}"
+     viewBox="0 0 {CLASSIC_CANVAS} {CLASSIC_CANVAS}"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <rect x="0" y="0" width="{CLASSIC_CANVAS}" height="{CLASSIC_CANVAS}" fill="#000000"/>
+
+  <!-- photo band -->
+  {background}
+
+  <defs>
+    <linearGradient id="topscrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="1"/>
+    </linearGradient>
+    <style>{font_css}</style>
+  </defs>
+  <rect x="0" y="{CLASSIC_PHOTO_HEIGHT - 90}" width="{CLASSIC_CANVAS}" height="90" fill="url(#fade)"/>
+  <rect x="0" y="{CLASSIC_PHOTO_HEIGHT}" width="{CLASSIC_CANVAS}" height="{CLASSIC_CANVAS - CLASSIC_PHOTO_HEIGHT}" fill="#000000"/>
+
+  <!-- scrim so the wordmark stays legible over a bright photo -->
+  <rect x="0" y="0" width="{CLASSIC_CANVAS}" height="{CLASSIC_SCRIM_HEIGHT}" fill="url(#topscrim)"/>
+
+  <!-- 404 wordmark -->
+  <text x="{CLASSIC_MARGIN_X}" y="{CLASSIC_LOGO_Y}" font-family="{headline_font}"
+        font-size="40" font-weight="900" fill="#FFFFFF">404</text>
+
+  <!-- category tag -->
+  <text x="{CLASSIC_MARGIN_X}" y="{CLASSIC_CATEGORY_Y}" font-family="{body_font}"
+        font-size="24" font-weight="700" letter-spacing="1.5"
+        fill="#FFFFFF">{escape(category_text)}</text>
+  <rect x="{CLASSIC_MARGIN_X}" y="{CLASSIC_CATEGORY_Y + 20}" width="{underline_width}" height="3" fill="#FFFFFF"/>
+
+  <!-- headline -->
+  {headline_svg}
+
+  <!-- description -->
+{body_svg}</svg>'''
+
+
 # How dark the scrim is over the copy, and how much of the photo is left
 # alone below it. A fixed gradient cannot serve both: a two-line card wants
 # the photo back early, while a five-line one needs cover further down --
@@ -705,7 +1028,15 @@ def build_scrim(text_bottom: float) -> str:
             f'\n    </linearGradient>')
 
 
-def build_svg(content: dict, image: tuple[str, str] | None) -> str:
+def build_svg(content: dict, image: tuple[str, str] | None,
+              style: str = DEFAULT_STYLE) -> str:
+    """Render the card in either style. See STYLES."""
+    if style == "classic":
+        return build_svg_classic(content, image)
+    return build_svg_feature(content, image)
+
+
+def build_svg_feature(content: dict, image: tuple[str, str] | None) -> str:
     bold_font, text_font = font_families()
     font_css = embed_font_css()
 
@@ -781,7 +1112,7 @@ def build_svg(content: dict, image: tuple[str, str] | None) -> str:
 # --------------------------------------------------------------------------
 # STEP 5 - rasterize the SVG to PNG
 # --------------------------------------------------------------------------
-def render_png(svg: str, out_path: Path) -> bool:
+def render_png(svg: str, out_path: Path, style: str = DEFAULT_STYLE) -> bool:
     """Rasterize with resvg (a Rust SVG renderer shipped as a pip wheel, so
     there are no system libraries to install).
 
@@ -797,11 +1128,12 @@ def render_png(svg: str, out_path: Path) -> bool:
 
     font_files = [p for p in FONT_FILES.values() if p and os.path.exists(p)]
     try:
+        width, height = canvas_for(style)
         png = resvg_py.svg_to_bytes(
             svg_string=svg,
             font_files=font_files,
-            width=CANVAS_W,
-            height=CANVAS_H,
+            width=width,
+            height=height,
         )
     except Exception as e:
         print(f"PNG render failed ({e}) -- the SVG was still written.")
@@ -856,7 +1188,7 @@ def main():
 
     print()
     for i, (content, image) in enumerate(zip(contents, images)):
-        svg = build_svg(content, image)
+        svg = build_svg(content, image, DEFAULT_STYLE)
         svg_path, png_path = output_paths(i, len(contents))
         svg_path.write_text(svg, encoding="utf-8")
         print(f"Saved {svg_path.name}")

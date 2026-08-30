@@ -18,6 +18,21 @@ from anthropic import Anthropic
 
 from . import config, feeds
 
+# The two card designs crop the photograph completely differently, so they
+# need different briefs. The feature card shows the whole frame and sets the
+# headline over the top of it; the classic card slices a wide band out of the
+# top and puts the copy on black underneath.
+COMPOSITION = {
+    "feature": (
+        "- Describe a real-looking editorial PHOTOGRAPH in a VERTICAL 4:5 frame. It runs edge to edge behind the whole card, so it has to work as a picture in its own right.\n"
+        "- COMPOSITION IS THE HARD CONSTRAINT: the subject sits in the LOWER TWO THIRDS of the frame. The top third stays open and uncluttered - sky, a plain wall, soft haze, empty depth - because the headline is set over it. Say so explicitly in the prompt you write."
+    ),
+    "classic": (
+        "- Describe a real-looking editorial PHOTOGRAPH in a WIDE 16:9 frame. Only a band across the top of it is shown, so the picture has to survive a hard crop.\n"
+        "- COMPOSITION IS THE HARD CONSTRAINT: put the subject in the UPPER HALF of the frame and keep the whole thing simple - one clear subject, an uncluttered background, nothing important near the bottom edge. Say so explicitly in the prompt you write."
+    ),
+}
+
 SYSTEM = """You find the single most-discussed news story of the moment and \
 write a "404 Media" style stat card about it.
 
@@ -75,8 +90,7 @@ Rules for the description array:
 - Use at least two of the three colours on every card, and all three whenever the story offers a comparison. A paragraph left in plain white is a wasted card.
 
 Rules for image_prompt:
-- Describe a real-looking editorial PHOTOGRAPH in a VERTICAL 4:5 frame. It runs edge to edge behind the whole card, so it has to work as a picture in its own right.
-- COMPOSITION IS THE HARD CONSTRAINT: the subject sits in the LOWER TWO THIRDS of the frame. The top third stays open and uncluttered - sky, a plain wall, soft haze, empty depth - because the headline is set over it. Say so explicitly in the prompt you write.
+%COMPOSITION%
 - Ask for a BRIGHT, vividly lit image: daylight, bright interiors, strong clean light, rich saturated colour. No dark, dim, moody, murky, night-time or heavily shadowed scenes - the card is seen as a thumbnail, and dark frames disappear in the feed.
 - BE CREATIVE, and be different every time. Name a specific vantage point, lens and moment instead of describing a generic stock photo. Rotate between kinds of picture from card to card: a street-level wide shot with people mid-motion; a tight close-up of one telling object at human scale; a clean overhead flat-lay; a long-lens shot compressing a crowd or a skyline; a scene dominated by one strong colour; a silhouette against a bright window. An unusual angle on an ordinary thing beats a literal illustration of the headline.
 - The picture should evoke the story, not caption it. Grocery prices are better served by a lit produce aisle shot from floor level than by a photograph of a receipt.
@@ -167,7 +181,7 @@ def _extract_json(text: str) -> dict:
     raise ValueError(f"No parseable card JSON in model reply:\n{text[:800]}")
 
 
-def find_story(exclude_ids: list[str]) -> dict:
+def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
     """Return card content for a trending story not in `exclude_ids`."""
     client = Anthropic(api_key=config.ANTHROPIC_API_KEY())
 
@@ -199,7 +213,8 @@ def find_story(exclude_ids: list[str]) -> dict:
         resp = client.messages.create(
             model=config.COPY_MODEL,
             max_tokens=4000,
-            system=SYSTEM,
+            system=SYSTEM.replace("%COMPOSITION%",
+                                  COMPOSITION.get(style, COMPOSITION["feature"])),
             output_config=_output_config(),
             messages=messages,
         )

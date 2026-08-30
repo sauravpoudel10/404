@@ -16,6 +16,11 @@ on:
         type: choice
         options: [auto, reel, post]
         default: auto
+      style:
+        description: "Card design (auto rotates six of each per day)"
+        type: choice
+        options: [auto, classic, feature]
+        default: auto
 
 # Needed to force-push the gh-pages branch that hosts the card images.
 permissions:
@@ -58,4 +63,4 @@ jobs:
           ASSETS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ASSETS_REPO: ${{ github.repository }}
           PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
-        run: python run_meta.py ${{ inputs.dry_run && '--dry-run' || '' }} --mode ${{ inputs.mode || 'auto' }}
+        run: python run_meta.py ${{ inputs.dry_run && '--dry-run' || '' }} --mode ${{ inputs.mode || 'auto' }} --style ${{ inputs.style || 'auto' }}

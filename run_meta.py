@@ -26,6 +26,36 @@ from pipeline import assets, cards, meta, text, trends, video, x  # noqa: E402
 # actually sets the cadence.
 MIN_GAP_MINUTES = 100
 
+# Twelve cards a day, split evenly two ways: six in each design, six as
+# Reels and six as feed posts. Alternating the two independently off the
+# previous card would lock them together -- every Reel would end up in one
+# style and every feed post in the other -- so they rotate as PAIRS, and all
+# four combinations come round every four cards.
+SLOT_PATTERN = [
+    ("feature", True),      # full-bleed portrait, as a Reel
+    ("classic", False),     # square photo band, as a feed post
+    ("feature", False),
+    ("classic", True),
+]
+
+
+def next_slot(cards_by_time) -> tuple[str, bool]:
+    """(style, as_reel) for this run, taken from where the last card sat.
+
+    Derived from the previous card rather than the clock: the scheduler
+    fires far more often than it posts, so hour arithmetic no longer
+    alternates anything.
+    """
+    if not cards_by_time:
+        return SLOT_PATTERN[0]
+    last = cards_by_time[-1]
+    previous = (last.get("style") or "feature", bool(last.get("video_file")))
+    try:
+        index = SLOT_PATTERN.index(previous)
+    except ValueError:
+        index = -1          # unrecognised (older card): restart the rotation
+    return SLOT_PATTERN[(index + 1) % len(SLOT_PATTERN)]
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -35,6 +65,9 @@ def main():
                         help="generate and host the card but don't post anywhere")
     parser.add_argument("--mode", choices=("auto", "reel", "post"), default="auto",
                         help="Instagram format; 'auto' alternates by slot")
+    parser.add_argument("--style", choices=("auto",) + cards.automate.STYLES,
+                        default="auto",
+                        help="card design; 'auto' alternates by slot")
     parser.add_argument("--force", action="store_true",
                         help="post even if the last card is recent")
     args = parser.parse_args()
@@ -56,19 +89,16 @@ def main():
             return
         print(f"  last card was {age:.0f} min ago -- posting")
 
-    # Alternate off the PREVIOUS card, not the clock. The cron now fires
-    # hourly and the throttle decides which ones post, so hour % 4 no longer
-    # alternates -- it would clump Reels together.
-    if args.mode == "auto":
-        cards_by_time = sorted(manifest.get("cards", []),
-                               key=lambda c: c["created_at"])
-        as_reel = not (cards_by_time and cards_by_time[-1].get("video_file"))
-    else:
-        as_reel = args.mode == "reel"
-    print(f"→ slot format: {'REEL' if as_reel else 'feed post'}")
+    cards_by_time = sorted(manifest.get("cards", []),
+                           key=lambda c: c["created_at"])
+    slot_style, slot_reel = next_slot(cards_by_time)
+
+    style = slot_style if args.style == "auto" else args.style
+    as_reel = slot_reel if args.mode == "auto" else args.mode == "reel"
+    print(f"→ slot: {style} card, {'REEL' if as_reel else 'feed post'}")
 
     print("→ searching for a trending story")
-    content = trends.find_story(seen)
+    content = trends.find_story(seen, style=style)
     print(f"  {content['story_id']}: {content.get('headline_source', '')}")
     print(f"  headline: {content['headline']}")
 
@@ -77,7 +107,7 @@ def main():
                  "skipping this slot rather than reposting.")
 
     print("→ generating card")
-    jpeg = cards.render_jpeg(content, use_batch=not args.no_batch)
+    jpeg = cards.render_jpeg(content, use_batch=not args.no_batch, style=style)
     print(f"  {len(jpeg) / 1024:.0f} KB JPEG")
 
     mp4 = None
@@ -87,7 +117,7 @@ def main():
         print(f"  {len(mp4) / 1024:.0f} KB MP4")
 
     print("→ publishing to GitHub Pages")
-    card = assets.publish_card(jpeg, content, mp4=mp4)
+    card = assets.publish_card(jpeg, content, mp4=mp4, style=style)
     print(f"  {card['url']}")
     if mp4:
         print(f"  {card['video_url']}")
