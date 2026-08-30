@@ -1,16 +1,16 @@
 """
 404-style stat card generator
 ==============================
-Produces a self-contained 1080x1080 SVG (plus a rendered PNG) styled like a
-"404 Media" social card:
+Produces a self-contained 1080x1350 SVG (plus a rendered PNG) styled like a
+funding-announcement card: one photograph running full bleed, a dark scrim
+over it, and the copy set into the top of the frame.
 
-    404                                <- wordmark, top-left
-    [photo band]                       <- AI-generated with Gemini
-    CONSUMER x SPENDING                <- category tag + underline
-    AMERICA'S $166B BET                <- big bold all-caps headline
-    Americans now spend more on        <- body paragraph, white text
-    sports betting each year than      <- with blue / red / green
-    they do on movies, arts...         <- highlighted phrases
+    [404]                              <- white rounded tile, top-left
+    Americans now bet $166B a year     <- bold subject + regular remainder
+    They now spend more on sports      <- body paragraph, white text
+    betting each year than on movies   <- with blue / red / green
+    and music combined.                <- highlighted phrases
+    [the photo carries the rest]
 
 Setup (once):
     pip install -r requirements.txt
@@ -55,10 +55,13 @@ load_dotenv(SCRIPT_DIR / ".env")
 # --------------------------------------------------------------------------
 MODEL = "claude-sonnet-5"
 IMAGE_MODEL = "models/gemini-3.1-flash-lite-image"
-IMAGE_ASPECT_RATIO = "16:9"   # photo band is 1080x620, close enough to slice
+IMAGE_ASPECT_RATIO = "3:4"    # portrait source, so the full-bleed crop loses little
 
-CANVAS = 1080                 # square canvas, like the reference image
-PHOTO_HEIGHT = 455            # height of the top photo band
+# 4:5 portrait. It is the tallest ratio Instagram and Facebook show uncropped
+# in the feed, so the card takes about 25% more screen than the old square.
+CANVAS_W = 1080
+CANVAS_H = 1350
+CANVAS = CANVAS_W             # kept for callers that only care about the width
 OUTPUT_PATH = "404_card.svg"
 
 # Batch polling. A batch job is asynchronous by design; these bounds only
@@ -66,70 +69,97 @@ OUTPUT_PATH = "404_card.svg"
 BATCH_POLL_SECONDS = 10
 BATCH_TIMEOUT_SECONDS = 30 * 60
 
-MARGIN_X = 90                 # left margin used by every text block
-LOGO_Y = 90
-CATEGORY_Y = 500
-HEADLINE_FONT_SIZE = 84
-HEADLINE_MIN_FONT_SIZE = 46
-BODY_FONT_SIZE = 48
-BODY_MIN_FONT_SIZE = 38                # preferred floor (~1.2x the old size)
-BODY_HARD_MIN_FONT_SIZE = 26           # absolute floor, only to avoid overflow
-BODY_LINE_HEIGHT_RATIO = 1.44          # line height as a multiple of font size
-BODY_CHAR_WIDTH_RATIO = 0.478          # tuned so lines fill the full text width
+MARGIN_X = 72                 # left margin used by every element
 
-# Vertical rhythm below the photo. The headline is NOT placed at a fixed y:
-# it hangs off the bottom of the category underline by CATEGORY_UNDERLINE_GAP
-# measured to the top of its capitals, so a 2-line headline can never end up
-# struck through by the underline. See layout_blocks().
-SCRIM_HEIGHT = 190            # top gradient keeping the wordmark readable
-CATEGORY_UNDERLINE_GAP = 26
-HEADLINE_BODY_GAP = 55
-BODY_BOTTOM_MARGIN = 55
+# --- logo tile: white rounded square, top-left ---
+LOGO_SIZE = 104
+LOGO_Y = 62
+LOGO_RADIUS = 26
+LOGO_FONT_SIZE = 39
 
-# System-font stacks used if no embedded font files are found (see EMBED_FONTS
-# below). 'Anton' is named explicitly because the PNG renderer loads the .ttf
-# by its real family name rather than through @font-face -- see render_png().
-HEADLINE_FONT_STACK = "'Anton', Impact, 'Arial Black', 'Helvetica Neue', sans-serif"
-BODY_FONT_STACK = "'Helvetica Neue', Arial, sans-serif"
+# --- headline: bold subject + regular remainder, sentence case ---
+HEADLINE_TOP = 304            # baseline of the first headline line
+HEADLINE_FONT_SIZE = 96
+HEADLINE_MIN_FONT_SIZE = 56
+HEADLINE_LINE_RATIO = 1.07    # tight leading
+HEADLINE_MAX_LINES = 3
+HEADLINE_TRACKING = -1.6      # slight negative tracking, as in the reference
 
-# --- optional: embed a real font file for a pixel-perfect headline match ---
-# The script auto-downloads Anton (a bold condensed display font, close to
-# the reference image's headline style) into the working folder on first
-# run and embeds it directly in the SVG, so the standalone .svg looks the
-# same in any browser. If the download fails (e.g. offline), it just falls
-# back to the system stack above -- the auto-fit sizing logic (see
-# fit_headline_sizes) stays safe either way.
-#
-# Body text is left on the system stack: at normal paragraph size a generic
-# sans renders close enough to the reference that embedding isn't worth the
-# extra fragile dependency.
+# --- body: the colour-coded paragraph, unchanged in spirit ---
+HEADLINE_BODY_GAP = 56
+BODY_FONT_SIZE = 44
+BODY_MIN_FONT_SIZE = 32
+BODY_LINE_HEIGHT_RATIO = 1.34
+BODY_MAX_LINES = 5
+# Text owns the top of the card; the photo carries everything below this.
+TEXT_ZONE_BOTTOM = 790
+
+# Two static weights cut out of Inter's variable font (see ensure_fonts).
+# They are separate FAMILIES rather than two weights of one family because
+# resvg matches on family name and will not synthesise a bold.
+BOLD_FAMILY = "Card404Bold"
+TEXT_FAMILY = "Card404Text"
+HEADLINE_FONT_STACK = f"'{BOLD_FAMILY}', 'Helvetica Neue', Arial, sans-serif"
+BODY_FONT_STACK = f"'{TEXT_FAMILY}', 'Helvetica Neue', Arial, sans-serif"
+
 EMBED_FONTS = True
 FONT_FILES = {
-    "headline": str(SCRIPT_DIR / "Anton-Regular.ttf"),
-    "body": str(SCRIPT_DIR / "Inter-Bold.ttf"),  # optional: drop your own file here
+    "bold": str(SCRIPT_DIR / f"{BOLD_FAMILY}.ttf"),
+    "text": str(SCRIPT_DIR / f"{TEXT_FAMILY}.ttf"),
 }
-FONT_DOWNLOAD_URLS = {
-    "headline": "https://raw.githubusercontent.com/google/fonts/main/ofl/anton/Anton-Regular.ttf",
-}
+FONT_WEIGHTS = {"bold": 800, "text": 400}
+INTER_VARIABLE_URL = (
+    "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/"
+    "Inter%5Bopsz,wght%5D.ttf"
+)
+
+
+def _cut_static_weight(raw: bytes, weight: int, family: str, path: str):
+    """Freeze the variable font at one weight and rename it to `family`.
+
+    Inter ships only as a variable font, and resvg renders its default
+    instance whatever `font-weight` the SVG asks for -- so a bold subject
+    and a regular remainder on the same line have to arrive as two separate
+    files under two distinct family names.
+    """
+    import io as _io
+
+    from fontTools.ttLib import TTFont
+    from fontTools.varLib import instancer
+
+    font = instancer.instantiateVariableFont(
+        TTFont(_io.BytesIO(raw)), {"wght": weight, "opsz": 28}, inplace=False
+    )
+    name = font["name"]
+    name.setName(family, 1, 3, 1, 0x409)       # family
+    name.setName("Regular", 2, 3, 1, 0x409)    # subfamily
+    name.setName(family, 4, 3, 1, 0x409)       # full name
+    name.setName(family, 6, 3, 1, 0x409)       # postscript
+    for nid in (16, 17, 21, 22):               # typographic names would win
+        name.removeNames(nameID=nid)
+    font.save(path)
 
 
 def ensure_fonts():
-    """Best-effort auto-download of the headline font. Never raises --
-    on any failure we just proceed with the system font fallback."""
+    """Build the two card fonts once, into the working folder.
+
+    Never raises: on any failure the SVG falls back to the system stacks
+    above, and the layout measurements fall back to character estimates.
+    """
     if not EMBED_FONTS:
         return
-    for key, url in FONT_DOWNLOAD_URLS.items():
-        path = FONT_FILES.get(key)
-        if not path or os.path.exists(path):
-            continue
-        try:
-            r = requests.get(url, timeout=15)
-            r.raise_for_status()
-            with open(path, "wb") as f:
-                f.write(r.content)
-            print(f"Downloaded {os.path.basename(path)}")
-        except Exception as e:
-            print(f"Could not auto-download {path} ({e}); using system font fallback.")
+    missing = {k: p for k, p in FONT_FILES.items() if not os.path.exists(p)}
+    if not missing:
+        return
+    try:
+        resp = requests.get(INTER_VARIABLE_URL, timeout=60)
+        resp.raise_for_status()
+        for key, path in missing.items():
+            _cut_static_weight(resp.content, FONT_WEIGHTS[key],
+                               Path(path).stem, path)
+            print(f"Built {os.path.basename(path)}")
+    except Exception as e:
+        print(f"Could not build card fonts ({e}); using system font fallback.")
 
 
 COLORS = {
@@ -156,8 +186,10 @@ def generate_content(topic: str) -> dict:
         "{\n"
         '  "category_left": "ONE OR TWO WORDS",\n'
         '  "category_right": "ONE OR TWO WORDS",\n'
-        '  "headline": "SHORT PUNCHY ALL-CAPS HEADLINE, under 30 characters, '
-        'often includes a number/stat",\n'
+        '  "headline_lead": "the subject: 1-3 words, the name a reader '
+        'recognises",\n'
+        '  "headline_rest": "what happened: 2-6 words, and where the number '
+        'goes",\n'
         '  "description": [\n'
         '    {"text": "...", "color": "white"},\n'
         '    {"text": "...", "color": "blue|red|green"},\n'
@@ -175,12 +207,17 @@ def generate_content(topic: str) -> dict:
         "- color 'green' = the key hard number/statistic.\n"
         "- color 'white' = connective/neutral text.\n"
         "- Only highlight short, specific phrases -- not whole sentences.\n\n"
+        "Rules for the headline:\n"
+        "- The two pieces are set on one flowing line, the lead in heavy "
+        "bold and the rest in regular weight.\n"
+        "- Sentence case, not all caps, under 42 characters together.\n\n"
         "Rules for image_prompt:\n"
-        "- Describe a real-looking editorial PHOTOGRAPH, concrete and visual, "
-        "shot on a wide 16:9 frame with cinematic lighting and a moody, "
-        "desaturated palette.\n"
-        "- The top of the frame carries the subject; keep the composition "
-        "simple enough to survive being cropped to a wide band.\n"
+        "- Describe a real-looking editorial PHOTOGRAPH in a vertical 4:5 "
+        "frame, brightly and vividly lit, with rich saturated colour.\n"
+        "- The subject sits in the LOWER TWO THIRDS; the top third stays "
+        "open and uncluttered, because the headline is set over it.\n"
+        "- Be creative and specific about vantage point, lens and moment "
+        "rather than describing a generic stock photo.\n"
         "- Absolutely no text, letters, numbers, logos, watermarks or "
         "captions anywhere in the image."
     )
@@ -189,7 +226,8 @@ def generate_content(topic: str) -> dict:
     example_assistant = json.dumps({
         "category_left": "CONSUMER",
         "category_right": "SPENDING",
-        "headline": "AMERICA'S $166B BET",
+        "headline_lead": "Americans",
+        "headline_rest": "now bet $166B a year",
         "description": [
             {"text": "Americans now spend more on ", "color": "white"},
             {"text": "sports betting", "color": "blue"},
@@ -200,10 +238,11 @@ def generate_content(topic: str) -> dict:
             {"text": " in wagers alone.", "color": "white"},
         ],
         "image_prompt": (
-            "A wide cinematic editorial photograph of a dim sportsbook floor at "
-            "night: rows of glowing screens washing blue light over anonymous "
-            "silhouetted spectators, shallow depth of field, desaturated moody "
-            "color grade, no text or logos anywhere."
+            "A bright vertical 4:5 editorial photograph looking down a "
+            "sportsbook floor from balcony height: rows of vivid screens "
+            "below, spectators mid-cheer in the lower two thirds, the upper "
+            "third an open expanse of pale ceiling and daylight haze, "
+            "saturated colour, no text or logos anywhere."
         ),
     })
 
@@ -416,122 +455,118 @@ def line_to_tspans(line_tokens):
 
 
 # --------------------------------------------------------------------------
-# STEP 3b - font embedding + headline auto-fit (prevents overflow/clipping)
+# STEP 3b - font loading, pixel measurement, and auto-fit layout
 # --------------------------------------------------------------------------
-def headline_font_available() -> bool:
-    path = FONT_FILES.get("headline")
-    return bool(EMBED_FONTS and path and os.path.exists(path))
+def font_available() -> bool:
+    """True when both card fonts are on disk, so text can be measured exactly."""
+    return bool(EMBED_FONTS and all(os.path.exists(p) for p in FONT_FILES.values()))
 
 
 def embed_font_css() -> str:
-    """Return @font-face CSS for any font files that exist next to the
-    script. Returns '' if none are found (system fallback is used instead).
-
-    This is what makes the standalone .svg render correctly in a browser.
-    The PNG renderer ignores @font-face entirely and loads the same .ttf
-    files directly instead -- see render_png()."""
+    """@font-face CSS for the card fonts, so the standalone .svg renders the
+    same in a browser. The PNG path ignores this and loads the .ttf files
+    directly -- see render_png()."""
     if not EMBED_FONTS:
         return ""
     css = ""
-    families = {"headline": "Headline404", "body": "Body404"}
-    for key, family in families.items():
-        path = FONT_FILES.get(key)
-        if path and os.path.exists(path):
-            with open(path, "rb") as f:
-                b64 = base64.b64encode(f.read()).decode("utf-8")
+    for path in FONT_FILES.values():
+        if os.path.exists(path):
+            b64 = base64.b64encode(Path(path).read_bytes()).decode("utf-8")
             css += (
-                f"@font-face{{font-family:'{family}';"
+                f"@font-face{{font-family:'{Path(path).stem}';"
                 f"src:url(data:font/ttf;base64,{b64}) format('truetype');}}"
             )
     return css
 
 
 def font_families():
-    """Pick embedded font names if the files were found, else fall back."""
-    headline = (
-        f"'Headline404', {HEADLINE_FONT_STACK}"
-        if headline_font_available()
-        else HEADLINE_FONT_STACK
-    )
-    body = (
-        f"'Body404', {BODY_FONT_STACK}"
-        if EMBED_FONTS and os.path.exists(FONT_FILES["body"])
-        else BODY_FONT_STACK
-    )
-    return headline, body
+    """(bold, regular) family stacks, embedded names first when available."""
+    if font_available():
+        return HEADLINE_FONT_STACK, BODY_FONT_STACK
+    return ("'Helvetica Neue', Arial, sans-serif",) * 2
 
 
-def split_headline(text):
-    """Split a long headline into at most 2 lines (by word boundaries)."""
-    words = text.split()
-    if len(text) <= 22 or len(words) < 2:
-        return [text]
-    mid = len(words) // 2
-    return [" ".join(words[:mid]), " ".join(words[mid:])]
+# --- measurement -----------------------------------------------------------
+# Widths come from the real .ttf via Pillow, using advance width (getlength)
+# rather than the ink bounding box, because runs are concatenated on a line
+# and only advances add up correctly. Without the files we fall back to a
+# deliberately pessimistic character estimate.
+_FALLBACK_CHAR_RATIO = {"bold": 0.62, "text": 0.55}
 
 
-def _measure_width(text, font_size, ttf_path):
-    """Exact pixel width of `text` at `font_size` using a real .ttf file
-    (only works when a font file is actually available -- see fit path
-    below for what happens when one isn't)."""
-    from PIL import ImageFont
-    font = ImageFont.truetype(ttf_path, size=int(round(font_size)))
-    box = font.getbbox(text)
-    return box[2] - box[0]
-
-
-CONSERVATIVE_CHAR_FACTOR = 0.72  # safe even for chunky fonts like Arial Black
-
-
-def _conservative_size(line, max_width, base_size, min_size):
-    est_width = len(line) * base_size * CONSERVATIVE_CHAR_FACTOR
-    if est_width <= max_width:
-        return base_size
-    return max(min_size, max_width / (len(line) * CONSERVATIVE_CHAR_FACTOR))
-
-
-def fit_headline_sizes(lines, max_width, base_size, min_size=40):
-    """Return a font size for each line that fits inside max_width.
-
-    When the Anton .ttf is present we measure the line with Pillow against
-    that exact file -- and because both output paths really do use it (the
-    browser via @font-face, the PNG via a directly-loaded font file), the
-    measurement is the truth. When it's missing, no font is knowable ahead
-    of time, so we fall back to a deliberately pessimistic character-width
-    estimate that stays safe even under a wide generic substitute."""
-    ttf_path = FONT_FILES.get("headline")
-
-    sizes = []
-    for line in lines:
-        if headline_font_available():
-            width = _measure_width(line, base_size, ttf_path)
-            size = base_size if width <= max_width else max(
-                min_size, max_width / width * base_size
-            )
-        else:
-            size = _conservative_size(line, max_width, base_size, min_size)
-        sizes.append(size)
-    return sizes
-
-
-def cap_height(size):
-    """Height of a capital letter above the baseline, from the real font
-    when we have it, else a safe generic ratio."""
-    ttf_path = FONT_FILES.get("headline")
-    if headline_font_available():
+def _run_width(text: str, key: str, size: float) -> float:
+    if font_available():
         from PIL import ImageFont
-        font = ImageFont.truetype(ttf_path, int(round(size)))
-        ascent, _ = font.getmetrics()
-        return ascent - font.getbbox("AH")[1]
-    return size * 0.75
+        font = ImageFont.truetype(FONT_FILES[key], max(1, int(round(size))))
+        return font.getlength(text)
+    return len(text) * size * _FALLBACK_CHAR_RATIO[key]
 
 
-def body_max_chars(font_size):
-    return max(20, int((CANVAS - 2 * MARGIN_X) / (font_size * BODY_CHAR_WIDTH_RATIO)))
+def _space_width(size: float) -> float:
+    return _run_width(" ", "text", size)
+
+
+# --- headline --------------------------------------------------------------
+def headline_words(content: dict) -> list[tuple[str, str]]:
+    """The headline as (word, weight-key) pairs.
+
+    Two fields drive the reference look: `headline_lead` is set bold and
+    names the subject, `headline_rest` completes the sentence in regular.
+    Older content that only carries a single `headline` still renders --
+    its first word takes the bold weight.
+    """
+    lead = (content.get("headline_lead") or "").strip()
+    rest = (content.get("headline_rest") or "").strip()
+    if not lead and not rest:
+        parts = (content.get("headline") or "").split()
+        lead, rest = (parts[0] if parts else ""), " ".join(parts[1:])
+    return ([(w, "bold") for w in lead.split()]
+            + [(w, "text") for w in rest.split()])
+
+
+def _headline_line_width(words, size: float) -> float:
+    if not words:
+        return 0.0
+    return (sum(_run_width(t, k, size) for t, k in words)
+            + _space_width(size) * (len(words) - 1))
+
+
+def wrap_headline(words, max_width: float, size: float) -> list[list]:
+    lines, current = [], []
+    for word in words:
+        if current and _headline_line_width(current + [word], size) > max_width:
+            lines.append(current)
+            current = [word]
+        else:
+            current.append(word)
+    if current:
+        lines.append(current)
+    return lines or [[]]
+
+
+# --- body ------------------------------------------------------------------
+def wrap_tokens_px(tokens, max_width: float, size: float) -> list[list]:
+    """Wrap the colour-coded tokens by measured width rather than by an
+    estimated character count, so a line genuinely fills the column."""
+    space = _space_width(size)
+    lines, current, used = [], [], 0.0
+    for token in tokens:
+        width = sum(_run_width(t, "text", size) for t, _ in token)
+        advance = width + (space if current else 0.0)
+        if current and used + advance > max_width:
+            lines.append(current)
+            current, used = [token], width
+        else:
+            current.append(token)
+            used += advance
+    if current:
+        lines.append(current)
+    return lines or [[]]
 
 
 class Layout(NamedTuple):
-    headline_sizes: list[float]
+    headline_size: float
+    headline_lines: list
     headline_baselines: list[float]
     body_size: float
     body_line_height: float
@@ -539,58 +574,53 @@ class Layout(NamedTuple):
     body_start_y: float
 
 
-def layout_card(headline_lines, tokens) -> Layout:
-    """Stack the headline and the body paragraph below the category tag so
-    that everything fits between the tag underline and the bottom margin.
+def layout_card(words, tokens) -> Layout:
+    """Fit the headline and the paragraph into the text zone at the top.
 
-    The headline hangs off the underline by its cap height, so it can never
-    be struck through by it. If the two blocks together would still run off
-    the canvas -- a 2-line headline plus a long paragraph easily does -- the
-    body is stepped down first (re-wrapping at each size, since smaller text
-    fits more characters per line) and the headline only after that."""
-    underline_bottom = CATEGORY_Y + 23
-    limit = CANVAS - BODY_BOTTOM_MARGIN
-    max_width = CANVAS - 2 * MARGIN_X
-    # Two tiers: shrink to the preferred floor while also shrinking the
-    # headline, and only if that still overflows keep going to the hard
-    # floor. Running off the bottom of the card is worse than small type.
-    body_steps = list(range(BODY_FONT_SIZE, BODY_MIN_FONT_SIZE - 1, -1))
-    rescue_steps = list(range(BODY_MIN_FONT_SIZE - 1, BODY_HARD_MIN_FONT_SIZE - 1, -1))
+    The headline is tried at its full size first and stepped down only when
+    it needs more than HEADLINE_MAX_LINES; the body is then stepped down
+    (re-wrapping each time, since smaller type fits more per line) until the
+    block clears TEXT_ZONE_BOTTOM. If nothing fits, the smallest combination
+    is used -- small type beats type running off the card.
+    """
+    max_width = CANVAS_W - 2 * MARGIN_X
+    candidate = None
 
-    headline_scale = 1.0
-    while True:
-        base = HEADLINE_FONT_SIZE * headline_scale
-        sizes = fit_headline_sizes(headline_lines, max_width, base, HEADLINE_MIN_FONT_SIZE)
+    for h_size in range(HEADLINE_FONT_SIZE, HEADLINE_MIN_FONT_SIZE - 1, -2):
+        h_lines = wrap_headline(words, max_width, h_size)
+        too_tall = len(h_lines) > HEADLINE_MAX_LINES
+        line_height = h_size * HEADLINE_LINE_RATIO
+        baselines = [HEADLINE_TOP + i * line_height for i in range(len(h_lines))]
 
-        y = underline_bottom + CATEGORY_UNDERLINE_GAP + cap_height(sizes[0])
-        baselines = []
-        for size in sizes:
-            baselines.append(y)
-            y += size * 1.1
-        body_start = baselines[-1] + HEADLINE_BODY_GAP
+        for b_size in range(BODY_FONT_SIZE, BODY_MIN_FONT_SIZE - 1, -1):
+            b_lines = wrap_tokens_px(tokens, max_width, b_size)
+            b_height = b_size * BODY_LINE_HEIGHT_RATIO
+            start = baselines[-1] + HEADLINE_BODY_GAP + b_size * 0.78
+            bottom = start + (len(b_lines) - 1) * b_height
 
-        exhausted = headline_scale <= 0.6
-        steps = body_steps + (rescue_steps if exhausted else [])
+            candidate = Layout(h_size, h_lines, baselines,
+                               b_size, b_height, b_lines, start)
+            if not too_tall and len(b_lines) <= BODY_MAX_LINES \
+                    and bottom <= TEXT_ZONE_BOTTOM:
+                return candidate
 
-        for body_size in steps:
-            line_height = body_size * BODY_LINE_HEIGHT_RATIO
-            lines = wrap_tokens(tokens, body_max_chars(body_size))
-            fits = body_start + (len(lines) - 1) * line_height <= limit
-            if fits or (exhausted and body_size == steps[-1]):
-                return Layout(sizes, baselines, body_size, line_height, lines, body_start)
-
-        headline_scale -= 0.05
+    return candidate
 
 
-def render_headline(lines, sizes, baselines, headline_font):
+def render_headline(lines, size, baselines, bold_font, text_font) -> str:
     out = []
-    for line, size, y in zip(lines, sizes, baselines):
+    for words, y in zip(lines, baselines):
+        spans = []
+        for i, (word, key) in enumerate(words):
+            family = bold_font if key == "bold" else text_font
+            spans.append(f'<tspan font-family="{family}">'
+                         f'{escape((" " if i else "") + word)}</tspan>')
         out.append(
-            f'<text x="{MARGIN_X}" y="{y:.1f}" font-family="{headline_font}" '
-            f'font-size="{size:.1f}" font-weight="900" fill="#FFFFFF">'
-            f'{escape(line)}</text>'
+            f'<text x="{MARGIN_X}" y="{y:.1f}" xml:space="preserve" '
+            f'font-size="{size:.1f}" letter-spacing="{HEADLINE_TRACKING}" '
+            f'fill="#FFFFFF">{"".join(spans)}</text>'
         )
-    return "\n".join(out)
+    return "\n  ".join(out)
 
 
 # --------------------------------------------------------------------------
@@ -642,86 +672,109 @@ def brighten_photo(image_b64: str, mime: str) -> tuple[str, str]:
         return image_b64, mime
 
 
+# How dark the scrim is over the copy, and how much of the photo is left
+# alone below it. A fixed gradient cannot serve both: a two-line card wants
+# the photo back early, while a five-line one needs cover further down --
+# and coloured highlights on a bright frame (green text over produce) are
+# the first thing to become unreadable.
+SCRIM_COLOR = "#05070B"
+SCRIM_OVER_TEXT = 0.82        # opacity everywhere the copy sits
+SCRIM_TOP = 0.90              # a touch darker still behind the logo tile
+SCRIM_CLEAR = 0.14            # once past the copy, the photo carries the card
+SCRIM_FOOT = 0.52             # closing the frame on a solid bottom edge
+SCRIM_FADE = 110              # px over which it opens up below the last line
+
+
+def build_scrim(text_bottom: float) -> str:
+    """A vertical gradient that holds full cover to the end of the copy,
+    then opens up quickly so the photograph is genuinely visible."""
+    hold = max(0.0, min(1.0, (text_bottom - 40) / CANVAS_H))
+    clear = max(hold + 0.02, min(0.96, (text_bottom + SCRIM_FADE) / CANVAS_H))
+    stops = [
+        (0.0, SCRIM_TOP),
+        (hold, SCRIM_OVER_TEXT),
+        (clear, SCRIM_CLEAR),
+        (1.0, SCRIM_FOOT),
+    ]
+    body = "".join(
+        f'\n      <stop offset="{offset * 100:.1f}%" stop-color="{SCRIM_COLOR}" '
+        f'stop-opacity="{opacity}"/>'
+        for offset, opacity in stops
+    )
+    return (f'<linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">{body}'
+            f'\n    </linearGradient>')
+
+
 def build_svg(content: dict, image: tuple[str, str] | None) -> str:
-    category_text = f'{content["category_left"].upper()} × {content["category_right"].upper()}'
-    underline_width = max(120, len(category_text) * 13.5)
-    headline_font, body_font = font_families()
+    bold_font, text_font = font_families()
     font_css = embed_font_css()
 
-    # --- background: generated photo, or a flat dark fallback ------------
+    # --- background: the photo runs full bleed behind everything ---------
     if image:
         image_b64, mime = brighten_photo(*image)
         background = (
-            f'<image href="data:{mime};base64,{image_b64}" '
-            f'x="0" y="0" width="{CANVAS}" height="{PHOTO_HEIGHT}" '
+            f'<image href="data:{mime};base64,{image_b64}" x="0" y="0" '
+            f'width="{CANVAS_W}" height="{CANVAS_H}" '
             f'preserveAspectRatio="xMidYMid slice"/>'
         )
     else:
-        background = f'<rect x="0" y="0" width="{CANVAS}" height="{PHOTO_HEIGHT}" fill="#111318"/>'
+        background = (f'<rect width="{CANVAS_W}" height="{CANVAS_H}" '
+                      f'fill="#111318"/>')
 
-    # --- headline (auto-fit to width) + description (color-coded tokens) --
-    headline_lines = split_headline(content["headline"].upper())
+    # --- copy ------------------------------------------------------------
+    words = headline_words(content)
     desc_text, desc_spans = build_color_map(content["description"])
     tokens = get_word_tokens(desc_text, desc_spans)
+    layout = layout_card(words, tokens)
 
-    # --- vertical placement, once both blocks' extents are known ---------
-    layout = layout_card(headline_lines, tokens)
-    headline_svg = render_headline(
-        headline_lines, layout.headline_sizes, layout.headline_baselines, headline_font
-    )
+    headline_svg = render_headline(layout.headline_lines, layout.headline_size,
+                                   layout.headline_baselines, bold_font, text_font)
 
     body_svg = ""
     for i, line in enumerate(layout.body_lines):
         y = layout.body_start_y + i * layout.body_line_height
         body_svg += (
-            f'<text x="{MARGIN_X}" y="{y:.1f}" xml:space="preserve" '
-            f'font-family="{body_font}" font-size="{layout.body_size:.1f}" '
-            f'font-weight="500" fill="#FFFFFF">{line_to_tspans(line)}</text>\n'
+            f'  <text x="{MARGIN_X}" y="{y:.1f}" xml:space="preserve" '
+            f'font-family="{text_font}" font-size="{layout.body_size:.1f}" '
+            f'fill="#FFFFFF">{line_to_tspans(line)}</text>\n'
         )
 
-    svg = f'''<svg width="{CANVAS}" height="{CANVAS}" viewBox="0 0 {CANVAS} {CANVAS}"
+    # Centre "404" optically in the tile: Inter's cap height is ~0.727em, so
+    # sitting the baseline half a cap below the middle centres the capitals
+    # rather than the (invisible) full em box.
+    logo_baseline = LOGO_Y + LOGO_SIZE / 2 + LOGO_FONT_SIZE * 0.727 / 2
+
+    text_bottom = (layout.body_start_y
+                   + (len(layout.body_lines) - 1) * layout.body_line_height
+                   + layout.body_size * 0.25)          # descender
+    scrim = build_scrim(text_bottom)
+
+    svg = f'''<svg width="{CANVAS_W}" height="{CANVAS_H}" viewBox="0 0 {CANVAS_W} {CANVAS_H}"
      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 
-  <!-- base black canvas -->
-  <rect x="0" y="0" width="{CANVAS}" height="{CANVAS}" fill="#000000"/>
+  <rect x="0" y="0" width="{CANVAS_W}" height="{CANVAS_H}" fill="#05070B"/>
 
-  <!-- photo band -->
+  <!-- full-bleed photo -->
   {background}
 
-  <!-- gradient blend from photo into the black lower section -->
   <defs>
-    <linearGradient id="topscrim" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#000000" stop-opacity="0.62"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="1"/>
-    </linearGradient>
+    {scrim}
     <style>{font_css}</style>
   </defs>
-  <rect x="0" y="{PHOTO_HEIGHT - 90}" width="{CANVAS}" height="90" fill="url(#fade)"/>
-  <rect x="0" y="{PHOTO_HEIGHT}" width="{CANVAS}" height="{CANVAS - PHOTO_HEIGHT}" fill="#000000"/>
+  <rect x="0" y="0" width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#scrim)"/>
 
-  <!-- scrim so the wordmark stays legible over a bright photo -->
-  <rect x="0" y="0" width="{CANVAS}" height="{SCRIM_HEIGHT}" fill="url(#topscrim)"/>
-
-  <!-- 404 wordmark -->
-  <text x="{MARGIN_X}" y="{LOGO_Y}" font-family="{headline_font}"
-        font-size="40" font-weight="900" fill="#FFFFFF">404</text>
-
-  <!-- category tag -->
-  <text x="{MARGIN_X}" y="{CATEGORY_Y}" font-family="{body_font}"
-        font-size="24" font-weight="700" letter-spacing="1.5"
-        fill="#FFFFFF">{escape(category_text)}</text>
-  <rect x="{MARGIN_X}" y="{CATEGORY_Y + 20}" width="{underline_width}" height="3" fill="#FFFFFF"/>
+  <!-- logo tile -->
+  <rect x="{MARGIN_X}" y="{LOGO_Y}" width="{LOGO_SIZE}" height="{LOGO_SIZE}"
+        rx="{LOGO_RADIUS}" ry="{LOGO_RADIUS}" fill="#FFFFFF"/>
+  <text x="{MARGIN_X + LOGO_SIZE / 2}" y="{logo_baseline:.1f}"
+        font-family="{bold_font}" font-size="{LOGO_FONT_SIZE}"
+        letter-spacing="-1.2" text-anchor="middle" fill="#0A0B0D">404</text>
 
   <!-- headline -->
   {headline_svg}
 
   <!-- description -->
-  {body_svg}
-</svg>'''
+{body_svg}</svg>'''
     return svg
 
 
@@ -734,7 +787,7 @@ def render_png(svg: str, out_path: Path) -> bool:
 
     resvg does NOT implement @font-face, so the base64 font embedded in the
     SVG is ignored on this path -- it loads the same .ttf files directly
-    instead, which is why HEADLINE_FONT_STACK names 'Anton' explicitly.
+    instead, which is why the font stacks name the two families explicitly.
     Same font file, same metrics, so the PNG matches the browser's SVG."""
     try:
         import resvg_py
@@ -747,8 +800,8 @@ def render_png(svg: str, out_path: Path) -> bool:
         png = resvg_py.svg_to_bytes(
             svg_string=svg,
             font_files=font_files,
-            width=CANVAS,
-            height=CANVAS,
+            width=CANVAS_W,
+            height=CANVAS_H,
         )
     except Exception as e:
         print(f"PNG render failed ({e}) -- the SVG was still written.")

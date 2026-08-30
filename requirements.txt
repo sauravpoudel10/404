@@ -2,6 +2,7 @@ anthropic>=0.116
 google-genai>=2.16
 resvg-py>=0.1
 pillow>=11
+fonttools>=4.50
 requests>=2.32
 python-dotenv>=1.0
 pynacl>=1.5

@@ -48,7 +48,8 @@ exactly this shape:
   "headline_source": "one line naming the outlet and what happened",
   "category_left": "ONE OR TWO WORDS",
   "category_right": "ONE OR TWO WORDS",
-  "headline": "SHORT PUNCHY ALL-CAPS HEADLINE, under 30 characters, usually a number",
+  "headline_lead": "the subject, 1-3 words",
+  "headline_rest": "what happened, 2-6 words",
   "description": [
     {{"text": "...", "color": "white"}},
     {{"text": "...", "color": "blue|red|green"}}
@@ -57,19 +58,28 @@ exactly this shape:
   "caption": "social caption, 1-2 plain sentences"
 }}
 
+Rules for the headline:
+- It is set as two pieces on one flowing line: `headline_lead` in heavy bold, then `headline_rest` in regular weight, so "Retro" + "raises $21M" reads as a single sentence with the name emphasised.
+- `headline_lead` is the NAME the reader recognises, and nothing else: a company, a person, a place, a product. Not a verb, not a number, not an article.
+- `headline_rest` completes the clause and is where the number goes.
+- Sentence case, NOT all caps. Capitalise the lead as a proper noun; leave the rest lower case unless it is itself a name.
+- HARD LIMIT: 42 characters for the two pieces together. Count them. It must read as one plain English clause a stranger understands at a glance, and it should set on two lines at most. No colons, no dashes, no sub-clauses.
+
 Rules for the description array:
-- Concatenating every part's text must read as ONE natural paragraph of 2-3 short \
-sentences, 120-165 characters TOTAL. It is set in large type on the card, so anything longer gets shrunk to fit and loses its impact. Include spaces at the edges of each part where a space belongs.
+- HARD LIMIT: concatenating every part's text must come to between 120 and 170 characters. Count them. It is set in large type over a photograph, so a longer paragraph gets shrunk to fit, covers the picture and loses its impact. Two short sentences is the target; three is already too many. Include spaces at the edges of each part where a space belongs.
 - color 'blue' = the main subject/behavior being highlighted.
 - color 'red' = whatever it's being unfavorably compared against.
 - color 'green' = the key hard number/statistic.
 - color 'white' = connective/neutral text.
 - Only highlight short, specific phrases -- not whole sentences.
+- Use at least two of the three colours on every card, and all three whenever the story offers a comparison. A paragraph left in plain white is a wasted card.
 
 Rules for image_prompt:
-- Describe a real-looking editorial PHOTOGRAPH, concrete and visual, shot on a \
-wide 16:9 frame.
-- Ask for a BRIGHT, well-lit, vivid image: daylight, bright interiors, strong clean light, rich saturated colour. Explicitly avoid dark, dim, moody, murky, night-time or heavily shadowed scenes -- the card is seen as a thumbnail, and dark frames disappear in the feed.
+- Describe a real-looking editorial PHOTOGRAPH in a VERTICAL 4:5 frame. It runs edge to edge behind the whole card, so it has to work as a picture in its own right.
+- COMPOSITION IS THE HARD CONSTRAINT: the subject sits in the LOWER TWO THIRDS of the frame. The top third stays open and uncluttered - sky, a plain wall, soft haze, empty depth - because the headline is set over it. Say so explicitly in the prompt you write.
+- Ask for a BRIGHT, vividly lit image: daylight, bright interiors, strong clean light, rich saturated colour. No dark, dim, moody, murky, night-time or heavily shadowed scenes - the card is seen as a thumbnail, and dark frames disappear in the feed.
+- BE CREATIVE, and be different every time. Name a specific vantage point, lens and moment instead of describing a generic stock photo. Rotate between kinds of picture from card to card: a street-level wide shot with people mid-motion; a tight close-up of one telling object at human scale; a clean overhead flat-lay; a long-lens shot compressing a crowd or a skyline; a scene dominated by one strong colour; a silhouette against a bright window. An unusual angle on an ordinary thing beats a literal illustration of the headline.
+- The picture should evoke the story, not caption it. Grocery prices are better served by a lit produce aisle shot from floor level than by a photograph of a receipt.
 - Absolutely no text, letters, numbers, logos, watermarks or captions anywhere.
 
 Rules for caption:
@@ -93,7 +103,8 @@ CARD_SCHEMA = {
         "headline_source": {"type": "string"},
         "category_left": {"type": "string"},
         "category_right": {"type": "string"},
-        "headline": {"type": "string"},
+        "headline_lead": {"type": "string"},
+        "headline_rest": {"type": "string"},
         "description": {
             "type": "array",
             "items": {
@@ -110,7 +121,8 @@ CARD_SCHEMA = {
         "caption": {"type": "string"},
     },
     "required": ["story_id", "headline_source", "category_left", "category_right",
-                 "headline", "description", "image_prompt", "caption"],
+                 "headline_lead", "headline_rest", "description",
+                 "image_prompt", "caption"],
     "additionalProperties": False,
 }
 
@@ -201,7 +213,13 @@ def find_story(exclude_ids: list[str]) -> dict:
     text = "".join(b.text for b in resp.content if b.type == "text")
     content = _extract_json(text)
 
-    missing = {"story_id", "headline", "description", "image_prompt", "caption"} - content.keys()
+    missing = ({"story_id", "headline_lead", "headline_rest", "description",
+                "image_prompt", "caption"} - content.keys())
     if missing:
         raise ValueError(f"Model reply missing fields: {sorted(missing)}")
+
+    # The card sets the two pieces in different weights; everything else --
+    # logs, the manifest, dedupe -- only wants the whole line.
+    content["headline"] = (f'{content["headline_lead"]} '
+                           f'{content["headline_rest"]}').strip()
     return content
