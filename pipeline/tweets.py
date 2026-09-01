@@ -233,9 +233,11 @@ flag is the United States - not Gambia. Decide the country first, then its \
 flag.
 - Rankings compare DIFFERENT entities. A table where every row is the same \
 country is not a ranking; pick a subject with real geographic spread.
-- 8 to 10 rows where the names are short enough, fewer where they are long. \
-The whole tweet must stay under 275 characters including flags, so count as \
-you go and cut the tail rather than overflow.
+- LENGTH: use as many rows as the dataset gives you, up to 30. Thirty is the \
+target, not a ceiling to avoid - the depth of the ranking is the point of \
+the format, so do not stop at ten because it looks tidy. Never post fewer \
+than 10; if the dataset cannot supply 10 usable rows, write no list for it \
+at all. Keep the whole tweet under 1200 characters.
 - Round the dataset's value and mark it approximate with "~": 7,645.80 \
 billion becomes "~$7.6T", 1,417,492,000 becomes "~1.42B". Keep the unit the \
 dataset uses; never convert between units you are guessing at.
@@ -347,7 +349,7 @@ def clean_list_rows(tweet: dict, subject: str = "", year: str = "") -> dict:
     if subject and (not kept or FLAG_RE.search(kept[0])):
         kept.insert(0, list_title(subject, year))
 
-    body = normalise_list("\n".join(kept).rstrip()).split("\n")
+    body = normalise_list("\n".join(kept).rstrip(), min_rows=10).split("\n")
     # normalise_list only re-inserts the blank line when it actually
     # filters rows; the heading has to be separated either way.
     if len(body) > 1 and body[1].strip():

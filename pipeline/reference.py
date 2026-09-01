@@ -201,7 +201,8 @@ def _rows(table_html: str) -> list[list[str]]:
     return out
 
 
-def fetch(subject: str, limit: int = 16, timeout: int = 25) -> list[str] | None:
+def fetch(subject: str, limit: int = 34, timeout: int = 25,
+          min_rows: int = 10) -> list[str] | None:
     """Return the ranking for `subject` as plain "a | b | c" lines.
 
     The largest wikitable on the page is used rather than a hard-coded index:
@@ -225,7 +226,7 @@ def fetch(subject: str, limit: int = 16, timeout: int = 25) -> list[str] | None:
         return None
 
     tables = [_rows(t) for t in TABLE_RE.findall(body)]
-    tables = [t for t in tables if len(t) >= 6]
+    tables = [t for t in tables if len(t) > min_rows]
     if not tables:
         print(f"    reference '{subject}': no usable table on '{page}'")
         return None
@@ -236,8 +237,11 @@ def fetch(subject: str, limit: int = 16, timeout: int = 25) -> list[str] | None:
     data = [r for r in body_rows
             if any(NUM_RE.search(c) for c in r) and not _is_aggregate(r)]
     data = _rank(data)[:limit]
-    if len(data) < 6:
-        print(f"    reference '{subject}': only {len(data)} rows on '{page}'")
+    # A ranking shorter than the floor is not worth a post; better to drop
+    # the subject and let a plain tweet take the slot.
+    if len(data) < min_rows:
+        print(f"    reference '{subject}': only {len(data)} rows on '{page}' "
+              f"(need {min_rows})")
         return None
 
     lines = [" | ".join(header[:COLUMNS])]

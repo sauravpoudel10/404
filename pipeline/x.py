@@ -19,7 +19,14 @@ from .text import sanitize
 
 UPLOAD_URL = "https://api.x.com/2/media/upload"
 TWEETS_URL = "https://api.x.com/2/tweets"
+
+# 280 is the standard cap. This account is X Premium, which raises it to
+# 25,000 -- and a 20-row ranking needs about 550. The higher figure is kept
+# well below the ceiling because nothing here should ever approach it, and
+# `post` falls back to 280 if X refuses, so losing Premium degrades the
+# lists rather than breaking the job.
 MAX_LEN = 280
+LONG_MAX_LEN = 4000
 
 
 def _session() -> OAuth1Session:
@@ -36,9 +43,14 @@ def _session() -> OAuth1Session:
     )
 
 
-def clean_text(text: str) -> str:
-    """Strip links and hashtags, then fit inside X's 280-char limit."""
-    return sanitize(text, limit=MAX_LEN)
+def clean_text(text: str, limit: int = LONG_MAX_LEN) -> str:
+    """Strip links and hashtags, then fit inside X's limit.
+
+    `sanitize` drops whole rows from a multi-line post rather than cutting
+    mid-row, so a list that has to shrink loses its tail cleanly instead of
+    ending on a dangling flag.
+    """
+    return sanitize(text, limit=limit)
 
 
 def upload_image(jpeg: bytes) -> str:
@@ -98,12 +110,27 @@ def upload_video(mp4: bytes, timeout: int = 300) -> str:
     return media_id
 
 
-def post(text: str, media_id: str | None = None) -> str:
-    payload: dict = {"text": clean_text(text)}
+def _send(text: str, media_id: str | None):
+    payload: dict = {"text": text}
     if media_id:
         payload["media"] = {"media_ids": [media_id]}
+    return _session().post(TWEETS_URL, json=payload, timeout=60)
 
-    resp = _session().post(TWEETS_URL, json=payload, timeout=60)
+
+def post(text: str, media_id: str | None = None) -> str:
+    body = clean_text(text)
+    resp = _send(body, media_id)
+
+    # Posts over 280 rely on Premium. If that ever lapses X rejects the whole
+    # thing, so rather than lose the slot the list is trimmed to standard
+    # length -- whole rows at a time -- and sent again.
+    if resp.status_code not in (200, 201) and len(body) > MAX_LEN \
+            and resp.status_code in (400, 403):
+        short = clean_text(text, limit=MAX_LEN)
+        print(f"  X refused {len(body)} chars ({resp.status_code}); "
+              f"retrying at {len(short)}")
+        resp = _send(short, media_id)
+
     if resp.status_code not in (200, 201):
         raise RuntimeError(f"X post failed ({resp.status_code}): {resp.text[:300]}")
     return resp.json()["data"]["id"]
