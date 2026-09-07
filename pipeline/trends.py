@@ -27,6 +27,10 @@ COMPOSITION = {
         "- Describe a real-looking editorial PHOTOGRAPH in a VERTICAL 4:5 frame. It runs edge to edge behind the whole card, so it has to work as a picture in its own right.\n"
         "- COMPOSITION IS THE HARD CONSTRAINT: the subject sits in the LOWER TWO THIRDS of the frame. The top third stays open and uncluttered - sky, a plain wall, soft haze, empty depth - because the headline is set over it. Say so explicitly in the prompt you write."
     ),
+    "poster": (
+        "- Describe a real-looking editorial PHOTOGRAPH in a VERTICAL 4:5 frame. It fills the top three quarters of the card; the bottom of it is darkened to black and carries the headline.\n"
+        "- COMPOSITION IS THE HARD CONSTRAINT: the subject sits in the UPPER HALF of the frame and is clearly readable there. Leave the lower half simple and uncluttered - it is darkened almost to black, so anything important placed there is lost. Say so explicitly in the prompt you write."
+    ),
     "classic": (
         "- Describe a real-looking editorial PHOTOGRAPH in a WIDE 16:9 frame. Only a band across the top of it is shown, so the picture has to survive a hard crop.\n"
         "- COMPOSITION IS THE HARD CONSTRAINT: put the subject in the UPPER HALF of the frame and keep the whole thing simple - one clear subject, an uncluttered background, nothing important near the bottom edge. Say so explicitly in the prompt you write."
@@ -65,6 +69,8 @@ exactly this shape:
   "category_right": "ONE OR TWO WORDS",
   "headline_lead": "the subject, 1-3 words",
   "headline_rest": "what happened, 2-6 words",
+  "banner": "TWO TO FIVE WORDS, the reaction line",
+  "kicker": "THREE TO SIX WORDS, the supporting line",
   "description": [
     {{"text": "...", "color": "white"}},
     {{"text": "...", "color": "blue|red|green"}}
@@ -79,6 +85,12 @@ Rules for the headline:
 - `headline_rest` completes the clause and is where the number goes.
 - Sentence case, NOT all caps. Capitalise the lead as a proper noun; leave the rest lower case unless it is itself a name.
 - HARD LIMIT: 42 characters for the two pieces together. Count them. It must read as one plain English clause a stranger understands at a glance, and it should set on two lines at most. No colons, no dashes, no sub-clauses.
+
+Rules for banner and kicker:
+- `banner` is a short reaction to the story, set in white on a red block: "HOPE THE WORLD LISTENS !", "MUCH NEEDED !", "SOLD OUT IN HOURS !". Two to five words. It may end in an exclamation mark or an ellipsis. It is a reaction, NOT a restatement of the headline.
+- `kicker` is a quiet supporting line under the headline: "FOR THE PEOPLE, FOR NEPAL", "THE RESPECT WE GAINED", "WHAT IT MEANS FOR PRICES". Three to six words, no punctuation at the end.
+- Both are rendered in capitals, so write them in plain sentence case and do not shout in the JSON.
+- Neither may repeat the headline's wording. If the headline says "Groceries up 5.9%", the banner is not "GROCERIES UP 5.9%".
 
 Rules for the description array:
 - HARD LIMIT: concatenating every part's text must come to between 120 and 170 characters. Count them. It is set in large type over a photograph, so a longer paragraph gets shrunk to fit, covers the picture and loses its impact. Two short sentences is the target; three is already too many. Include spaces at the edges of each part where a space belongs.
@@ -119,6 +131,8 @@ CARD_SCHEMA = {
         "category_right": {"type": "string"},
         "headline_lead": {"type": "string"},
         "headline_rest": {"type": "string"},
+        "banner": {"type": "string"},
+        "kicker": {"type": "string"},
         "description": {
             "type": "array",
             "items": {
@@ -135,8 +149,8 @@ CARD_SCHEMA = {
         "caption": {"type": "string"},
     },
     "required": ["story_id", "headline_source", "category_left", "category_right",
-                 "headline_lead", "headline_rest", "description",
-                 "image_prompt", "caption"],
+                 "headline_lead", "headline_rest", "banner", "kicker",
+                 "description", "image_prompt", "caption"],
     "additionalProperties": False,
 }
 
@@ -228,8 +242,9 @@ def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
     text = "".join(b.text for b in resp.content if b.type == "text")
     content = _extract_json(text)
 
-    missing = ({"story_id", "headline_lead", "headline_rest", "description",
-                "image_prompt", "caption"} - content.keys())
+    missing = ({"story_id", "headline_lead", "headline_rest", "banner",
+                "kicker", "description", "image_prompt",
+                "caption"} - content.keys())
     if missing:
         raise ValueError(f"Model reply missing fields: {sorted(missing)}")
 

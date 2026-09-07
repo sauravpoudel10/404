@@ -26,35 +26,51 @@ from pipeline import assets, cards, meta, text, trends, video, x  # noqa: E402
 # actually sets the cadence.
 MIN_GAP_MINUTES = 100
 
-# Twelve cards a day, split evenly two ways: six in each design, six as
-# Reels and six as feed posts. Alternating the two independently off the
-# previous card would lock them together -- every Reel would end up in one
-# style and every feed post in the other -- so they rotate as PAIRS, and all
-# four combinations come round every four cards.
+# One full day, twelve slots. Eight posters, two classic, two feature -- and
+# six Reels against six feed posts. Style and format are laid out together
+# rather than alternated independently, because independent alternation locks
+# them: every Reel ends up in one design and every feed post in another. Here
+# each design appears in both formats.
 SLOT_PATTERN = [
-    ("feature", True),      # full-bleed portrait, as a Reel
-    ("classic", False),     # square photo band, as a feed post
-    ("feature", False),
+    ("poster", True),
+    ("poster", False),
     ("classic", True),
+    ("poster", False),
+    ("poster", True),
+    ("feature", False),
+    ("poster", True),
+    ("classic", False),
+    ("poster", True),
+    ("poster", False),
+    ("feature", True),
+    ("poster", False),
 ]
 
 
-def next_slot(cards_by_time) -> tuple[str, bool]:
-    """(style, as_reel) for this run, taken from where the last card sat.
+def next_slot(cards_by_time) -> tuple[int, str, bool]:
+    """(slot, style, as_reel) for this run, one on from the last card.
 
-    Derived from the previous card rather than the clock: the scheduler
-    fires far more often than it posts, so hour arithmetic no longer
-    alternates anything.
+    The slot index is stored on the card rather than re-derived: the pattern
+    now repeats (style, format) pairs, so looking one up by value would
+    always find the first occurrence and collapse the rotation onto the
+    first four slots.
+
+    Reading the previous card rather than the clock is what makes this hold
+    at all -- the scheduler fires far more often than it posts, so hour
+    arithmetic alternates nothing.
     """
     if not cards_by_time:
-        return SLOT_PATTERN[0]
+        return (0,) + SLOT_PATTERN[0]
     last = cards_by_time[-1]
-    previous = (last.get("style") or "feature", bool(last.get("video_file")))
-    try:
-        index = SLOT_PATTERN.index(previous)
-    except ValueError:
-        index = -1          # unrecognised (older card): restart the rotation
-    return SLOT_PATTERN[(index + 1) % len(SLOT_PATTERN)]
+    previous = last.get("slot")
+    if not isinstance(previous, int):
+        # An older card predates the index. Fall back to its style so the
+        # rotation resumes somewhere sensible instead of restarting.
+        style = last.get("style") or "feature"
+        previous = next((i for i, (st, _) in enumerate(SLOT_PATTERN)
+                         if st == style), -1)
+    index = (previous + 1) % len(SLOT_PATTERN)
+    return (index,) + SLOT_PATTERN[index]
 
 
 def main():
@@ -91,11 +107,12 @@ def main():
 
     cards_by_time = sorted(manifest.get("cards", []),
                            key=lambda c: c["created_at"])
-    slot_style, slot_reel = next_slot(cards_by_time)
+    slot, slot_style, slot_reel = next_slot(cards_by_time)
 
     style = slot_style if args.style == "auto" else args.style
     as_reel = slot_reel if args.mode == "auto" else args.mode == "reel"
-    print(f"→ slot: {style} card, {'REEL' if as_reel else 'feed post'}")
+    print(f"→ slot {slot}/{len(SLOT_PATTERN)}: {style} card, "
+          f"{'REEL' if as_reel else 'feed post'}")
 
     print("→ searching for a trending story")
     content = trends.find_story(seen, style=style)
@@ -117,7 +134,7 @@ def main():
         print(f"  {len(mp4) / 1024:.0f} KB MP4")
 
     print("→ publishing to GitHub Pages")
-    card = assets.publish_card(jpeg, content, mp4=mp4, style=style)
+    card = assets.publish_card(jpeg, content, mp4=mp4, style=style, slot=slot)
     print(f"  {card['url']}")
     if mp4:
         print(f"  {card['video_url']}")

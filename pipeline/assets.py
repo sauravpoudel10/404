@@ -161,7 +161,7 @@ def read_manifest() -> dict:
 
 
 def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None,
-                 style: str = "") -> dict:
+                 style: str = "", slot: int | None = None) -> dict:
     """Upload one card (and optionally its Reel), expire stale ones."""
     stamp = datetime.now(timezone.utc)
     slug = f"{stamp:%Y%m%d-%H%M%S}-{content['story_id'][:40]}"
@@ -181,6 +181,7 @@ def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None,
             "url": f"{config.PUBLIC_BASE_URL}/{rel}",
             "created_at": stamp.isoformat(),
             "style": style,
+            "slot": slot,
             "caption": content.get("caption", ""),
             "posted": {"instagram": False, "facebook": False,
                        "x": False, "tiktok": False},

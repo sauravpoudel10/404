@@ -120,8 +120,49 @@ CLASSIC_HEADLINE_FONT_STACK = (
     "'Anton', Impact, 'Arial Black', 'Helvetica Neue', sans-serif"
 )
 
-STYLES = ("classic", "feature")
-DEFAULT_STYLE = "feature"
+# --- the poster card -------------------------------------------------------
+# Photograph across the top, a heavy red all-caps headline over its darkened
+# lower edge, a red badge line, the mark, then a solid black block carrying
+# the paragraph in serif. Built bottom-up from the footer, because the black
+# block has to end where the copy ends however long the copy runs.
+POSTER_MARGIN = 56
+POSTER_TAGLINE_Y = 1306          # baselines, measured up from the bottom edge
+POSTER_WORDMARK_Y = 1268
+POSTER_DIVIDER_Y = 1222
+POSTER_DIVIDER_W = 430
+POSTER_BODY_BOTTOM = 1180        # baseline of the LAST body line
+POSTER_BODY_FONT_SIZE = 47
+POSTER_BODY_MIN_FONT_SIZE = 33
+POSTER_BODY_LINE_RATIO = 1.30
+POSTER_PANEL_PAD = 40            # black above the first body line
+POSTER_LOGO_SIZE = 54
+POSTER_LOGO_GAP = 40             # tile bottom to panel top
+POSTER_BADGE_H = 60
+POSTER_BADGE_GAP = 30            # badge bottom to tile top
+POSTER_BADGE_FONT_SIZE = 31
+POSTER_BADGE_PAD_X = 30
+POSTER_KICKER_SIZE = 21
+POSTER_KICKER_GAP = 30           # headline baseline to kicker baseline
+POSTER_HEADLINE_GAP = 34         # kicker baseline to headline block bottom
+POSTER_HEADLINE_FONT_SIZE = 100
+POSTER_HEADLINE_MIN_FONT_SIZE = 50
+POSTER_HEADLINE_LINE_RATIO = 1.02
+POSTER_FADE_LEAD = 190           # clear photo above the headline
+POSTER_FADE_AT_HEADLINE = 0.90   # opacity by the time the headline starts
+
+# Red, green and amber on black. The description schema carries "blue", which
+# has no place in this palette, so it renders as the amber the design uses in
+# its stead -- one content shape still serves all three card styles.
+POSTER_COLORS = {
+    "white": "#FFFFFF",
+    "red": "#E5261F",
+    "green": "#12A150",
+    "blue": "#F0B429",
+}
+POSTER_RED = POSTER_COLORS["red"]
+
+STYLES = ("classic", "feature", "poster")
+DEFAULT_STYLE = "poster"
 
 
 def canvas_for(style: str) -> tuple[int, int]:
@@ -129,6 +170,15 @@ def canvas_for(style: str) -> tuple[int, int]:
     if style == "classic":
         return CLASSIC_CANVAS, CLASSIC_CANVAS
     return CANVAS_W, CANVAS_H
+
+
+# What the photograph has to survive in each style, so the brief can ask for
+# the right composition rather than one that gets cropped away.
+PHOTO_ZONE = {
+    "classic": "a wide band across the top",
+    "feature": "the whole frame, with the copy over the top third",
+    "poster": "the top three quarters, with the lower part darkened",
+}
 
 
 def aspect_for(style: str) -> str:
@@ -140,6 +190,10 @@ def aspect_for(style: str) -> str:
     return "16:9" if style == "classic" else IMAGE_ASPECT_RATIO
 
 
+def uses_serif(style: str) -> bool:
+    return style == "poster"
+
+
 # Two static weights cut out of Inter's variable font (see ensure_fonts).
 # They are separate FAMILIES rather than two weights of one family because
 # resvg matches on family name and will not synthesise a bold.
@@ -148,38 +202,55 @@ TEXT_FAMILY = "Card404Text"
 HEADLINE_FONT_STACK = f"'{BOLD_FAMILY}', 'Helvetica Neue', Arial, sans-serif"
 BODY_FONT_STACK = f"'{TEXT_FAMILY}', 'Helvetica Neue', Arial, sans-serif"
 
+SERIF_FAMILY = "Card404Serif"
+SERIF_BOLD_FAMILY = "Card404SerifBold"
+SERIF_FONT_STACK = f"'{SERIF_FAMILY}', Georgia, 'Times New Roman', serif"
+SERIF_BOLD_FONT_STACK = f"'{SERIF_BOLD_FAMILY}', Georgia, 'Times New Roman', serif"
+
 EMBED_FONTS = True
 FONT_FILES = {
     "bold": str(SCRIPT_DIR / f"{BOLD_FAMILY}.ttf"),
     "text": str(SCRIPT_DIR / f"{TEXT_FAMILY}.ttf"),
+    "serif": str(SCRIPT_DIR / f"{SERIF_FAMILY}.ttf"),
+    "serifbold": str(SCRIPT_DIR / f"{SERIF_BOLD_FAMILY}.ttf"),
     "anton": str(SCRIPT_DIR / "Anton-Regular.ttf"),   # classic headline
 }
 FONT_DOWNLOAD_URLS = {
     "anton": "https://raw.githubusercontent.com/google/fonts/main/ofl/anton/"
              "Anton-Regular.ttf",
 }
-FONT_WEIGHTS = {"bold": 800, "text": 400}
+
 INTER_VARIABLE_URL = (
     "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/"
     "Inter%5Bopsz,wght%5D.ttf"
 )
+SERIF_VARIABLE_URL = (
+    "https://raw.githubusercontent.com/google/fonts/main/ofl/sourceserif4/"
+    "SourceSerif4%5Bopsz,wght%5D.ttf"
+)
+# key -> (variable font, weight, other axes). Both families ship only as
+# variable fonts, and resvg renders the default instance whatever
+# `font-weight` the SVG asks for, so each weight has to become its own file
+# under its own family name.
+FONT_CUTS = {
+    "bold": (INTER_VARIABLE_URL, 800, {"opsz": 28}),
+    "text": (INTER_VARIABLE_URL, 400, {"opsz": 28}),
+    "serifbold": (SERIF_VARIABLE_URL, 700, {"opsz": 20}),
+    "serif": (SERIF_VARIABLE_URL, 400, {"opsz": 20}),
+}
 
 
-def _cut_static_weight(raw: bytes, weight: int, family: str, path: str):
-    """Freeze the variable font at one weight and rename it to `family`.
-
-    Inter ships only as a variable font, and resvg renders its default
-    instance whatever `font-weight` the SVG asks for -- so a bold subject
-    and a regular remainder on the same line have to arrive as two separate
-    files under two distinct family names.
-    """
+def _cut_static_weight(raw: bytes, weight: int, family: str, path: str,
+                       axes: dict | None = None):
+    """Freeze the variable font at one weight and rename it to `family`."""
     import io as _io
 
     from fontTools.ttLib import TTFont
     from fontTools.varLib import instancer
 
     font = instancer.instantiateVariableFont(
-        TTFont(_io.BytesIO(raw)), {"wght": weight, "opsz": 28}, inplace=False
+        TTFont(_io.BytesIO(raw)), {"wght": weight, **(axes or {})},
+        inplace=False,
     )
     name = font["name"]
     name.setName(family, 1, 3, 1, 0x409)       # family
@@ -192,7 +263,7 @@ def _cut_static_weight(raw: bytes, weight: int, family: str, path: str):
 
 
 def ensure_fonts():
-    """Build the two card fonts once, into the working folder.
+    """Build the card fonts once, into the working folder.
 
     Never raises: on any failure the SVG falls back to the system stacks
     above, and the layout measurements fall back to character estimates.
@@ -216,18 +287,27 @@ def ensure_fonts():
             print(f"Could not download {os.path.basename(missing[key])} ({e}); "
                   "using system font fallback.")
 
-    cut = {k: v for k, v in missing.items() if k in FONT_WEIGHTS}
-    if not cut:
-        return
-    try:
-        resp = requests.get(INTER_VARIABLE_URL, timeout=60)
-        resp.raise_for_status()
-        for key, path in cut.items():
-            _cut_static_weight(resp.content, FONT_WEIGHTS[key],
-                               Path(path).stem, path)
-            print(f"Built {os.path.basename(path)}")
-    except Exception as e:
-        print(f"Could not build card fonts ({e}); using system font fallback.")
+    # Group by source file so each variable font is fetched once even though
+    # two weights are cut from it.
+    wanted = {k: FONT_CUTS[k] for k in missing if k in FONT_CUTS}
+    for url in dict.fromkeys(spec[0] for spec in wanted.values()):
+        try:
+            resp = requests.get(url, timeout=60)
+            resp.raise_for_status()
+        except Exception as e:
+            print(f"Could not fetch {url.rsplit('/', 1)[-1]} ({e}); "
+                  "using system font fallback.")
+            continue
+        for key, (src, weight, axes) in wanted.items():
+            if src != url:
+                continue
+            try:
+                _cut_static_weight(resp.content, weight,
+                                   Path(FONT_FILES[key]).stem,
+                                   FONT_FILES[key], axes)
+                print(f"Built {os.path.basename(FONT_FILES[key])}")
+            except Exception as e:
+                print(f"Could not build {os.path.basename(FONT_FILES[key])} ({e})")
 
 
 COLORS = {
@@ -566,6 +646,11 @@ def anton_available() -> bool:
     return bool(EMBED_FONTS and os.path.exists(FONT_FILES["anton"]))
 
 
+def serif_available() -> bool:
+    return bool(EMBED_FONTS and all(os.path.exists(FONT_FILES[k])
+                                    for k in ("serif", "serifbold")))
+
+
 def embed_font_css() -> str:
     """@font-face CSS for the card fonts, so the standalone .svg renders the
     same in a browser. The PNG path ignores this and loads the .ttf files
@@ -595,7 +680,8 @@ def font_families():
 # rather than the ink bounding box, because runs are concatenated on a line
 # and only advances add up correctly. Without the files we fall back to a
 # deliberately pessimistic character estimate.
-_FALLBACK_CHAR_RATIO = {"bold": 0.62, "text": 0.55}
+_FALLBACK_CHAR_RATIO = {"bold": 0.62, "text": 0.55,
+                        "serifbold": 0.56, "serif": 0.50, "anton": 0.42}
 
 
 def _run_width(text: str, key: str, size: float) -> float:
@@ -995,6 +1081,241 @@ def build_svg_classic(content: dict, image: tuple[str, str] | None) -> str:
 {body_svg}</svg>'''
 
 
+# --------------------------------------------------------------------------
+# STEP 3d - the poster card: layout and renderer
+# --------------------------------------------------------------------------
+def poster_body_tspans(line_tokens) -> str:
+    """Render one wrapped line: coloured phrases bold, connective text not.
+
+    The weight carries as much of the emphasis as the colour does -- a
+    highlighted phrase in the same weight as the rest reads as a typo.
+    """
+    out = []
+    for i, token in enumerate(line_tokens):
+        if i:
+            out.append(" ")
+        for subtext, color in token:
+            family = SERIF_FONT_STACK if color == "white" else SERIF_BOLD_FONT_STACK
+            out.append(f'<tspan font-family="{family}" '
+                       f'fill="{POSTER_COLORS[color]}">{escape(subtext)}</tspan>')
+    return "".join(out)
+
+
+def _poster_wrap(tokens, max_width: float, size: float) -> list[list]:
+    """Wrap on serif metrics, measuring bold where the token is highlighted."""
+    space = _run_width(" ", "serif", size)
+    lines, current, used = [], [], 0.0
+    for token in tokens:
+        width = sum(_run_width(t, "serif" if c == "white" else "serifbold", size)
+                    for t, c in token)
+        advance = width + (space if current else 0.0)
+        if current and used + advance > max_width:
+            lines.append(current)
+            current, used = [token], width
+        else:
+            current.append(token)
+            used += advance
+    if current:
+        lines.append(current)
+    return lines or [[]]
+
+
+def _fit_centred(text: str, key: str, max_width: float,
+                 base: float, minimum: float) -> float:
+    """Largest size at or below `base` that keeps `text` inside `max_width`."""
+    width = _run_width(text, key, base)
+    if width <= max_width or width == 0:
+        return base
+    return max(minimum, base * max_width / width)
+
+
+class PosterLayout(NamedTuple):
+    body_size: float
+    body_line_height: float
+    body_lines: list
+    body_first_y: float
+    panel_top: float
+    logo_y: float
+    badge_cy: float
+    kicker_y: float
+    headline_size: float
+    headline_lines: list[str]
+    headline_baselines: list[float]
+
+
+def layout_poster(headline: str, kicker: str, tokens) -> PosterLayout:
+    """Stack everything upward from the footer.
+
+    The black panel starts wherever the paragraph starts, so a short card
+    shows more photograph and a long one still ends level with the footer.
+    The body is stepped down until the whole stack clears the top of the
+    frame, since the headline sits above it and cannot run off the card.
+    """
+    max_width = CANVAS_W - 2 * POSTER_MARGIN
+
+    for size in range(POSTER_BODY_FONT_SIZE, POSTER_BODY_MIN_FONT_SIZE - 1, -1):
+        lines = _poster_wrap(tokens, max_width, size)
+        line_height = size * POSTER_BODY_LINE_RATIO
+        first_y = POSTER_BODY_BOTTOM - (len(lines) - 1) * line_height
+
+        panel_top = first_y - size * 0.86 - POSTER_PANEL_PAD
+        logo_y = panel_top - POSTER_LOGO_GAP - POSTER_LOGO_SIZE
+        badge_cy = logo_y - POSTER_BADGE_GAP - POSTER_BADGE_H / 2
+        kicker_y = badge_cy - POSTER_BADGE_H / 2 - POSTER_KICKER_GAP
+
+        headline_lines = classic_split_headline(headline)
+        headline_size = min(
+            _fit_centred(line, "anton", max_width,
+                         POSTER_HEADLINE_FONT_SIZE, POSTER_HEADLINE_MIN_FONT_SIZE)
+            for line in headline_lines
+        )
+        step = headline_size * POSTER_HEADLINE_LINE_RATIO
+        last = kicker_y - POSTER_HEADLINE_GAP
+        baselines = [last - step * (len(headline_lines) - 1 - i)
+                     for i in range(len(headline_lines))]
+
+        top = baselines[0] - headline_size * 0.75
+        if top >= 250 or size == POSTER_BODY_MIN_FONT_SIZE:
+            return PosterLayout(size, line_height, lines, first_y, panel_top,
+                                logo_y, badge_cy, kicker_y,
+                                headline_size, headline_lines, baselines)
+
+
+def build_svg_poster(content: dict, image: tuple[str, str] | None) -> str:
+    headline = (content.get("headline") or "").upper()
+    kicker = (content.get("kicker") or "").upper()
+    banner = (content.get("banner") or "").upper()
+
+    desc_text, desc_spans = build_color_map(content["description"])
+    tokens = get_word_tokens(desc_text, desc_spans)
+    layout = layout_poster(headline, kicker, tokens)
+
+    if image:
+        image_b64, mime = brighten_photo(*image)
+        background = (
+            f'<image href="data:{mime};base64,{image_b64}" x="0" y="0" '
+            f'width="{CANVAS_W}" height="{layout.panel_top:.0f}" '
+            f'preserveAspectRatio="xMidYMid slice"/>'
+        )
+    else:
+        background = (f'<rect width="{CANVAS_W}" height="{layout.panel_top:.0f}" '
+                      f'fill="#141414"/>')
+
+    # Headline: drawn twice, a near-black copy offset behind the red one, so
+    # it holds up over a bright photo without a filter resvg may not honour.
+    headline_svg = ""
+    for line, y in zip(layout.headline_lines, layout.headline_baselines):
+        for dx, dy, fill, opacity in ((4, 5, "#000000", "0.55"),
+                                      (0, 0, POSTER_RED, "1")):
+            headline_svg += (
+                f'  <text x="{CANVAS_W / 2 + dx:.0f}" y="{y + dy:.1f}" '
+                f'text-anchor="middle" font-family="{CLASSIC_HEADLINE_FONT_STACK}" '
+                f'font-size="{layout.headline_size:.1f}" font-weight="900" '
+                f'fill="{fill}" fill-opacity="{opacity}">{escape(line)}</text>\n'
+            )
+
+    kicker_svg = ""
+    if kicker:
+        kicker_svg = (
+            f'<text x="{CANVAS_W - POSTER_MARGIN}" y="{layout.kicker_y:.1f}" '
+            f'text-anchor="end" font-family="{BODY_FONT_STACK}" '
+            f'font-size="{POSTER_KICKER_SIZE}" letter-spacing="1.4" '
+            f'fill="#C6C6C6">{escape(kicker)}</text>'
+        )
+
+    badge_svg = ""
+    if banner:
+        badge_size = _fit_centred(banner, "serifbold",
+                                  CANVAS_W - 2 * POSTER_MARGIN - 2 * POSTER_BADGE_PAD_X,
+                                  POSTER_BADGE_FONT_SIZE, 20)
+        badge_w = _run_width(banner, "serifbold", badge_size) + 2 * POSTER_BADGE_PAD_X
+        badge_svg = (
+            f'<rect x="{(CANVAS_W - badge_w) / 2:.1f}" '
+            f'y="{layout.badge_cy - POSTER_BADGE_H / 2:.1f}" '
+            f'width="{badge_w:.1f}" height="{POSTER_BADGE_H}" rx="3" '
+            f'fill="{POSTER_RED}"/>\n'
+            f'  <text x="{CANVAS_W / 2:.0f}" '
+            f'y="{layout.badge_cy + badge_size * 0.35:.1f}" text-anchor="middle" '
+            f'font-family="{SERIF_BOLD_FONT_STACK}" font-size="{badge_size:.1f}" '
+            f'letter-spacing="0.6" fill="#FFFFFF">{escape(banner)}</text>'
+        )
+
+    body_svg = ""
+    for i, line in enumerate(layout.body_lines):
+        y = layout.body_first_y + i * layout.body_line_height
+        body_svg += (
+            f'  <text x="{POSTER_MARGIN}" y="{y:.1f}" xml:space="preserve" '
+            f'font-size="{layout.body_size:.1f}">'
+            f'{poster_body_tspans(line)}</text>\n'
+        )
+
+    logo_cx = CANVAS_W / 2
+    logo_baseline = (layout.logo_y + POSTER_LOGO_SIZE / 2
+                     + POSTER_LOGO_SIZE * 0.38 * 0.727)
+
+    # The fade has to be all but complete where the headline begins, so the
+    # stop is placed at the headline rather than at a fixed fraction.
+    headline_top = layout.headline_baselines[0] - layout.headline_size * 0.78
+    fade_top = max(0.0, headline_top - POSTER_FADE_LEAD)
+    span = max(1.0, layout.panel_top - fade_top)
+    headline_stop = min(0.95, max(0.05, (headline_top - fade_top) / span))
+
+    return f'''<svg width="{CANVAS_W}" height="{CANVAS_H}" viewBox="0 0 {CANVAS_W} {CANVAS_H}"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <rect x="0" y="0" width="{CANVAS_W}" height="{CANVAS_H}" fill="#000000"/>
+
+  <!-- photograph, top three quarters -->
+  {background}
+
+  <defs>
+    <!-- The photo does not stop at the panel, it dies into it, so the red
+         headline sits on black rather than on whatever the picture had there. -->
+    <linearGradient id="postfade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="{headline_stop * 100:.1f}%" stop-color="#000000"
+            stop-opacity="{POSTER_FADE_AT_HEADLINE}"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="1"/>
+    </linearGradient>
+    <style>{embed_font_css()}</style>
+  </defs>
+
+  <rect x="0" y="{fade_top:.0f}" width="{CANVAS_W}"
+        height="{layout.panel_top - fade_top:.0f}" fill="url(#postfade)"/>
+  <rect x="0" y="{layout.panel_top:.0f}" width="{CANVAS_W}"
+        height="{CANVAS_H - layout.panel_top:.0f}" fill="#000000"/>
+
+  <!-- headline -->
+{headline_svg}
+  {kicker_svg}
+
+  <!-- badge -->
+  {badge_svg}
+
+  <!-- mark -->
+  <rect x="{logo_cx - POSTER_LOGO_SIZE / 2:.0f}" y="{layout.logo_y:.0f}"
+        width="{POSTER_LOGO_SIZE}" height="{POSTER_LOGO_SIZE}" rx="14"
+        fill="#FFFFFF"/>
+  <text x="{logo_cx:.0f}" y="{logo_baseline:.1f}" text-anchor="middle"
+        font-family="{HEADLINE_FONT_STACK}"
+        font-size="{POSTER_LOGO_SIZE * 0.38:.0f}" letter-spacing="-0.8"
+        fill="#0A0B0D">404</text>
+
+  <!-- paragraph -->
+{body_svg}
+
+  <!-- footer -->
+  <rect x="{(CANVAS_W - POSTER_DIVIDER_W) / 2:.0f}" y="{POSTER_DIVIDER_Y}"
+        width="{POSTER_DIVIDER_W}" height="1" fill="#4A3A3A"/>
+  <text x="{CANVAS_W / 2:.0f}" y="{POSTER_WORDMARK_Y}" text-anchor="middle"
+        font-family="{HEADLINE_FONT_STACK}" font-size="26" letter-spacing="9"
+        fill="#EDEDED">404</text>
+  <text x="{CANVAS_W / 2:.0f}" y="{POSTER_TAGLINE_Y}" text-anchor="middle"
+        font-family="{BODY_FONT_STACK}" font-size="18" letter-spacing="1.2"
+        fill="#8E8E8E">@404notfoundmedi</text>
+</svg>'''
+
+
 # How dark the scrim is over the copy, and how much of the photo is left
 # alone below it. A fixed gradient cannot serve both: a two-line card wants
 # the photo back early, while a five-line one needs cover further down --
@@ -1033,6 +1354,8 @@ def build_svg(content: dict, image: tuple[str, str] | None,
     """Render the card in either style. See STYLES."""
     if style == "classic":
         return build_svg_classic(content, image)
+    if style == "poster":
+        return build_svg_poster(content, image)
     return build_svg_feature(content, image)
 
 

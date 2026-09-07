@@ -17,9 +17,9 @@ on:
         options: [auto, reel, post]
         default: auto
       style:
-        description: "Card design (auto rotates six of each per day)"
+        description: "Card design (auto rotates 8 poster / 2 classic / 2 feature a day)"
         type: choice
-        options: [auto, classic, feature]
+        options: [auto, poster, classic, feature]
         default: auto
 
 # Needed to force-push the gh-pages branch that hosts the card images.
