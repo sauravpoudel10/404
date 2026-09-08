@@ -55,7 +55,7 @@ load_dotenv(SCRIPT_DIR / ".env")
 # --------------------------------------------------------------------------
 MODEL = "claude-sonnet-5"
 IMAGE_MODEL = "models/gemini-3.1-flash-lite-image"
-IMAGE_ASPECT_RATIO = "3:4"    # portrait source, so the full-bleed crop loses little
+IMAGE_ASPECT_RATIO = "4:5"    # the canvas ratio exactly, so nothing is cropped away
 
 # 4:5 portrait. It is the tallest ratio Instagram and Facebook show uncropped
 # in the feed, so the card takes about 25% more screen than the old square.
@@ -126,29 +126,29 @@ CLASSIC_HEADLINE_FONT_STACK = (
 # the paragraph in serif. Built bottom-up from the footer, because the black
 # block has to end where the copy ends however long the copy runs.
 POSTER_MARGIN = 56
-POSTER_TAGLINE_Y = 1306          # baselines, measured up from the bottom edge
-POSTER_WORDMARK_Y = 1268
-POSTER_DIVIDER_Y = 1222
+POSTER_TAGLINE_Y = 1318          # baselines, measured up from the bottom edge
+POSTER_WORDMARK_Y = 1284
+POSTER_DIVIDER_Y = 1240
 POSTER_DIVIDER_W = 430
-POSTER_BODY_BOTTOM = 1180        # baseline of the LAST body line
-POSTER_BODY_FONT_SIZE = 47
+POSTER_BODY_BOTTOM = 1198        # baseline of the LAST body line
+POSTER_BODY_FONT_SIZE = 45
 POSTER_BODY_MIN_FONT_SIZE = 33
-POSTER_BODY_LINE_RATIO = 1.30
-POSTER_PANEL_PAD = 40            # black above the first body line
-POSTER_LOGO_SIZE = 54
-POSTER_LOGO_GAP = 40             # tile bottom to panel top
-POSTER_BADGE_H = 60
-POSTER_BADGE_GAP = 30            # badge bottom to tile top
+POSTER_BODY_LINE_RATIO = 1.26
+POSTER_PANEL_PAD = 30            # black above the first body line
+POSTER_LOGO_SIZE = 48
+POSTER_LOGO_GAP = 24             # tile bottom to panel top
+POSTER_BADGE_H = 54
+POSTER_BADGE_GAP = 20            # badge bottom to tile top
 POSTER_BADGE_FONT_SIZE = 31
 POSTER_BADGE_PAD_X = 30
 POSTER_KICKER_SIZE = 21
-POSTER_KICKER_GAP = 30           # headline baseline to kicker baseline
-POSTER_HEADLINE_GAP = 34         # kicker baseline to headline block bottom
+POSTER_KICKER_GAP = 26           # headline baseline to kicker baseline
+POSTER_HEADLINE_GAP = 24         # kicker baseline to headline block bottom
 POSTER_HEADLINE_FONT_SIZE = 100
 POSTER_HEADLINE_MIN_FONT_SIZE = 50
 POSTER_HEADLINE_LINE_RATIO = 1.02
-POSTER_FADE_LEAD = 190           # clear photo above the headline
-POSTER_FADE_AT_HEADLINE = 0.90   # opacity by the time the headline starts
+POSTER_FADE_LEAD = 120           # clear photo above the headline
+POSTER_FADE_AT_HEADLINE = 0.78   # opacity by the time the headline starts
 
 # Red, green and amber on black. The description schema carries "blue", which
 # has no place in this palette, so it renders as the amber the design uses in
@@ -1205,7 +1205,7 @@ def build_svg_poster(content: dict, image: tuple[str, str] | None) -> str:
     # it holds up over a bright photo without a filter resvg may not honour.
     headline_svg = ""
     for line, y in zip(layout.headline_lines, layout.headline_baselines):
-        for dx, dy, fill, opacity in ((4, 5, "#000000", "0.55"),
+        for dx, dy, fill, opacity in ((5, 6, "#000000", "0.70"),
                                       (0, 0, POSTER_RED, "1")):
             headline_svg += (
                 f'  <text x="{CANVAS_W / 2 + dx:.0f}" y="{y + dy:.1f}" '
