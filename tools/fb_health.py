@@ -71,6 +71,27 @@ def main() -> int:
             "Missing scope read_insights — reach cannot be measured, so a "
             "distribution problem is indistinguishable from a display one.")
 
+    rule("app")
+    app_id = info.get("app_id")
+    app = requests.get(f"{G}/{app_id}", timeout=30, params={
+        "access_token": system_token, "fields": "name,privacy_policy_url",
+    }).json()
+    print(f"  name               {app.get('name')}")
+    print(f"  privacy_policy_url {app.get('privacy_policy_url') or '(unset)'}")
+    # Meta refuses to switch an app to Live without a privacy policy URL, so
+    # an unset one means the app is still in Development mode -- and content
+    # published by a Development-mode app is visible ONLY to people with a
+    # role on the app. That is the whole "posts exist but nobody can see
+    # them" symptom, and no amount of posting differently changes it.
+    if not app.get("privacy_policy_url"):
+        problems.append(
+            "App has no privacy policy URL, so it cannot be Live: it is in "
+            "Development mode, and Facebook shows Development-mode posts ONLY "
+            "to people with a role on the app. Followers see nothing and "
+            "permalinks read as invalid. Fix: developers.facebook.com -> app "
+            "-> Settings -> Basic -> set Privacy Policy URL, then switch the "
+            "top-bar toggle from In development to Live.")
+
     rule("page")
     page = requests.get(f"{G}/{page_id}", timeout=30, params={
         "access_token": page_token,
