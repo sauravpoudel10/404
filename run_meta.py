@@ -125,7 +125,9 @@ def main():
 
     print("→ generating card")
     jpeg = cards.render_jpeg(content, use_batch=not args.no_batch, style=style)
-    print(f"  {len(jpeg) / 1024:.0f} KB JPEG")
+    image_status = dict(cards.automate.IMAGE_STATUS)
+    print(f"  {len(jpeg) / 1024:.0f} KB JPEG, photo via {image_status['source'] or '?'}"
+          + (f" ({image_status['note']})" if image_status["note"] else ""))
 
     mp4 = None
     if as_reel:
@@ -134,7 +136,8 @@ def main():
         print(f"  {len(mp4) / 1024:.0f} KB MP4")
 
     print("→ publishing to GitHub Pages")
-    card = assets.publish_card(jpeg, content, mp4=mp4, style=style, slot=slot)
+    card = assets.publish_card(jpeg, content, mp4=mp4, style=style, slot=slot,
+                               image=image_status)
     print(f"  {card['url']}")
     if mp4:
         print(f"  {card['video_url']}")

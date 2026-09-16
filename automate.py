@@ -67,7 +67,11 @@ OUTPUT_PATH = "404_card.svg"
 # Batch polling. A batch job is asynchronous by design; these bounds only
 # decide how long WE are willing to sit and wait before giving up.
 BATCH_POLL_SECONDS = 10
-BATCH_TIMEOUT_SECONDS = 30 * 60
+BATCH_TIMEOUT_SECONDS = 5 * 60   # then fall back to realtime, see generate_backgrounds
+
+# What happened to the last image request, for the manifest. A dark card
+# with no record of why is what made the batch stall invisible for 36 hours.
+IMAGE_STATUS = {"source": "", "note": ""}
 
 MARGIN_X = 72                 # left margin used by every element
 
@@ -514,16 +518,45 @@ def generate_backgrounds_sync(prompts: list[str], aspect: str = IMAGE_ASPECT_RAT
 
 def generate_backgrounds(prompts: list[str], use_batch: bool,
                          aspect: str = IMAGE_ASPECT_RATIO):
+    """Batch first for the discount, realtime for anything batch did not
+    deliver. A card without a photograph is a worse outcome than paying full
+    price for one, so the fallback is unconditional."""
+    IMAGE_STATUS.update(source="", note="")
     if not GEMINI_API_KEY:
         print("No GEMINI_API_KEY set -- using plain dark backgrounds instead.")
+        IMAGE_STATUS.update(source="none", note="GEMINI_API_KEY not set")
         return [None] * len(prompts)
+
+    results: list = [None] * len(prompts)
+    notes: list[str] = []
+
+    if use_batch:
+        try:
+            results = generate_backgrounds_batch(prompts, aspect)
+            if all(results):
+                IMAGE_STATUS.update(source="batch", note="")
+                return results
+            notes.append(f"batch returned {sum(1 for r in results if r)}/{len(results)}")
+        except Exception as e:
+            notes.append(f"batch failed: {type(e).__name__}: {str(e)[:160]}")
+        print(f"  {notes[-1]} -- retrying realtime")
+
+    missing = [i for i, r in enumerate(results) if not r]
     try:
-        if use_batch:
-            return generate_backgrounds_batch(prompts, aspect)
-        return generate_backgrounds_sync(prompts, aspect)
+        retried = generate_backgrounds_sync([prompts[i] for i in missing], aspect)
+        for i, img in zip(missing, retried):
+            results[i] = img
     except Exception as e:
-        print(f"Image generation failed ({e}) -- using plain dark backgrounds instead.")
-        return [None] * len(prompts)
+        notes.append(f"realtime failed: {type(e).__name__}: {str(e)[:160]}")
+
+    if all(results):
+        IMAGE_STATUS.update(source="realtime" if missing else "batch",
+                            note="; ".join(notes))
+    else:
+        IMAGE_STATUS.update(source="none", note="; ".join(notes) or "no image returned")
+        print(f"Image generation failed ({IMAGE_STATUS['note']}) -- "
+              "using plain dark backgrounds instead.")
+    return results
 
 
 # --------------------------------------------------------------------------
