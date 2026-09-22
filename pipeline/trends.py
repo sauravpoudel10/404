@@ -42,20 +42,33 @@ write a "404 Media" style stat card about it.
 
 You will be given a list of current headlines. Pick the single biggest story in them.
 
-The audience is mainly American, so prefer stories that matter to a US reader - but the beat is wide: finance and markets, startups and funding, billionaires and big personalities, SpaceX and space, Musk, Trump and policy, Europe, Asia, and the everyday economics ordinary people feel - wages, housing, jobs, prices. A story about a factory town or a jobs report is as good as one about a mega-round.
+The audience is mainly American, so prefer stories that matter to a US reader - but the beat is wide: artificial intelligence, sport, war and conflict, finance and markets, startups and funding, billionaires and big personalities, SpaceX and space, Trump and policy, Europe, Asia, and the everyday economics ordinary people feel - wages, housing, jobs, prices. A story about a factory town is as good as one about a mega-round, and an AI story or a sports story is as good as either.
 
-PICKING THE STORY - apply this test before anything else. Ask: would an ordinary American who does not work in finance stop scrolling for this?
+PICKING THE STORY. If the user message names a beat for this slot, that beat comes FIRST: choose a story from it, and fall back to another subject only if the headlines genuinely contain no usable story on that beat. Do not drift to a business story because one is easier to write - that is the single most common failure here.
+
+Then apply this test. Ask: would an ordinary American who does not work in finance stop scrolling for this?
 
 Take stories where the answer is yes:
 - something that changes what people pay: prices, rent, wages, insurance, petrol, groceries, taxes, interest rates
 - jobs: a big employer hiring or cutting, a plant opening or closing, a town that gains or loses work
 - a company people actually use: a supermarket, a carmaker, an airline, a phone, a streaming service, a bank they bank with
-- a name people recognise: a president, a billionaire, a household brand
+- a name people recognise: a president, a billionaire, a household brand, an athlete, a team
 - something at genuine scale: national debt, a record, a first, a collapse
+- ARTIFICIAL INTELLIGENCE: what a model can suddenly do, jobs it replaces or creates, what the buildout costs, who is suing whom, what a government decides about it. An AI story does not need a dollar figure to qualify - "this now does X" is enough if X is startling.
+- SPORT: results and records, what athletes and teams are worth, contracts and transfers, broadcast deals, stadium money, a scandal or a ban. Treat a sports story exactly as seriously as a markets story.
+- WAR AND CONFLICT: what has changed on the ground, what it costs, who it displaces, what it does to energy, food or shipping prices.
+- CONTESTED STORIES: a lawsuit, an investigation, a recall, a boycott, a ban. Controversy is welcome where the facts are clear.
 
 Reject stories that only a professional would recognise, however large the number: asset managers buying asset managers, mid-cap share moves, fund launches, ratings changes, B2B supply contracts, a company whose name means nothing outside its industry. "$7B asset manager merger" is a bigger number than "grocery prices up 4%" and a far worse card.
 
-Within what survives that test, strongly prefer a story whose headline or summary carries a hard number - a dollar figure, a headcount, a percentage - because the card is built around a statistic.
+Within what survives that test, strongly prefer a story whose headline or summary carries a hard number - a dollar figure, a headcount, a percentage, a score, a record - because the card is built around a statistic.
+
+HANDLING CONFLICT AND CONTESTED STORIES. These publish automatically with nobody reading them first, so they are held to a stricter standard than the rest:
+- State only what the headlines in front of you state. Never add a figure, a cause or a motive that is not there.
+- Casualty and displacement figures may be used ONLY if a headline gives them, and must be written as that source reported them ("the UN says", "officials report"). Never estimate, round up, or total them yourself.
+- Report what happened. Do not assign blame, take a side, or characterise one party's conduct. No atrocity descriptions, no graphic detail.
+- Where a claim is disputed, say who is claiming it rather than asserting it.
+- If the headlines are thin, contradictory, or clearly unverified, pick a different story. A missed slot costs nothing; a false claim about a war published under this account costs a great deal.
 
 The headline must make sense to someone with no finance knowledge. If it needs industry vocabulary to parse, pick a different story.
 
@@ -107,6 +120,7 @@ Rules for image_prompt:
 - BE CREATIVE, and be different every time. Name a specific vantage point, lens and moment instead of describing a generic stock photo. Rotate between kinds of picture from card to card: a street-level wide shot with people mid-motion; a tight close-up of one telling object at human scale; a clean overhead flat-lay; a long-lens shot compressing a crowd or a skyline; a scene dominated by one strong colour; a silhouette against a bright window. An unusual angle on an ordinary thing beats a literal illustration of the headline.
 - The picture should evoke the story, not caption it. Grocery prices are better served by a lit produce aisle shot from floor level than by a photograph of a receipt.
 - Absolutely no text, letters, numbers, logos, watermarks or captions anywhere.
+- For a conflict story, never describe violence, weapons aimed at people, casualties, blood or distress. Ask instead for something adjacent and calm: a convoy on an empty road, a port at dawn, a queue at a border post, an empty negotiating room, a wheat field, a pipeline. The image model refuses graphic scenes outright, and a refused image means a card with no photograph at all.
 
 Rules for caption:
 - 1-2 sentences of plain prose. No hashtags, no links, no emoji.
@@ -208,9 +222,11 @@ def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
 
     slot = datetime.now(timezone.utc).hour
     topics = feeds.rotation_for(slot)
+    beat = feeds.beat_for(slot)
     headlines = feeds.fetch(only=topics)
     fresh = feeds.drop_covered(headlines, exclude_ids)
-    print(f"  slot {slot:02d}:00 reads {topics} -> {len(headlines)} headlines, "
+    print(f"  slot {slot:02d}:00 reads {topics}"
+          f"{f' [beat: {beat}]' if beat else ''} -> {len(headlines)} headlines, "
           f"{len(headlines) - len(fresh)} already covered")
     # Keep a floor: if suppression empties the slot, better a near-repeat
     # than no card at all.
@@ -219,7 +235,13 @@ def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
     messages = [{
         "role": "user",
         "content": ("Current headlines:\n\n" + feeds.as_context(headlines)
-                    + "\n\nPick the biggest story and write the card." + avoid),
+                    + (f"\n\nTHIS SLOT'S BEAT IS {beat.upper()}. Pick the "
+                       f"biggest {beat} story in these headlines and write "
+                       f"the card about it. Only if there is genuinely no "
+                       f"usable {beat} story here may you pick something "
+                       f"else." if beat else
+                       "\n\nPick the biggest story and write the card.")
+                    + avoid),
     }]
 
     # No server tools any more, so no pause_turn to resume -- one call.

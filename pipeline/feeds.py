@@ -13,6 +13,11 @@ Two things stop the cards repeating themselves:
 2. Rotation. Each of the twelve daily slots reads a DIFFERENT pair of feeds
    (see `rotation_for`). Consecutive cards therefore cannot see the same
    headline list, which matters more than any instruction in the prompt.
+
+The beat is deliberately wider than money: three slots a day are AI, three
+are sport, and two carry conflict or a contested story. Feeds alone do not
+achieve that -- trends.py has to accept those stories too, since its
+relatability test was written to reject anything without a price attached.
 """
 
 import re
@@ -47,7 +52,26 @@ FEEDS = {
     "politics": _gnews("politics+OR+policy+OR+regulation"),
     # frontier
     "space": _gnews("SpaceX+OR+NASA+OR+rocket+launch+OR+satellite", days=2),
-    "tech": _gnews("technology+OR+artificial+intelligence+OR+semiconductor"),
+    "tech": _gnews("technology+OR+semiconductor+OR+cybersecurity"),
+    # AI gets its own feed rather than sharing "tech", which buried it under
+    # phone launches and chip supply stories.
+    "ai": _gnews("OpenAI+OR+ChatGPT+OR+Anthropic+OR+Google+Gemini+OR+"
+                 "artificial+intelligence+jobs+OR+AI+datacenter+OR+"
+                 "AI+regulation+OR+AI+lawsuit"),
+    "ai_money": _gnews("AI+funding+OR+AI+valuation+OR+Nvidia+OR+"
+                       "AI+chip+OR+AI+investment", days=2),
+    # sport, as a business and as a result
+    "sports": _gnews("NFL+OR+NBA+OR+MLB+OR+college+football+OR+"
+                     "Super+Bowl+OR+World+Cup"),
+    # Long OR-chains starve this query -- eight terms returned 2 headlines
+    # where the plain phrase returns 40. Google News is matching the phrase,
+    # not the union.
+    "sports_money": _gnews("sports+business", days=3),
+    # conflict and contested stories
+    "conflict": _gnews("Ukraine+OR+Gaza+OR+Israel+OR+Russia+war+OR+"
+                       "ceasefire+OR+military+strike", days=2),
+    "controversy": _gnews("lawsuit+OR+investigation+OR+scandal+OR+"
+                          "protest+OR+boycott+OR+recall+OR+ban", days=2),
     # everyday life
     "citizen": _gnews("cost+of+living+OR+wages+OR+rent+OR+grocery+prices+OR+"
                       "gas+prices+OR+jobs+report+OR+social+security+OR+"
@@ -61,28 +85,66 @@ FEEDS = {
 # One entry per two-hour slot. Each run reads a different pair, so two
 # consecutive cards are drawing from different pools entirely.
 ROTATION = [
-    ["america", "citizen"],          # 00:00
-    ["us_local", "tech"],            # 02:00
-    ["markets", "citizen"],          # 04:00
-    ["citizen", "us_local"],         # 06:00
-    ["space", "america"],            # 08:00
-    ["deals", "us_local"],           # 10:00
+    ["ai", "tech"],                  # 00:00
+    ["sports", "us_local"],          # 02:00
+    ["citizen", "markets"],          # 04:00
+    ["conflict", "america"],         # 06:00
+    ["ai_money", "startups"],        # 08:00
+    # Paired with "billionaires" this slot produced a Zuckerberg net-worth
+    # card: naming the beat is not enough when the other feed is richer.
+    ["sports_money", "sports"],      # 10:00
     ["trump", "politics"],           # 12:00
-    ["asia", "america"],             # 14:00
-    ["billionaires", "citizen"],     # 16:00
-    ["us_local", "america"],         # 18:00
-    ["europe", "citizen"],           # 20:00
-    ["startups", "markets"],         # 22:00
+    ["ai", "asia"],                  # 14:00
+    ["controversy", "conflict"],     # 16:00
+    ["us_local", "citizen"],         # 18:00
+    ["europe", "billionaires"],      # 20:00
+    ["sports", "space"],             # 22:00
 ]
+
+# Feeds whose slots benefit from CNBC's business wire alongside them. A
+# themed slot does not: adding a business feed there simply hands the model
+# an easier money story and the slot reverts to type.
+MONEY_FEEDS = {"markets", "startups", "billionaires", "deals", "america",
+               "us_local", "europe", "asia", "citizen"}
+
+# What the FIRST feed of a slot commits that slot to covering. Naming it to
+# the model is what makes a themed slot hold: paired with a money feed and
+# left to its own judgement, the model picked the money story every time.
+BEATS = {
+    "ai": "artificial intelligence",
+    "ai_money": "artificial intelligence and what the AI buildout costs",
+    "sports": "sport",
+    "sports_money": "the business of sport",
+    "conflict": "war and conflict",
+    "controversy": "a contested story: a lawsuit, investigation, recall, "
+                   "boycott, protest or ban",
+    "trump": "Trump and White House policy",
+    "space": "space",
+}
+
+
+def beat_for(hour: int) -> str:
+    """The beat this slot must cover, or "" where the slot is open."""
+    return BEATS.get(ROTATION[(hour // 2) % len(ROTATION)][0], "")
 
 TAG_RE = re.compile(r"<[^>]+>")
 WS_RE = re.compile(r"\s+")
 
 
 def rotation_for(hour: int) -> list[str]:
-    """Feeds this slot should read. Always includes one broad feed."""
+    """Feeds this slot should read.
+
+    CNBC is added only to money slots. On a sport or conflict slot it gave
+    the model a business story to fall back on, and the slot quietly turned
+    back into another markets card.
+    """
     picked = ROTATION[(hour // 2) % len(ROTATION)]
-    return list(dict.fromkeys(picked + ["cnbc"]))
+    # Only on a slot whose LEAD feed is money. Testing "any" let CNBC onto
+    # the sport slot through its paired feed, and the slot produced a
+    # factory story.
+    if picked[0] in MONEY_FEEDS:
+        picked = picked + ["cnbc"]
+    return list(dict.fromkeys(picked))
 
 
 def _clean(text: str | None) -> str:
