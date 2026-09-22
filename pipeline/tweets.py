@@ -1,9 +1,14 @@
 """A day's worth of standalone tweets, generated once and drained hourly.
 
-24 tweets a day in three shapes: 12 ranked statistics lists with country
-flags, 6 reply-bait posts on subjects Elon Musk engages with, and 6 plain
-one-fact posts. Generating in bulk is what keeps this cheap -- two API calls
-a day rather than 24.
+24 posts a day in three shapes: 10 AI questions, 8 ranked statistics lists
+with country flags, and 6 general questions. Generating in bulk is what
+keeps this cheap -- three API calls a day rather than 24.
+
+The mix follows what the open-sourced ranker scores. A reply is one signal
+and a reply the author engages with is a second, separate one, so most of
+the day is posts that end in a real question; a list earns a bookmark but
+rarely a conversation. Report carries the heaviest penalty weight in the
+file, which is why none of this is allowed to read as bait.
 
 The list subjects are chosen HERE, not by the model. Left to itself it
 reaches for GDP every time: two live posts 22 minutes apart were "largest
@@ -33,14 +38,16 @@ from datetime import date, datetime, timezone
 
 from anthropic import Anthropic
 
-from . import assets, config, feeds, reference, trends
+from . import assets, config, feeds, reference, trending, trends
 from .text import normalise_list
 
 POOL_FILE = "tweets.json"
 
 # Counts are fixed so the daily X spend doesn't move: 24 posts either way.
-# Lists are the format that performs, so they take half the day.
-KIND_COUNTS = {"reply_bait": 6, "list": 12, "normal": 6}
+# Weighted toward posts that end in a real question, because a reply and an
+# author-engaged reply are two separately scored signals in the ranker,
+# while a list mostly earns a silent bookmark.
+KIND_COUNTS = {"ai_ask": 10, "list": 8, "ask": 6}
 POOL_SIZE = sum(KIND_COUNTS.values())
 
 # Ranked-list subjects, grouped into families. Two things depend on the
@@ -174,30 +181,83 @@ date in a NEWS claim must come from a headline you were actually given. If \
 you are not certain of a figure, leave that tweet out rather than \
 approximating. These publish automatically with no human review."""
 
-REPLY_BAIT_SYSTEM = """You write standalone tweets for a media account \
-covering business, technology and finance.
+ASK_RULES = """
+Every one of these posts has the same two-part shape:
 
-Write exactly {count} tweets on subjects Elon Musk actively engages with: \
-Tesla, SpaceX, Starlink, xAI, X itself, EV and battery economics, launch \
-cadence, robotaxis, humanoid robots, AI compute buildouts, semiconductors.
+  1. INFORMATION FIRST. Two or three sentences of something concrete a \
+reader did not already know: a benchmark result, a capability, a price, a \
+limit, a change. Specific enough to be worth reading even if nobody answers.
+  2. ONE QUESTION LAST. A single, genuine, answerable question that follows \
+from what you just said. It must be a question a practitioner would have an \
+opinion about and could answer in one line.
 
-Each tweet:
-- Leads with a specific, verified number or a concrete development.
-- Ends with ONE genuine, answerable question about that number or decision.
-- Is under 260 characters. No emoji.
-- Does NOT @mention or tag anyone. No "hey @elonmusk", no baiting, no \
-insults, no provocation, no flattery. A question worth answering is what \
-earns a reply; anything else reads as spam and gets the account muted.
+Rules on the question:
+- Ask about the reader's own experience and choices, not their feelings. \
+"Which model do you reach for when you need long-context reasoning?" is a \
+question. "Thoughts?" is not, and "Is AI going to take our jobs?" is not.
+- ONE question mark in the whole post. Never two.
+- Never @mention or tag anyone, and never address a person or company \
+directly. No "hey @xai". No "agree?", no "RT if", no "drop a comment", no \
+"who else", no engagement-bait phrasing of any kind. A post that reads as \
+bait earns reports, and a report is the heaviest penalty the ranker carries.
+- Do not answer your own question, and do not imply a right answer.
 
-Spread them across at least four different subjects - not {count} posts \
-about one company.
-""" + COMMON_RULES
+Rules on the information:
+- ACCURACY IS ABSOLUTE. Every benchmark score, version number, price, \
+context length, release date and company claim must appear in the material \
+you were given in this conversation. If you did not read it here, you do \
+not know it.
+- Benchmarks and specs especially: do NOT write an MMLU, SWE-bench, GPQA \
+or ARC score, a context window size, a parameter count or a token price \
+unless that exact figure is in front of you. "Opus 4's 200K context window" \
+is the kind of sentence that gets written from memory and is wrong; posts \
+containing one are discarded before they reach the timeline. Where you have \
+no number, write about the capability or the change instead and ask your \
+question about that. An invented benchmark is the fastest way to lose this \
+account's credibility with the only audience that would reply.
+- Where a figure is a company's own claim, say so: "OpenAI says", "per \
+Anthropic's card".
+- Under 270 characters. No emoji. No hashtags. No links."""
+
+AI_ASK_SYSTEM = """You write standalone posts for a media account followed \
+by people who build with AI models and argue about them.
+
+Write exactly {count} posts about AI models and the systems around them: \
+model releases and versions, benchmark results, context windows, pricing \
+and rate limits, coding and agent performance, inference cost, chips and \
+compute, evaluation methodology and where benchmarks mislead, open weights \
+versus closed, and AI regulation and lawsuits where they bite builders.
+
+The audience actually uses these tools. Write for someone choosing between \
+models this week, not for a general reader. Assume they know what a context \
+window is; do not explain it.
+
+Spread the {count} posts across at least five different subjects and at \
+least four different companies. Do not write {count} posts about one lab.
+
+At least three of them should ask directly which model or tool the reader \
+uses for a specific named task -- long-context work, code review, agentic \
+loops, cheap bulk classification, OCR and document extraction, local \
+inference -- and should give a concrete reason the choice is non-obvious \
+before asking.
+""" + ASK_RULES
+
+ASK_SYSTEM = """You write standalone posts for a media account covering \
+business, markets, money and sport.
+
+Write exactly {count} posts, each leading with a concrete fact from the \
+material you were given and ending on one genuine question.
+
+Cover clearly different ground: markets, company results, sovereign wealth, \
+housing, energy, trade, sport economics, salaries, consumer prices. Do NOT \
+write about AI models -- those are covered elsewhere.
+""" + ASK_RULES
+
 
 GENERAL_SYSTEM = """You write standalone tweets for a media account covering \
 venture capital, asset management, market statistics and politics.
 
-Write exactly {n_list} tweets of kind "list" and {n_normal} of kind "normal". \
-The lists are the important half: they are what this account is followed for.
+Write exactly {n_list} tweets of kind "list".
 
 === kind "list" ===
 Write ONE list for each DATASET supplied in the user message, in the order
@@ -247,17 +307,6 @@ Commercial Bank of China" becomes "ICBC", "United States of America" becomes \
 - Title the list after the subject and put the dataset's year in brackets. \
 If the dataset names no year, leave the brackets off rather than guessing.
 
-=== kind "normal" ===
-One striking fact per tweet, fact first, under 260 characters, no emoji.
-
-=== subjects for the "normal" tweets ===
-One striking fact each, on clearly different ground: sovereign wealth funds, \
-IPOs and M&A, private equity, banking, commodities, housing, demographics, \
-government debt, trade, healthcare, energy, defence, shipping. Ground these \
-in the headlines you were given.
-
-Do NOT write about Tesla, SpaceX, xAI or Elon Musk - those are covered \
-elsewhere. No more than two tweets about any one company.
 """ + COMMON_RULES
 
 
@@ -325,6 +374,82 @@ def list_title(subject: str, year: str = "") -> str:
     return f"{title} ({year})" if year else title
 
 
+# Claims a model states with total confidence and no entitlement: how big a
+# context window is, how many parameters a model has, what a token costs,
+# and what it scored on a named benchmark.
+SPEC_RE = re.compile(
+    r"\b\d[\d.,]*\s*[kKmMbB]?\s*(?:context|token|parameter)"
+    r"|\bcontext\s+window\s+of\s+\d"
+    r"|\b(?:MMLU|SWE-?bench|GPQA|ARC-?AGI|HumanEval|HellaSwag|MATH-500|"
+    r"AIME|LiveBench|MMMU)\b",
+    re.I,
+)
+BENCH_RE = re.compile(
+    r"\b(?:MMLU|SWE-?bench|GPQA|ARC-?AGI|HumanEval|HellaSwag|"
+    r"MATH-500|AIME|LiveBench|MMMU)\b", re.I)
+DIGITS_RE = re.compile(r"[^a-z0-9]")
+
+
+MAGNITUDE_RE = re.compile(r"(\d[\d.,]*)\s*([kmb])\b", re.I)
+_SCALE = {"k": 1_000, "m": 1_000_000, "b": 1_000_000_000}
+
+
+def _expand(match: re.Match) -> str:
+    try:
+        value = float(match.group(1).replace(",", ""))
+    except ValueError:
+        return match.group(0)
+    return str(int(value * _SCALE[match.group(2).lower()]))
+
+
+def _flat(text: str) -> str:
+    """Lowercase, expand magnitudes, strip punctuation.
+
+    "200K" and "200,000" both become "200000", so a post that abbreviates a
+    figure the source spelled out is not mistaken for an invented one.
+    "SWE-bench" and "SWE bench" collapse together the same way.
+    """
+    return DIGITS_RE.sub("", MAGNITUDE_RE.sub(_expand, text.lower()))
+
+
+def unsourced_spec(text: str, grounding: str) -> str:
+    """The first model-spec claim in `text` absent from `grounding`, or "".
+
+    Checks the figure rather than the phrasing: "200K context window" is
+    sourced by a headline saying "200,000 token context window", because
+    the number is what could have been invented, not the wording. Benchmark
+    claims are checked on the benchmark's name instead, since the score
+    means nothing without it.
+    """
+    haystack = _flat(grounding)
+    for match in SPEC_RE.finditer(text):
+        claim = match.group(0).strip()
+        named = BENCH_RE.search(claim)
+        if named:
+            needle = _flat(named.group(0))
+        else:
+            number = MAGNITUDE_RE.search(claim) or re.search(r"\d[\d.,]*", claim)
+            if not number:
+                continue
+            needle = _flat(number.group(0))
+        if needle and needle not in haystack:
+            return claim
+    return ""
+
+
+def drop_unsourced(tweets: list[dict], grounding: str) -> list[dict]:
+    """Remove AI posts quoting a spec the source never supplied."""
+    kept = []
+    for tweet in tweets:
+        if tweet.get("kind") == "ai_ask":
+            bad = unsourced_spec(tweet.get("text", ""), grounding)
+            if bad:
+                print(f"    dropped ai post: unsourced spec {bad!r}")
+                continue
+        kept.append(tweet)
+    return kept
+
+
 def clean_list_rows(tweet: dict, subject: str = "", year: str = "") -> dict:
     """Drop rows carrying no number, and guarantee the heading.
 
@@ -360,51 +485,69 @@ def clean_list_rows(tweet: dict, subject: str = "", year: str = "") -> dict:
 
 def generate_pool(count: int = POOL_SIZE,
                   history: dict[str, str] | None = None) -> list[dict]:
-    """Two grounded calls: Musk-adjacent, then everything else.
+    """Three grounded calls: AI questions, ranked lists, general questions.
 
-    Each is grounded on free sources rather than the paid web-search tool,
-    and on a DIFFERENT slice -- which is also what stops the general tweets
-    drifting onto Tesla. The lists take published tables, the news tweets
-    take RSS headlines.
+    Nothing here is written from the model's own recollection. The lists get
+    published tables, the AI posts get live X trends plus an AI headline
+    feed, and the general posts get the rest of the RSS. A model asked what
+    is trending answers with what was trending when it was trained.
     """
-    n_reply = KIND_COUNTS["reply_bait"]
+    n_ai = KIND_COUNTS["ai_ask"]
     n_list = KIND_COUNTS["list"]
 
     subjects = pick_list_subjects(n_list, history or {},
                                   datetime.now(timezone.utc).date())
 
-    # Fetch first, then size the call to what actually came back. A source
+    # Fetch first, then size the calls to what actually came back. A source
     # that has gone missing costs one list, not a fabricated one, and the
-    # day still posts 24 times because the shortfall goes to plain tweets.
+    # day still posts 24 times because the shortfall goes to questions.
     datasets = [(name, rows, reference.detect_year(rows)) for name, rows in
                 ((name, reference.fetch(name)) for name in subjects) if rows]
     n_list = len(datasets)
-    n_normal = count - n_reply - n_list
     print(f"  {n_list} grounded lists: "
           f"{', '.join(name for name, _, _ in datasets)}")
 
-    musk = feeds.as_context(feeds.fetch(only=["musk"]), limit=45)
-    general = feeds.as_context(feeds.fetch(exclude=["musk"]), limit=90)
-    print(f"  RSS: {len(musk.splitlines())} musk / "
-          f"{len(general.splitlines())} general headlines (no search fee)")
+    trends = trending.as_context(trending.fetch())
+    ai_news = feeds.as_context(feeds.fetch(only=["ai", "ai_money", "musk"]),
+                               limit=60)
+    general = feeds.as_context(
+        feeds.fetch(exclude=["ai", "ai_money", "musk"]), limit=80)
+    print(f"  X trends: {len(trends.splitlines())} · "
+          f"AI headlines: {len(ai_news.splitlines())} · "
+          f"general: {len(general.splitlines())}")
 
     sep = chr(10) * 2          # blank line between context and task
 
+    trend_block = (f"Trending on X right now:{sep}{trends}{sep}"
+                   if trends else "")
+    grounding = f"{trends}{sep}{ai_news}"
     out = _call(
-        REPLY_BAIT_SYSTEM.format(count=n_reply),
-        f"Current headlines:{sep}{musk}{sep}Write today's {n_reply} tweets.",
-        ["reply_bait"],
+        AI_ASK_SYSTEM.format(count=n_ai),
+        f"{trend_block}AI headlines:{sep}{ai_news}{sep}"
+        f"Write today's {n_ai} posts. Where a trend above is about AI and "
+        f"has real volume behind it, write about that -- it is what people "
+        f"are arguing about today.",
+        ["ai_ask"],
     )
+    out = drop_unsourced(out, grounding)
+    # Whatever the guard removed becomes a general question, so the day
+    # still posts 24 times rather than going short.
+    n_ask = count - len(out) - n_list
     out += _call(
-        GENERAL_SYSTEM.format(n_list=n_list, n_normal=n_normal,
-                              total=n_list + n_normal),
+        GENERAL_SYSTEM.format(n_list=n_list),
         f"Datasets for the {n_list} lists, in order:{sep}"
         + f"{sep}".join(reference.as_context(name, rows)
                         for name, rows, _ in datasets)
-        + f"{sep}Current headlines, for the {n_normal} normal tweets:{sep}"
-        + f"{general}{sep}Write today's {n_list + n_normal} tweets.",
-        ["list", "normal"],
+        + f"{sep}Write today's {n_list} lists.",
+        ["list"],
     )
+    out += _call(
+        ASK_SYSTEM.format(count=n_ask),
+        f"{trend_block}Current headlines:{sep}{general}{sep}"
+        f"Write today's {n_ask} posts.",
+        ["ask"],
+    )
+
     # Tag each list with the subject it was asked for, so the pool can
     # record what has been used without re-deriving it from the title.
     lists = iter((name, year) for name, _, year in datasets)
@@ -418,16 +561,16 @@ def generate_pool(count: int = POOL_SIZE,
 def interleave(generated: list[dict]) -> list[dict]:
     """Spread the kinds across the day instead of posting them in blocks.
 
-    Drained one per hour, an unshuffled pool would post twelve ranked lists
-    back to back and then six Musk-adjacent ones. Two lists, a normal, a
-    reply-bait matches the 12/6/6 split exactly and keeps the timeline varied
-    whatever order the model returned.
+    Drained one per hour, an unshuffled pool would post ten AI questions
+    back to back and then eight lists. Alternating a question with a list
+    keeps consecutive posts in different shapes, which matters more on a
+    timeline than the order the model happened to return.
     """
     buckets: dict[str, list[dict]] = {}
     for t in generated:
         buckets.setdefault(t.get("kind", "normal"), []).append(t)
 
-    order, pattern = [], ["list", "list", "normal", "reply_bait"]
+    order, pattern = [], ["ai_ask", "list", "ask", "ai_ask", "list"]
     while any(buckets.values()):
         placed = False
         for kind in pattern:
