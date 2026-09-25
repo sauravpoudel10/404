@@ -1,8 +1,8 @@
-"""Every hour: post the next tweet from the day's pre-generated pool.
+"""Every two hours: post the next tweet from the day's pre-generated pool.
 
     python run_tweets.py [--dry-run] [--regenerate]
 
-The pool is built by a single Haiku call per day (24 tweets), so this job
+The pool is built by a single Haiku call per day (12 tweets), so this job
 normally makes no model call at all — it just pops the next unused entry.
 """
 
@@ -16,9 +16,12 @@ from datetime import datetime, timezone  # noqa: E402
 
 from pipeline import assets, tweets, x  # noqa: E402
 
-# The scheduler fires this far more often than hourly, because GitHub drops
-# most scheduled events; the spacing is enforced here instead.
-MIN_GAP_MINUTES = 55
+# The scheduler fires this far more often than every two hours, because
+# GitHub drops most scheduled events; the spacing is enforced here instead.
+# 115 rather than 120 because pulse only checks every ten minutes, so real
+# gaps land near two hours. Much shorter and a 12-tweet pool empties before
+# midnight -- and an empty pool is regenerated, posting past the daily 12.
+MIN_GAP_MINUTES = 115
 
 
 def main():

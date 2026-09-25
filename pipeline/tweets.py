@@ -1,8 +1,8 @@
-"""A day's worth of standalone tweets, generated once and drained hourly.
+"""A day's worth of standalone tweets, generated once and drained every two hours.
 
-24 posts a day in three shapes: 10 AI questions, 8 ranked statistics lists
-with country flags, and 6 general questions. Generating in bulk is what
-keeps this cheap -- three API calls a day rather than 24.
+12 posts a day in three shapes: 5 AI questions, 4 ranked statistics lists
+with country flags, and 3 general questions. Generating in bulk is what
+keeps this cheap -- three API calls a day rather than 12.
 
 The mix follows what the open-sourced ranker scores. A reply is one signal
 and a reply the author engages with is a second, separate one, so most of
@@ -43,11 +43,11 @@ from .text import normalise_list
 
 POOL_FILE = "tweets.json"
 
-# Counts are fixed so the daily X spend doesn't move: 24 posts either way.
+# Counts are fixed so the daily X spend doesn't move: 12 posts either way.
 # Weighted toward posts that end in a real question, because a reply and an
 # author-engaged reply are two separately scored signals in the ranker,
 # while a list mostly earns a silent bookmark.
-KIND_COUNTS = {"ai_ask": 10, "list": 8, "ask": 6}
+KIND_COUNTS = {"ai_ask": 5, "list": 4, "ask": 3}
 POOL_SIZE = sum(KIND_COUNTS.values())
 
 # Ranked-list subjects, grouped into families. Two things depend on the
@@ -500,7 +500,7 @@ def generate_pool(count: int = POOL_SIZE,
 
     # Fetch first, then size the calls to what actually came back. A source
     # that has gone missing costs one list, not a fabricated one, and the
-    # day still posts 24 times because the shortfall goes to questions.
+    # day still posts 12 times because the shortfall goes to questions.
     datasets = [(name, rows, reference.detect_year(rows)) for name, rows in
                 ((name, reference.fetch(name)) for name in subjects) if rows]
     n_list = len(datasets)
@@ -531,7 +531,7 @@ def generate_pool(count: int = POOL_SIZE,
     )
     out = drop_unsourced(out, grounding)
     # Whatever the guard removed becomes a general question, so the day
-    # still posts 24 times rather than going short.
+    # still posts 12 times rather than going short.
     n_ask = count - len(out) - n_list
     out += _call(
         GENERAL_SYSTEM.format(n_list=n_list),
@@ -561,8 +561,8 @@ def generate_pool(count: int = POOL_SIZE,
 def interleave(generated: list[dict]) -> list[dict]:
     """Spread the kinds across the day instead of posting them in blocks.
 
-    Drained one per hour, an unshuffled pool would post ten AI questions
-    back to back and then eight lists. Alternating a question with a list
+    Drained one every two hours, an unshuffled pool would post five AI
+    questions back to back and then four lists. Alternating a question with a list
     keeps consecutive posts in different shapes, which matters more on a
     timeline than the order the model happened to return.
     """

@@ -1,7 +1,7 @@
 """Caption sanitising shared by every platform.
 
 Prompts ask the models not to emit hashtags or links, but a prompt is a
-request, not a guarantee -- across ~36 posts a day something eventually slips
+request, not a guarantee -- across ~24 posts a day something eventually slips
 through. So the rule is enforced here, at post time, for every destination.
 
 Links matter for more than tidiness: X bills $0.015 per post but $0.20 if it
