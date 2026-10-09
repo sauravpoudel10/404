@@ -337,7 +337,7 @@ def _call(system: str, user: str, kinds: list[str]) -> list[dict]:
     client = Anthropic(api_key=config.ANTHROPIC_API_KEY())
 
     cfg = {"format": {"type": "json_schema", "schema": _schema(kinds)}}
-    if not trends._is_small_model():
+    if not trends._rejects_effort():
         cfg["effort"] = "low"
 
     resp = client.messages.create(

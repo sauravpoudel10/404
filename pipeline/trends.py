@@ -169,9 +169,9 @@ CARD_SCHEMA = {
 }
 
 
-def _is_small_model() -> bool:
-    """Haiku 4.5 and Sonnet 4.5 reject both `effort` and the newer search tool."""
-    return config.COPY_MODEL.startswith(("claude-haiku", "claude-sonnet-4-5"))
+def _rejects_effort() -> bool:
+    """Haiku 4.5 and Sonnet 4.5 reject `effort`; Haiku 5.5 accepts it."""
+    return config.COPY_MODEL.startswith(("claude-haiku-4-5", "claude-sonnet-4-5"))
 
 
 def _output_config() -> dict:
@@ -179,10 +179,11 @@ def _output_config() -> dict:
 
     Haiku 4.5 rejects `effort` outright with a 400, so it can't be sent
     unconditionally — but it's worth sending where accepted, since it cut
-    output tokens from ~3,700 to ~870 on Sonnet.
+    output tokens from ~3,700 to ~870 on Sonnet. Haiku 5.5 defaults to
+    `medium` and thinks by default, so `low` matters there too.
     """
     cfg = {"format": {"type": "json_schema", "schema": CARD_SCHEMA}}
-    if not _is_small_model():
+    if not _rejects_effort():
         cfg["effort"] = "low"
     return cfg
 
@@ -248,7 +249,9 @@ def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
     for _ in range(1):
         resp = client.messages.create(
             model=config.COPY_MODEL,
-            max_tokens=4000,
+            # Headroom for Haiku 5.5's default-on thinking, which counts
+            # against this cap ahead of the card JSON.
+            max_tokens=8000,
             system=SYSTEM.replace("%COMPOSITION%",
                                   COMPOSITION.get(style, COMPOSITION["feature"])),
             output_config=_output_config(),
