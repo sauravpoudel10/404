@@ -47,6 +47,12 @@ SLOT_PATTERN = [
 ]
 
 
+# Instagram and Facebook get every card (12 a day). X gets 8 of them: it skips
+# these slots, which are every third one. What's left is four Reels and four
+# feed posts, and every design still appears, so X stays balanced.
+X_SKIP_SLOTS = {2, 5, 8, 11}
+
+
 def next_slot(cards_by_time) -> tuple[int, str, bool]:
     """(slot, style, as_reel) for this run, one on from the last card.
 
@@ -173,6 +179,9 @@ def main():
     ]
 
     for name, fn in targets:
+        if name == "x" and slot in X_SKIP_SLOTS:
+            print(f"→ skipping x (slot {slot} is off X's 8-a-day schedule)")
+            continue
         try:
             print(f"→ posting to {name}")
             post_id = fn()
