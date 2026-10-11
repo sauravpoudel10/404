@@ -1,0 +1,1351 @@
+{
+  "cards": [
+    {
+      "id": "20261009-040748-pepsi-raising-prices",
+      "story_id": "pepsi-raising-prices",
+      "file": "cards/20261009-040748-pepsi-raising-prices.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-040748-pepsi-raising-prices.jpg",
+      "created_at": "2026-10-09T04:07:48.911110+00:00",
+      "style": "poster",
+      "slot": 4,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Pepsi is raising prices even as the job market shows signs of steadying, adding to grocery costs Americans are already struggling with.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261009-040748-pepsi-raising-prices.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261009-040748-pepsi-raising-prices.mp4"
+    },
+    {
+      "id": "20261009-055513-gas-prices-cross-four-dollars",
+      "story_id": "gas-prices-cross-four-dollars",
+      "file": "cards/20261009-055513-gas-prices-cross-four-dollars.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-055513-gas-prices-cross-four-dollars.jpg",
+      "created_at": "2026-10-09T05:55:13.053369+00:00",
+      "style": "feature",
+      "slot": 5,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Motorists are paying more at the pump as the national average price for gasoline climbs past $4 a gallon. The increase reflects broader energy market pressures affecting household budgets across America.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261009-074527-gaza-rescuers-israeli-fire-seven",
+      "story_id": "gaza-rescuers-israeli-fire-seven",
+      "file": "cards/20261009-074527-gaza-rescuers-israeli-fire-seven.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-074527-gaza-rescuers-israeli-fire-seven.jpg",
+      "created_at": "2026-10-09T07:45:27.308645+00:00",
+      "style": "poster",
+      "slot": 6,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Gaza rescuers report seven people killed in an incident they attribute to Israeli fire, according to multiple news reports.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261009-074527-gaza-rescuers-israeli-fire-seven.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261009-074527-gaza-rescuers-israeli-fire-seven.mp4"
+    },
+    {
+      "id": "20261009-093111-softbank-gulf-100-billion-ai",
+      "story_id": "softbank-gulf-100-billion-ai",
+      "file": "cards/20261009-093111-softbank-gulf-100-billion-ai.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-093111-softbank-gulf-100-billion-ai.jpg",
+      "created_at": "2026-10-09T09:31:11.993722+00:00",
+      "style": "classic",
+      "slot": 7,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The race to fund AI infrastructure is accelerating. SoftBank's $100 billion hunt underscores how vast the sums required have become to stay competitive in the artificial intelligence era.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261009-111801-friedkin-everton-full-sale-open",
+      "story_id": "friedkin-everton-full-sale-open",
+      "file": "cards/20261009-111801-friedkin-everton-full-sale-open.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-111801-friedkin-everton-full-sale-open.jpg",
+      "created_at": "2026-10-09T11:18:01.838262+00:00",
+      "style": "poster",
+      "slot": 8,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Friedkin's move signals major change for the Premier League club after taking control just three years ago.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261009-111801-friedkin-everton-full-sale-open.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261009-111801-friedkin-everton-full-sale-open.mp4"
+    },
+    {
+      "id": "20261009-130255-trump-spacex-bonds-before-space-policy",
+      "story_id": "trump-spacex-bonds-before-space-policy",
+      "file": "cards/20261009-130255-trump-spacex-bonds-before-space-policy.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-130255-trump-spacex-bonds-before-space-policy.jpg",
+      "created_at": "2026-10-09T13:02:55.568763+00:00",
+      "style": "poster",
+      "slot": 9,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Reports say Trump bought up to $5 million in SpaceX debt days before unveiling a space policy. The timing is drawing attention.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261009-144538-ai-comedian-bots-instagram-jokes",
+      "story_id": "ai-comedian-bots-instagram-jokes",
+      "file": "cards/20261009-144538-ai-comedian-bots-instagram-jokes.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-144538-ai-comedian-bots-instagram-jokes.jpg",
+      "created_at": "2026-10-09T14:45:38.819409+00:00",
+      "style": "feature",
+      "slot": 10,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "AI comedian bots are copying jokes on Instagram, and some now draw more attention than the comics they took material from. The copying is happening openly on the platform.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261009-144538-ai-comedian-bots-instagram-jokes.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261009-144538-ai-comedian-bots-instagram-jokes.mp4"
+    },
+    {
+      "id": "20261009-163017-arlington-trump-arch-lawsuit",
+      "story_id": "arlington-trump-arch-lawsuit",
+      "file": "cards/20261009-163017-arlington-trump-arch-lawsuit.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-163017-arlington-trump-arch-lawsuit.jpg",
+      "created_at": "2026-10-09T16:30:17.390086+00:00",
+      "style": "poster",
+      "slot": 11,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Arlington County, Virginia, has filed a lawsuit to stop the triumphal arch Trump is building. The county is now a named party in a new legal challenge to the memorial.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261009-181509-electricity-prices-rose-44-states",
+      "story_id": "electricity-prices-rose-44-states",
+      "file": "cards/20261009-181509-electricity-prices-rose-44-states.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-181509-electricity-prices-rose-44-states.jpg",
+      "created_at": "2026-10-09T18:15:09.289239+00:00",
+      "style": "poster",
+      "slot": 0,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Electricity prices rose in 44 states and DC, according to a new report. Some states saw power costs fall, so where you live matters.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261009-181509-electricity-prices-rose-44-states.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261009-181509-electricity-prices-rose-44-states.mp4"
+    },
+    {
+      "id": "20261009-200235-nc-gas-tax-suspension-hb3",
+      "story_id": "nc-gas-tax-suspension-hb3",
+      "file": "cards/20261009-200235-nc-gas-tax-suspension-hb3.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-200235-nc-gas-tax-suspension-hb3.jpg",
+      "created_at": "2026-10-09T20:02:35.442152+00:00",
+      "style": "poster",
+      "slot": 1,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "North Carolina has suspended its state gas tax after Governor Stein signed House Bill 3. The move lands as the average gallon of gas tops $4 nationally.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261009-214740-fed-survey-18-million-richest-households",
+      "story_id": "fed-survey-18-million-richest-households",
+      "file": "cards/20261009-214740-fed-survey-18-million-richest-households.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-214740-fed-survey-18-million-richest-households.jpg",
+      "created_at": "2026-10-09T21:47:40.637246+00:00",
+      "style": "classic",
+      "slot": 2,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "New Federal Reserve data shows 18 million US households now rank as the richest, while more households are falling behind on debt. The gap between the top and everyone else is the story behind the numbers.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261009-214740-fed-survey-18-million-richest-households.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261009-214740-fed-survey-18-million-richest-households.mp4"
+    },
+    {
+      "id": "20261009-233250-nba-second-apron-knicks-middle-class-sta",
+      "story_id": "nba-second-apron-knicks-middle-class-statement",
+      "file": "cards/20261009-233250-nba-second-apron-knicks-middle-class-sta.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261009-233250-nba-second-apron-knicks-middle-class-sta.jpg",
+      "created_at": "2026-10-09T23:32:50.491170+00:00",
+      "style": "poster",
+      "slot": 3,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The NBA has defended its second apron rule after a Knicks player criticised it as bad for middle-class players. The league's statement puts the salary cap debate back in the spotlight.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261010-011735-character-ai-child-harm-lawsuit",
+      "story_id": "character-ai-child-harm-lawsuit",
+      "file": "cards/20261010-011735-character-ai-child-harm-lawsuit.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-011735-character-ai-child-harm-lawsuit.jpg",
+      "created_at": "2026-10-10T01:17:35.796076+00:00",
+      "style": "poster",
+      "slot": 4,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A new lawsuit alleges Character.AI's chatbots promoted self-harm and psychological abuse among children. These are allegations, not established findings.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261010-011735-character-ai-child-harm-lawsuit.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261010-011735-character-ai-child-harm-lawsuit.mp4"
+    },
+    {
+      "id": "20261010-030432-nazar-suspended-two-games-horvat-hit",
+      "story_id": "nazar-suspended-two-games-horvat-hit",
+      "file": "cards/20261010-030432-nazar-suspended-two-games-horvat-hit.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-030432-nazar-suspended-two-games-horvat-hit.jpg",
+      "created_at": "2026-10-10T03:04:32.307437+00:00",
+      "style": "feature",
+      "slot": 5,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Blackhawks forward Frank Nazar has been suspended for two games after a hit on Islanders forward Bo Horvat, according to The New York Times. The ban puts Chicago's lineup on notice for the coming games.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261010-044913-starbucks-chipotle-takeover-report",
+      "story_id": "starbucks-chipotle-takeover-report",
+      "file": "cards/20261010-044913-starbucks-chipotle-takeover-report.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-044913-starbucks-chipotle-takeover-report.jpg",
+      "created_at": "2026-10-10T04:49:13.664463+00:00",
+      "style": "poster",
+      "slot": 6,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Starbucks has reportedly been working with advisers on a takeover proposal for Chipotle, and CNBC lays out the pros and cons for investors. Nothing has been confirmed.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261010-044913-starbucks-chipotle-takeover-report.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261010-044913-starbucks-chipotle-takeover-report.mp4"
+    },
+    {
+      "id": "20261010-063723-trump-iran-war-return-midterms",
+      "story_id": "trump-iran-war-return-midterms",
+      "file": "cards/20261010-063723-trump-iran-war-return-midterms.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-063723-trump-iran-war-return-midterms.jpg",
+      "created_at": "2026-10-10T06:37:23.334734+00:00",
+      "style": "classic",
+      "slot": 7,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Al Jazeera asks whether Trump is signalling a return to war with Iran after the midterms. The question is raised in the headline and the report leaves it open for now.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261010-082107-typesafe-ai-870m-series-a",
+      "story_id": "typesafe-ai-870m-series-a",
+      "file": "cards/20261010-082107-typesafe-ai-870m-series-a.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-082107-typesafe-ai-870m-series-a.jpg",
+      "created_at": "2026-10-10T08:21:07.358217+00:00",
+      "style": "poster",
+      "slot": 8,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "TypeSafe AI raised $870M in a Series A at a $7.5B valuation to ship more AI models. It is one of the biggest AI funding rounds in today's headlines.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261010-082107-typesafe-ai-870m-series-a.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261010-082107-typesafe-ai-870m-series-a.mp4"
+    },
+    {
+      "id": "20261010-100702-repole-churchill-downs-stake",
+      "story_id": "repole-churchill-downs-stake",
+      "file": "cards/20261010-100702-repole-churchill-downs-stake.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-100702-repole-churchill-downs-stake.jpg",
+      "created_at": "2026-10-10T10:07:02.862544+00:00",
+      "style": "poster",
+      "slot": 9,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Mike Repole has bought a stake in Churchill Downs, the company behind the Kentucky Derby track. It is another sign of money moving through the business of racing.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261010-115425-valkyries-lead-wnba-sponsorship-revenue",
+      "story_id": "valkyries-lead-wnba-sponsorship-revenue",
+      "file": "cards/20261010-115425-valkyries-lead-wnba-sponsorship-revenue.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-115425-valkyries-lead-wnba-sponsorship-revenue.jpg",
+      "created_at": "2026-10-10T11:54:25.687790+00:00",
+      "style": "feature",
+      "slot": 10,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The Valkyries lead the WNBA in sponsorship revenue, according to the team's president. The claim has not been independently verified.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261010-115425-valkyries-lead-wnba-sponsorship-revenue.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261010-115425-valkyries-lead-wnba-sponsorship-revenue.mp4"
+    },
+    {
+      "id": "20261010-133840-trump-medicaid-cuts-strip-refugees-cover",
+      "story_id": "trump-medicaid-cuts-strip-refugees-coverage",
+      "file": "cards/20261010-133840-trump-medicaid-cuts-strip-refugees-cover.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-133840-trump-medicaid-cuts-strip-refugees-cover.jpg",
+      "created_at": "2026-10-10T13:38:40.351124+00:00",
+      "style": "poster",
+      "slot": 11,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Trump's Medicaid cuts will strip health coverage from refugees and other legal immigrants, according to WKMG. It is one of the policy changes hitting ordinary families' access to care.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261010-152330-ai-scam-economy-bigger-than-cocaine-trad",
+      "story_id": "ai-scam-economy-bigger-than-cocaine-trade",
+      "file": "cards/20261010-152330-ai-scam-economy-bigger-than-cocaine-trad.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-152330-ai-scam-economy-bigger-than-cocaine-trad.jpg",
+      "created_at": "2026-10-10T15:23:30.415262+00:00",
+      "style": "poster",
+      "slot": 0,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Bloomberg reports that AI is supercharging scams, with the scam economy now bigger than the global cocaine trade. The story points to AI as the accelerant behind the fraud.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261010-152330-ai-scam-economy-bigger-than-cocaine-trad.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261010-152330-ai-scam-economy-bigger-than-cocaine-trad.mp4"
+    },
+    {
+      "id": "20261010-171608-india-delhi-lockdown-protest-detentions",
+      "story_id": "india-delhi-lockdown-protest-detentions",
+      "file": "cards/20261010-171608-india-delhi-lockdown-protest-detentions.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-171608-india-delhi-lockdown-protest-detentions.jpg",
+      "created_at": "2026-10-10T17:16:08.952859+00:00",
+      "style": "poster",
+      "slot": 1,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "India detained thousands and locked down central Delhi to stop a protest against the election chief. Police also detained the founder of the Gen-Z cockroach movement, according to party and CNN reporting.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261010-190116-trump-90-medicare-rebate-disbursement",
+      "story_id": "trump-90-medicare-rebate-disbursement",
+      "file": "cards/20261010-190116-trump-90-medicare-rebate-disbursement.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-190116-trump-90-medicare-rebate-disbursement.jpg",
+      "created_at": "2026-10-10T19:01:16.811868+00:00",
+      "style": "classic",
+      "slot": 2,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "President Trump's $90 Medicare rebate is on its way, and the JC Post has laid out how the money will be paid out. Check the breakdown to see when it could reach you.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261010-190116-trump-90-medicare-rebate-disbursement.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261010-190116-trump-90-medicare-rebate-disbursement.mp4"
+    },
+    {
+      "id": "20261010-204748-elon-musk-richer-than-any-american",
+      "story_id": "elon-musk-richer-than-any-american",
+      "file": "cards/20261010-204748-elon-musk-richer-than-any-american.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-204748-elon-musk-richer-than-any-american.jpg",
+      "created_at": "2026-10-10T20:47:48.732734+00:00",
+      "style": "poster",
+      "slot": 3,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "MarketWatch reports Elon Musk is now richer than any American in history, by a margin it calls not even close. The gap is a striking marker of how concentrated fortunes have become.",
+      "posted": {
+        "instagram": false,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261010-223134-texas-am-elko-fan-site-cesspool",
+      "story_id": "texas-am-elko-fan-site-cesspool",
+      "file": "cards/20261010-223134-texas-am-elko-fan-site-cesspool.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261010-223134-texas-am-elko-fan-site-cesspool.jpg",
+      "created_at": "2026-10-10T22:31:34.506323+00:00",
+      "style": "poster",
+      "slot": 4,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Texas A&M coach Mike Elko called a fan site a cesspool as criticism grew after the team's third loss in four games. The New York Times reports the backlash is growing.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261010-223134-texas-am-elko-fan-site-cesspool.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261010-223134-texas-am-elko-fan-site-cesspool.mp4"
+    },
+    {
+      "id": "20261011-001707-maryland-school-board-ai-ban",
+      "story_id": "maryland-school-board-ai-ban",
+      "file": "cards/20261011-001707-maryland-school-board-ai-ban.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261011-001707-maryland-school-board-ai-ban.jpg",
+      "created_at": "2026-10-11T00:17:07.058934+00:00",
+      "style": "feature",
+      "slot": 5,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A Maryland school board voted 6 to 1 to ban artificial intelligence across its pre-K to 12 schools. The decision puts the district among the first to take a firm line on AI in classrooms.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261011-020124-pope-leo-ai-slop-criticism",
+      "story_id": "pope-leo-ai-slop-criticism",
+      "file": "cards/20261011-020124-pope-leo-ai-slop-criticism.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261011-020124-pope-leo-ai-slop-criticism.jpg",
+      "created_at": "2026-10-11T02:01:24.776343+00:00",
+      "style": "poster",
+      "slot": 6,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Pope Leo has criticised AI slop, the flood of cheap machine-made content online. His remarks add a faith voice to the growing debate over what AI should be allowed to produce.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261011-020124-pope-leo-ai-slop-criticism.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261011-020124-pope-leo-ai-slop-criticism.mp4"
+    },
+    {
+      "id": "20261011-034646-cooper-flagg-8m-card-family",
+      "story_id": "cooper-flagg-8m-card-family",
+      "file": "cards/20261011-034646-cooper-flagg-8m-card-family.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261011-034646-cooper-flagg-8m-card-family.jpg",
+      "created_at": "2026-10-11T03:46:46.340920+00:00",
+      "style": "classic",
+      "slot": 7,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "An $8 million Cooper Flagg card reportedly changed one family's life well beyond the cash it brought in. The New York Times tells the story.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    }
+  ],
+  "history": [
+    {
+      "story_id": "tech-price-hikes-ai-industry-2026",
+      "seen_at": "2026-09-27T04:51:53.855514+00:00"
+    },
+    {
+      "story_id": "ukraine-russia-aerial-campaign-intensifies",
+      "seen_at": "2026-09-27T06:36:06.692569+00:00"
+    },
+    {
+      "story_id": "cognition-ai-billion-revenue",
+      "seen_at": "2026-09-27T08:20:58.555811+00:00"
+    },
+    {
+      "story_id": "bulls-rob-dillingham-buddy-hield-trade",
+      "seen_at": "2026-09-27T10:04:45.852206+00:00"
+    },
+    {
+      "story_id": "phillies-collapse-playoff-stakes",
+      "seen_at": "2026-09-27T11:50:29.009196+00:00"
+    },
+    {
+      "story_id": "iran-hormuz-strait-deal-pitch",
+      "seen_at": "2026-09-27T13:37:07.206227+00:00"
+    },
+    {
+      "story_id": "openai-user-images-posted-online",
+      "seen_at": "2026-09-27T15:21:23.726226+00:00"
+    },
+    {
+      "story_id": "taylor-farms-lettuce-recall-27-states",
+      "seen_at": "2026-09-27T17:05:56.186271+00:00"
+    },
+    {
+      "story_id": "kroger-gas-rewards-pump-prices-september",
+      "seen_at": "2026-09-27T18:55:34.976654+00:00"
+    },
+    {
+      "story_id": "eu-citizens-uk-residency-stripped-post-brexit",
+      "seen_at": "2026-09-27T20:43:10.748989+00:00"
+    },
+    {
+      "story_id": "astros-eighth-title-ten-seasons",
+      "seen_at": "2026-09-27T22:28:27.761609+00:00"
+    },
+    {
+      "story_id": "bill-gates-slow-ai-development",
+      "seen_at": "2026-09-28T00:11:41.306229+00:00"
+    },
+    {
+      "story_id": "ai-cybercriminals-access-commodity",
+      "seen_at": "2026-09-28T01:56:57.683549+00:00"
+    },
+    {
+      "story_id": "ravens-victory-brazil-loop-field-goal",
+      "seen_at": "2026-09-28T03:41:11.739857+00:00"
+    },
+    {
+      "story_id": "snap-benefits-cliff-october",
+      "seen_at": "2026-09-28T05:25:19.188445+00:00"
+    },
+    {
+      "story_id": "gaza-death-toll-74000-milestone",
+      "seen_at": "2026-09-28T07:10:31.220910+00:00"
+    },
+    {
+      "story_id": "your-401k-funding-ai-boom",
+      "seen_at": "2026-09-28T08:56:27.232081+00:00"
+    },
+    {
+      "story_id": "odegaard-ankle-injury-silva-challenge",
+      "seen_at": "2026-09-28T10:40:15.757218+00:00"
+    },
+    {
+      "story_id": "trump-fuel-economy-rollback-ev-mandate",
+      "seen_at": "2026-09-28T12:26:40.515300+00:00"
+    },
+    {
+      "story_id": "nvidia-ai-agent-safety-system",
+      "seen_at": "2026-09-28T14:12:31.310262+00:00"
+    },
+    {
+      "story_id": "ai-liability-agents-rogue",
+      "seen_at": "2026-09-28T15:57:37.921901+00:00"
+    },
+    {
+      "story_id": "cornell-gang-rape-investigation-reopened",
+      "seen_at": "2026-09-28T17:50:28.525722+00:00"
+    },
+    {
+      "story_id": "stelco-hamilton-layoffs-350-tariffs",
+      "seen_at": "2026-09-28T19:35:37.840506+00:00"
+    },
+    {
+      "story_id": "eu-alcohol-daily-5percent",
+      "seen_at": "2026-09-28T21:19:33.287681+00:00"
+    },
+    {
+      "story_id": "starship-orbit-first-time",
+      "seen_at": "2026-09-28T23:12:06.661824+00:00"
+    },
+    {
+      "story_id": "news-outlets-ai-copyright-suit-doj",
+      "seen_at": "2026-09-29T00:57:18.958726+00:00"
+    },
+    {
+      "story_id": "dolphins-achane-acl-season-loss",
+      "seen_at": "2026-09-29T02:47:26.957233+00:00"
+    },
+    {
+      "story_id": "aldi-price-cuts-fall",
+      "seen_at": "2026-09-29T04:31:39.295122+00:00"
+    },
+    {
+      "story_id": "kyiv-drone-strikes-civilian-targets",
+      "seen_at": "2026-09-29T06:16:56.624945+00:00"
+    },
+    {
+      "story_id": "kyiv-academy-sciences-russian-strike",
+      "seen_at": "2026-09-29T08:01:28.683776+00:00"
+    },
+    {
+      "story_id": "amd-godmother-ai-8.2-billion",
+      "seen_at": "2026-09-29T09:47:51.351187+00:00"
+    },
+    {
+      "story_id": "ncaa-congress-regulation-control",
+      "seen_at": "2026-09-29T11:32:15.791323+00:00"
+    },
+    {
+      "story_id": "trump-fuel-economy-standards-rollback",
+      "seen_at": "2026-09-29T13:17:35.058343+00:00"
+    },
+    {
+      "story_id": "ai-data-trainers-misclassification-lawsuit",
+      "seen_at": "2026-09-29T15:02:57.664620+00:00"
+    },
+    {
+      "story_id": "trump-diesel-export-ban-europe",
+      "seen_at": "2026-09-29T16:52:21.431820+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-dynamic-pricing",
+      "seen_at": "2026-09-29T18:37:17.030063+00:00"
+    },
+    {
+      "story_id": "disney-300-layoffs-2025",
+      "seen_at": "2026-09-29T20:24:58.886715+00:00"
+    },
+    {
+      "story_id": "nhl-franchise-values-2-43-billion",
+      "seen_at": "2026-09-29T22:09:30.320608+00:00"
+    },
+    {
+      "story_id": "la-liga-balogun-red-card",
+      "seen_at": "2026-09-29T23:54:13.767779+00:00"
+    },
+    {
+      "story_id": "ai-mass-shootings-report",
+      "seen_at": "2026-09-30T01:39:12.788124+00:00"
+    },
+    {
+      "story_id": "jordan-jersey-record-12-million",
+      "seen_at": "2026-09-30T03:23:39.662601+00:00"
+    },
+    {
+      "story_id": "seniors-credit-card-debt-15-year-high",
+      "seen_at": "2026-09-30T05:28:17.365303+00:00"
+    },
+    {
+      "story_id": "canadian-spirits-trade-ban",
+      "seen_at": "2026-09-30T07:12:34.236692+00:00"
+    },
+    {
+      "story_id": "robinhood-agentic-ai-trading",
+      "seen_at": "2026-09-30T08:56:20.854300+00:00"
+    },
+    {
+      "story_id": "duren-200-million-pistons-contract",
+      "seen_at": "2026-09-30T10:41:13.345437+00:00"
+    },
+    {
+      "story_id": "scotus-trump-third-country-deportation",
+      "seen_at": "2026-09-30T12:36:59.754193+00:00"
+    },
+    {
+      "story_id": "tokyo-ai-voice-clones-legal-threat",
+      "seen_at": "2026-09-30T14:23:28.943307+00:00"
+    },
+    {
+      "story_id": "new-york-rent-software-ban-blocked",
+      "seen_at": "2026-09-30T16:10:18.930384+00:00"
+    },
+    {
+      "story_id": "ftc-anthropic-openai-investigation",
+      "seen_at": "2026-09-30T18:01:56.605534+00:00"
+    },
+    {
+      "story_id": "caterpillar-sanford-billion-plant",
+      "seen_at": "2026-09-30T19:46:19.828349+00:00"
+    },
+    {
+      "story_id": "stellantis-guidance-shares-hit-low",
+      "seen_at": "2026-09-30T21:31:58.037926+00:00"
+    },
+    {
+      "story_id": "gervon-dexter-falcons-contract",
+      "seen_at": "2026-09-30T23:16:57.326784+00:00"
+    },
+    {
+      "story_id": "newsom-ai-labor-demands",
+      "seen_at": "2026-10-01T01:06:30.671777+00:00"
+    },
+    {
+      "story_id": "nfl-rams-broncos-wrong-call",
+      "seen_at": "2026-10-01T02:51:06.584517+00:00"
+    },
+    {
+      "story_id": "eli-lilly-obesity-combo-weight-loss",
+      "seen_at": "2026-10-01T04:35:32.428305+00:00"
+    },
+    {
+      "story_id": "us-treasury-yield-20-year-high",
+      "seen_at": "2026-10-01T06:20:59.214378+00:00"
+    },
+    {
+      "story_id": "south-korea-exports-record-ai-boom",
+      "seen_at": "2026-10-01T08:11:07.216213+00:00"
+    },
+    {
+      "story_id": "bank-of-england-ai-market-shock-warning",
+      "seen_at": "2026-10-01T09:56:33.421044+00:00"
+    },
+    {
+      "story_id": "prime-herbstreit-thursday-night-football-extension",
+      "seen_at": "2026-10-01T11:41:41.940765+00:00"
+    },
+    {
+      "story_id": "trump-korea-pipeline-54-billion-alaska",
+      "seen_at": "2026-10-01T13:27:25.998492+00:00"
+    },
+    {
+      "story_id": "publishers-ai-licensing-deals",
+      "seen_at": "2026-10-01T15:19:03.003051+00:00"
+    },
+    {
+      "story_id": "lyft-california-272-million-settlement",
+      "seen_at": "2026-10-01T17:04:13.966129+00:00"
+    },
+    {
+      "story_id": "ford-expansion-hiring-pause",
+      "seen_at": "2026-10-01T18:48:36.788845+00:00"
+    },
+    {
+      "story_id": "eu-firms-concentration-half-value",
+      "seen_at": "2026-10-01T20:39:01.255464+00:00"
+    },
+    {
+      "story_id": "nba-jaylen-brown-76ers-trade",
+      "seen_at": "2026-10-01T22:23:33.609052+00:00"
+    },
+    {
+      "story_id": "comcast-nbcu-streaming-jobs-cuts",
+      "seen_at": "2026-10-02T00:08:57.349173+00:00"
+    },
+    {
+      "story_id": "spacex-ai-power-environmental-challenges",
+      "seen_at": "2026-10-02T01:53:25.259793+00:00"
+    },
+    {
+      "story_id": "college-athletes-1-77-billion-revenue-sharing",
+      "seen_at": "2026-10-02T03:38:30.688361+00:00"
+    },
+    {
+      "story_id": "mgm-people-inc-casino-bid",
+      "seen_at": "2026-10-02T05:30:43.099170+00:00"
+    },
+    {
+      "story_id": "baltic-states-prepare-war",
+      "seen_at": "2026-10-02T07:14:12.152348+00:00"
+    },
+    {
+      "story_id": "amazon-ai-chips-8-billion-financing",
+      "seen_at": "2026-10-02T08:58:11.818205+00:00"
+    },
+    {
+      "story_id": "browns-watson-winning-contradiction",
+      "seen_at": "2026-10-02T10:44:21.472821+00:00"
+    },
+    {
+      "story_id": "trump-south-korea-200-billion-energy-investment",
+      "seen_at": "2026-10-02T12:29:42.104526+00:00"
+    },
+    {
+      "story_id": "ftc-ai-regulation-no-new-rules",
+      "seen_at": "2026-10-02T14:14:20.798967+00:00"
+    },
+    {
+      "story_id": "tokyo-court-ai-voice-protection",
+      "seen_at": "2026-10-02T16:00:32.421958+00:00"
+    },
+    {
+      "story_id": "man-city-financial-rule-breaking-appeal",
+      "seen_at": "2026-10-02T17:46:34.467461+00:00"
+    },
+    {
+      "story_id": "goodyear-niagara-falls-plant-closure",
+      "seen_at": "2026-10-02T19:31:26.459728+00:00"
+    },
+    {
+      "story_id": "ai-wall-street-agent-orchestration-hiring-surge",
+      "seen_at": "2026-10-02T21:16:35.090709+00:00"
+    },
+    {
+      "story_id": "romo-cbs-exit-owi-arrest",
+      "seen_at": "2026-10-02T23:01:50.023268+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-price-surge-big-mac",
+      "seen_at": "2026-10-03T00:51:49.431740+00:00"
+    },
+    {
+      "story_id": "tyler-adams-usmnt-captain-2030",
+      "seen_at": "2026-10-03T02:36:21.235581+00:00"
+    },
+    {
+      "story_id": "nike-smaller-company-sales-slide",
+      "seen_at": "2026-10-03T04:20:07.083290+00:00"
+    },
+    {
+      "story_id": "ukraine-ballistic-missile-combat",
+      "seen_at": "2026-10-03T06:11:19.220789+00:00"
+    },
+    {
+      "story_id": "us-iran-carrier-escalation",
+      "seen_at": "2026-10-03T07:55:30.315574+00:00"
+    },
+    {
+      "story_id": "ai-race-money-runs-out",
+      "seen_at": "2026-10-03T09:42:52.033929+00:00"
+    },
+    {
+      "story_id": "tony-romo-cbs-split",
+      "seen_at": "2026-10-03T11:28:01.784779+00:00"
+    },
+    {
+      "story_id": "biden-inflation-prices-opinion",
+      "seen_at": "2026-10-03T13:19:30.343054+00:00"
+    },
+    {
+      "story_id": "chatgpt-malware-scam-trap",
+      "seen_at": "2026-10-03T15:03:47.422397+00:00"
+    },
+    {
+      "story_id": "spain-housing-protests-tens-thousands",
+      "seen_at": "2026-10-03T16:47:38.838423+00:00"
+    },
+    {
+      "story_id": "new-drug-costs-quarter-million-yearly",
+      "seen_at": "2026-10-03T18:33:01.224242+00:00"
+    },
+    {
+      "story_id": "lvmh-arnault-wealth-crash",
+      "seen_at": "2026-10-03T20:18:24.872507+00:00"
+    },
+    {
+      "story_id": "england-croatia-seven-nil",
+      "seen_at": "2026-10-03T22:04:06.457658+00:00"
+    },
+    {
+      "story_id": "england-croatia-demolition",
+      "seen_at": "2026-10-03T23:55:04.231419+00:00"
+    },
+    {
+      "story_id": "us-ai-task-force-risks-report",
+      "seen_at": "2026-10-04T01:39:22.427093+00:00"
+    },
+    {
+      "story_id": "iowa-state-rb-five-touchdowns",
+      "seen_at": "2026-10-04T03:26:49.837583+00:00"
+    },
+    {
+      "story_id": "unemployment-mortgage-rates-climb",
+      "seen_at": "2026-10-04T05:11:42.531616+00:00"
+    },
+    {
+      "story_id": "gaza-apartment-airstrike-five-killed",
+      "seen_at": "2026-10-04T06:57:19.776128+00:00"
+    },
+    {
+      "story_id": "ai-boom-returns-problem",
+      "seen_at": "2026-10-04T08:47:51.225355+00:00"
+    },
+    {
+      "story_id": "arsenal-emirates-stadium-expansion-cancelled",
+      "seen_at": "2026-10-04T10:32:30.991658+00:00"
+    },
+    {
+      "story_id": "supreme-court-oil-climate-damages",
+      "seen_at": "2026-10-04T12:16:39.586393+00:00"
+    },
+    {
+      "story_id": "wnba-mainstream-culture-wars",
+      "seen_at": "2026-10-04T14:00:44.425412+00:00"
+    },
+    {
+      "story_id": "ai-doom-loops-economy",
+      "seen_at": "2026-10-04T15:45:45.651130+00:00"
+    },
+    {
+      "story_id": "spain-housing-crisis-tens-thousands-protest",
+      "seen_at": "2026-10-04T17:30:18.498457+00:00"
+    },
+    {
+      "story_id": "auto-repair-adas-costs-surge",
+      "seen_at": "2026-10-04T19:14:42.563853+00:00"
+    },
+    {
+      "story_id": "buffett-berkshire-net-worth-drop",
+      "seen_at": "2026-10-04T20:59:16.723247+00:00"
+    },
+    {
+      "story_id": "ceedee-lamb-historic-day-cowboys",
+      "seen_at": "2026-10-04T22:52:04.795369+00:00"
+    },
+    {
+      "story_id": "eu-nudifier-ban-december",
+      "seen_at": "2026-10-05T00:46:15.345474+00:00"
+    },
+    {
+      "story_id": "chargers-herbert-0-4-start",
+      "seen_at": "2026-10-05T02:31:18.446819+00:00"
+    },
+    {
+      "story_id": "ozempic-counterfeit-packaging-needles",
+      "seen_at": "2026-10-05T04:16:33.259403+00:00"
+    },
+    {
+      "story_id": "social-security-cola-2027-check",
+      "seen_at": "2026-10-05T06:02:17.315106+00:00"
+    },
+    {
+      "story_id": "israel-gaza-airstrike-casualties",
+      "seen_at": "2026-10-05T07:51:03.559711+00:00"
+    },
+    {
+      "story_id": "korea-frontier-ai-4-7-trillion-won",
+      "seen_at": "2026-10-05T09:35:48.209997+00:00"
+    },
+    {
+      "story_id": "jaguars-best-record-twelve-games",
+      "seen_at": "2026-10-05T11:21:08.438760+00:00"
+    },
+    {
+      "story_id": "bessent-treasury-forecasts-credibility",
+      "seen_at": "2026-10-05T13:06:38.626037+00:00"
+    },
+    {
+      "story_id": "uk-voters-ai-force-for-bad",
+      "seen_at": "2026-10-05T14:50:23.394328+00:00"
+    },
+    {
+      "story_id": "gatorade-recall-undeclared-colorings",
+      "seen_at": "2026-10-05T16:42:51.530755+00:00"
+    },
+    {
+      "story_id": "holiday-airfares-november-surge",
+      "seen_at": "2026-10-05T18:30:33.685658+00:00"
+    },
+    {
+      "story_id": "messi-revolutionized-us-soccer",
+      "seen_at": "2026-10-05T22:25:11.890309+00:00"
+    },
+    {
+      "story_id": "altman-musk-work-together",
+      "seen_at": "2026-10-06T00:09:31.428429+00:00"
+    },
+    {
+      "story_id": "apple-ai-race-catch-up",
+      "seen_at": "2026-10-06T01:53:57.968292+00:00"
+    },
+    {
+      "story_id": "ovechkin-final-run-retirement",
+      "seen_at": "2026-10-06T03:38:46.428118+00:00"
+    },
+    {
+      "story_id": "used-cars-texas-prices-climb",
+      "seen_at": "2026-10-06T05:23:15.905078+00:00"
+    },
+    {
+      "story_id": "yemen-houthi-government-operation",
+      "seen_at": "2026-10-06T07:08:27.384596+00:00"
+    },
+    {
+      "story_id": "nasdaq-record-ai-rally-yields",
+      "seen_at": "2026-10-06T08:55:14.340921+00:00"
+    },
+    {
+      "story_id": "crystal-palace-billion-sale",
+      "seen_at": "2026-10-06T10:39:48.481710+00:00"
+    },
+    {
+      "story_id": "trump-beef-import-policy-prices",
+      "seen_at": "2026-10-06T12:23:18.474604+00:00"
+    },
+    {
+      "story_id": "data-centers-small-town-america-overwhelm",
+      "seen_at": "2026-10-06T14:08:08.086827+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-pricing-lawsuit",
+      "seen_at": "2026-10-06T15:53:30.618151+00:00"
+    },
+    {
+      "story_id": "gatorade-recall-37-states-dyes",
+      "seen_at": "2026-10-06T17:43:34.706760+00:00"
+    },
+    {
+      "story_id": "national-frozen-foods-layoffs-439",
+      "seen_at": "2026-10-06T19:28:14.362902+00:00"
+    },
+    {
+      "story_id": "paramount-skydance-warner-merger-closed",
+      "seen_at": "2026-10-06T21:12:57.699280+00:00"
+    },
+    {
+      "story_id": "tyreek-hill-abuse-trial-day-one",
+      "seen_at": "2026-10-06T22:57:21.435137+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-price-lawsuit",
+      "seen_at": "2026-10-07T00:44:28.261754+00:00"
+    },
+    {
+      "story_id": "nfl-penalties-record-high-2025",
+      "seen_at": "2026-10-07T02:30:27.332656+00:00"
+    },
+    {
+      "story_id": "british-airways-a380-business-class-record",
+      "seen_at": "2026-10-07T04:15:30.170682+00:00"
+    },
+    {
+      "story_id": "lucid-q3-deliveries-fall",
+      "seen_at": "2026-10-07T06:01:36.002099+00:00"
+    },
+    {
+      "story_id": "saudi-houthi-airport-attacks",
+      "seen_at": "2026-10-07T07:44:55.247274+00:00"
+    },
+    {
+      "story_id": "companies-cutting-jobs-ai-investments",
+      "seen_at": "2026-10-07T09:31:05.825029+00:00"
+    },
+    {
+      "story_id": "klay-giannis-heat-teammates",
+      "seen_at": "2026-10-07T11:17:44.290146+00:00"
+    },
+    {
+      "story_id": "trump-sparrows-point-submarines",
+      "seen_at": "2026-10-07T13:02:43.950232+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-price-fixing-lawsuit",
+      "seen_at": "2026-10-07T14:53:09.798354+00:00"
+    },
+    {
+      "story_id": "cornell-rape-case-investigation-yates",
+      "seen_at": "2026-10-07T16:37:42.643685+00:00"
+    },
+    {
+      "story_id": "maynard-steel-wisconsin-layoffs",
+      "seen_at": "2026-10-07T18:27:48.256291+00:00"
+    },
+    {
+      "story_id": "billionaires-exodus-uk-160-billion",
+      "seen_at": "2026-10-07T20:15:31.687736+00:00"
+    },
+    {
+      "story_id": "used-cars-q3-prices-fall",
+      "seen_at": "2026-10-07T22:01:17.176484+00:00"
+    },
+    {
+      "story_id": "ramon-vega-fifa-presidency-challenge",
+      "seen_at": "2026-10-07T23:45:26.489390+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-pricing-franchisees-lawsuit",
+      "seen_at": "2026-10-08T01:37:36.664223+00:00"
+    },
+    {
+      "story_id": "acuna-prediction-market-first",
+      "seen_at": "2026-10-08T03:22:23.049332+00:00"
+    },
+    {
+      "story_id": "american-dream-cost-5-3-million",
+      "seen_at": "2026-10-08T05:07:33.623051+00:00"
+    },
+    {
+      "story_id": "gaza-war-three-years-aftermath",
+      "seen_at": "2026-10-08T06:54:03.311228+00:00"
+    },
+    {
+      "story_id": "tsmc-q3-ai-chip-demand-surge",
+      "seen_at": "2026-10-08T08:39:15.379219+00:00"
+    },
+    {
+      "story_id": "mcgregor-ufc-ticket-prices-new-heights",
+      "seen_at": "2026-10-08T10:23:37.666688+00:00"
+    },
+    {
+      "story_id": "trump-fuel-economy-rollback-california",
+      "seen_at": "2026-10-08T12:10:03.652275+00:00"
+    },
+    {
+      "story_id": "rfk-vaccine-policy-blocked",
+      "seen_at": "2026-10-08T13:54:37.052026+00:00"
+    },
+    {
+      "story_id": "onondaga-county-ai-911-union-lawsuit",
+      "seen_at": "2026-10-08T15:41:56.793615+00:00"
+    },
+    {
+      "story_id": "costco-settlement-marketing-emails-14m",
+      "seen_at": "2026-10-08T17:26:43.382774+00:00"
+    },
+    {
+      "story_id": "retirees-returning-workforce-retirement-crisis",
+      "seen_at": "2026-10-08T19:12:44.794267+00:00"
+    },
+    {
+      "story_id": "pepsico-earnings-forecast-cut",
+      "seen_at": "2026-10-08T21:00:46.251912+00:00"
+    },
+    {
+      "story_id": "aja-wilson-fifth-mvp",
+      "seen_at": "2026-10-08T22:45:39.430334+00:00"
+    },
+    {
+      "story_id": "ai-hikers-lost-chatbot-directions",
+      "seen_at": "2026-10-09T00:36:56.215110+00:00"
+    },
+    {
+      "story_id": "lebron-76ers-preseason-debut",
+      "seen_at": "2026-10-09T02:21:49.495520+00:00"
+    },
+    {
+      "story_id": "pepsi-raising-prices",
+      "seen_at": "2026-10-09T04:07:48.911110+00:00"
+    },
+    {
+      "story_id": "gas-prices-cross-four-dollars",
+      "seen_at": "2026-10-09T05:55:13.053369+00:00"
+    },
+    {
+      "story_id": "gaza-rescuers-israeli-fire-seven",
+      "seen_at": "2026-10-09T07:45:27.308645+00:00"
+    },
+    {
+      "story_id": "softbank-gulf-100-billion-ai",
+      "seen_at": "2026-10-09T09:31:11.993722+00:00"
+    },
+    {
+      "story_id": "friedkin-everton-full-sale-open",
+      "seen_at": "2026-10-09T11:18:01.838262+00:00"
+    },
+    {
+      "story_id": "trump-spacex-bonds-before-space-policy",
+      "seen_at": "2026-10-09T13:02:55.568763+00:00"
+    },
+    {
+      "story_id": "ai-comedian-bots-instagram-jokes",
+      "seen_at": "2026-10-09T14:45:38.819409+00:00"
+    },
+    {
+      "story_id": "arlington-trump-arch-lawsuit",
+      "seen_at": "2026-10-09T16:30:17.390086+00:00"
+    },
+    {
+      "story_id": "electricity-prices-rose-44-states",
+      "seen_at": "2026-10-09T18:15:09.289239+00:00"
+    },
+    {
+      "story_id": "nc-gas-tax-suspension-hb3",
+      "seen_at": "2026-10-09T20:02:35.442152+00:00"
+    },
+    {
+      "story_id": "fed-survey-18-million-richest-households",
+      "seen_at": "2026-10-09T21:47:40.637246+00:00"
+    },
+    {
+      "story_id": "nba-second-apron-knicks-middle-class-statement",
+      "seen_at": "2026-10-09T23:32:50.491170+00:00"
+    },
+    {
+      "story_id": "character-ai-child-harm-lawsuit",
+      "seen_at": "2026-10-10T01:17:35.796076+00:00"
+    },
+    {
+      "story_id": "nazar-suspended-two-games-horvat-hit",
+      "seen_at": "2026-10-10T03:04:32.307437+00:00"
+    },
+    {
+      "story_id": "starbucks-chipotle-takeover-report",
+      "seen_at": "2026-10-10T04:49:13.664463+00:00"
+    },
+    {
+      "story_id": "trump-iran-war-return-midterms",
+      "seen_at": "2026-10-10T06:37:23.334734+00:00"
+    },
+    {
+      "story_id": "typesafe-ai-870m-series-a",
+      "seen_at": "2026-10-10T08:21:07.358217+00:00"
+    },
+    {
+      "story_id": "repole-churchill-downs-stake",
+      "seen_at": "2026-10-10T10:07:02.862544+00:00"
+    },
+    {
+      "story_id": "valkyries-lead-wnba-sponsorship-revenue",
+      "seen_at": "2026-10-10T11:54:25.687790+00:00"
+    },
+    {
+      "story_id": "trump-medicaid-cuts-strip-refugees-coverage",
+      "seen_at": "2026-10-10T13:38:40.351124+00:00"
+    },
+    {
+      "story_id": "ai-scam-economy-bigger-than-cocaine-trade",
+      "seen_at": "2026-10-10T15:23:30.415262+00:00"
+    },
+    {
+      "story_id": "india-delhi-lockdown-protest-detentions",
+      "seen_at": "2026-10-10T17:16:08.952859+00:00"
+    },
+    {
+      "story_id": "trump-90-medicare-rebate-disbursement",
+      "seen_at": "2026-10-10T19:01:16.811868+00:00"
+    },
+    {
+      "story_id": "elon-musk-richer-than-any-american",
+      "seen_at": "2026-10-10T20:47:48.732734+00:00"
+    },
+    {
+      "story_id": "texas-am-elko-fan-site-cesspool",
+      "seen_at": "2026-10-10T22:31:34.506323+00:00"
+    },
+    {
+      "story_id": "maryland-school-board-ai-ban",
+      "seen_at": "2026-10-11T00:17:07.058934+00:00"
+    },
+    {
+      "story_id": "pope-leo-ai-slop-criticism",
+      "seen_at": "2026-10-11T02:01:24.776343+00:00"
+    },
+    {
+      "story_id": "cooper-flagg-8m-card-family",
+      "seen_at": "2026-10-11T03:46:46.340920+00:00"
+    }
+  ],
+  "updated_at": "2026-10-11T03:47:31.734572+00:00"
+}
