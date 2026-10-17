@@ -1,0 +1,1351 @@
+{
+  "cards": [
+    {
+      "id": "20261015-153905-disney-bids-20m-ai-firm-after-cease-and-",
+      "story_id": "disney-bids-20m-ai-firm-after-cease-and-desist",
+      "file": "cards/20261015-153905-disney-bids-20m-ai-firm-after-cease-and-.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261015-153905-disney-bids-20m-ai-firm-after-cease-and-.jpg",
+      "created_at": "2026-10-15T15:39:05.391979+00:00",
+      "style": "poster",
+      "slot": 8,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Disney has reportedly bid $20 million for an AI firm it had earlier sent a cease-and-desist letter to. The bid is the latest sign of how studios are wrestling with AI companies.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261015-153905-disney-bids-20m-ai-firm-after-cease-and-.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261015-153905-disney-bids-20m-ai-firm-after-cease-and-.mp4"
+    },
+    {
+      "id": "20261015-172309-hyundai-recall-94600-overheating-fire-ri",
+      "story_id": "hyundai-recall-94600-overheating-fire-risk",
+      "file": "cards/20261015-172309-hyundai-recall-94600-overheating-fire-ri.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261015-172309-hyundai-recall-94600-overheating-fire-ri.jpg",
+      "created_at": "2026-10-15T17:23:09.258034+00:00",
+      "style": "poster",
+      "slot": 9,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Hyundai is recalling more than 94,600 US vehicles over an overheating fire risk, according to federal regulators. Owners should check whether their car is included.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261015-190751-us-jobless-claims-below-200000",
+      "story_id": "us-jobless-claims-below-200000",
+      "file": "cards/20261015-190751-us-jobless-claims-below-200000.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261015-190751-us-jobless-claims-below-200000.jpg",
+      "created_at": "2026-10-15T19:07:51.305573+00:00",
+      "style": "feature",
+      "slot": 10,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "New weekly jobless claims remain at historically low levels, below 200,000, a sign the job market is still holding up. Workers can read it as steady hiring for now.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261015-190751-us-jobless-claims-below-200000.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261015-190751-us-jobless-claims-below-200000.mp4"
+    },
+    {
+      "id": "20261015-205311-michael-dell-loses-20b-one-day",
+      "story_id": "michael-dell-loses-20b-one-day",
+      "file": "cards/20261015-205311-michael-dell-loses-20b-one-day.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261015-205311-michael-dell-loses-20b-one-day.jpg",
+      "created_at": "2026-10-15T20:53:11.796370+00:00",
+      "style": "poster",
+      "slot": 11,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Michael Dell lost about $20 billion in one day after Dell's stock had its biggest fall in months, according to the Times of India. The drop followed a Barclays move that the report links to the sell-off.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261015-223843-caleb-williams-hamstring-tear-bears",
+      "story_id": "caleb-williams-hamstring-tear-bears",
+      "file": "cards/20261015-223843-caleb-williams-hamstring-tear-bears.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261015-223843-caleb-williams-hamstring-tear-bears.jpg",
+      "created_at": "2026-10-15T22:38:43.871374+00:00",
+      "style": "poster",
+      "slot": 0,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Bears quarterback Caleb Williams says his injury is a hamstring tear, and it remains unclear whether he will start this week.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261015-223843-caleb-williams-hamstring-tear-bears.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261015-223843-caleb-williams-hamstring-tear-bears.mp4"
+    },
+    {
+      "id": "20261016-002240-anthropic-fridge-ai-cybersecurity-warnin",
+      "story_id": "anthropic-fridge-ai-cybersecurity-warning",
+      "file": "cards/20261016-002240-anthropic-fridge-ai-cybersecurity-warnin.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-002240-anthropic-fridge-ai-cybersecurity-warnin.jpg",
+      "created_at": "2026-10-16T00:22:40.234299+00:00",
+      "style": "poster",
+      "slot": 1,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Anthropic researchers warn that a household fridge could become an AI cybersecurity risk as everyday devices get connected. The warning points to ordinary appliances, not just laptops and phones.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261016-020834-perron-stars-20th-nhl-season",
+      "story_id": "perron-stars-20th-nhl-season",
+      "file": "cards/20261016-020834-perron-stars-20th-nhl-season.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-020834-perron-stars-20th-nhl-season.jpg",
+      "created_at": "2026-10-16T02:08:34.664428+00:00",
+      "style": "classic",
+      "slot": 2,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "David Perron has signed with the Dallas Stars for his 20th NHL season, according to a source. The veteran forward keeps his long career going.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261016-020834-perron-stars-20th-nhl-season.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261016-020834-perron-stars-20th-nhl-season.mp4"
+    },
+    {
+      "id": "20261016-035239-broncos-blow-lead-survive-seahawks-ot",
+      "story_id": "broncos-blow-lead-survive-seahawks-ot",
+      "file": "cards/20261016-035239-broncos-blow-lead-survive-seahawks-ot.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-035239-broncos-blow-lead-survive-seahawks-ot.jpg",
+      "created_at": "2026-10-16T03:52:39.777055+00:00",
+      "style": "poster",
+      "slot": 3,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The Broncos blew a lead but still beat the Seahawks in overtime after Sam Darnold's second interception. A wild finish to the game.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261016-053737-kfc-switches-pepsi-to-coca-cola-us",
+      "story_id": "kfc-switches-pepsi-to-coca-cola-us",
+      "file": "cards/20261016-053737-kfc-switches-pepsi-to-coca-cola-us.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-053737-kfc-switches-pepsi-to-coca-cola-us.jpg",
+      "created_at": "2026-10-16T05:37:37.789217+00:00",
+      "style": "poster",
+      "slot": 4,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "KFC is moving its U.S. restaurants from PepsiCo to Coca-Cola for beverages, the first supplier switch in decades. For anyone who orders a fountain drink, the cup is about to taste different.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261016-053737-kfc-switches-pepsi-to-coca-cola-us.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261016-053737-kfc-switches-pepsi-to-coca-cola-us.mp4"
+    },
+    {
+      "id": "20261016-072600-us-iran-new-sanctions-16-people-10-entit",
+      "story_id": "us-iran-new-sanctions-16-people-10-entities",
+      "file": "cards/20261016-072600-us-iran-new-sanctions-16-people-10-entit.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-072600-us-iran-new-sanctions-16-people-10-entit.jpg",
+      "created_at": "2026-10-16T07:26:00.826457+00:00",
+      "style": "feature",
+      "slot": 5,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The US has announced new sanctions targeting 16 people and 10 entities linked to Iran's economy. The move adds to ongoing pressure on Tehran's finances.",
+      "posted": {
+        "instagram": false,
+        "facebook": false,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261016-091018-coreweave-debt-slump-ai-boom",
+      "story_id": "coreweave-debt-slump-ai-boom",
+      "file": "cards/20261016-091018-coreweave-debt-slump-ai-boom.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-091018-coreweave-debt-slump-ai-boom.jpg",
+      "created_at": "2026-10-16T09:10:18.110267+00:00",
+      "style": "poster",
+      "slot": 6,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "CoreWeave, a loss-making AI cloud provider, is under pressure as its debt comes under scrutiny. The episode is raising wider questions about how much borrowed money the AI boom depends on.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261016-091018-coreweave-debt-slump-ai-boom.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261016-091018-coreweave-debt-slump-ai-boom.mp4"
+    },
+    {
+      "id": "20261016-105426-dolphins-minority-stake-chilean-billiona",
+      "story_id": "dolphins-minority-stake-chilean-billionaire",
+      "file": "cards/20261016-105426-dolphins-minority-stake-chilean-billiona.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-105426-dolphins-minority-stake-chilean-billiona.jpg",
+      "created_at": "2026-10-16T10:54:26.003146+00:00",
+      "style": "classic",
+      "slot": 7,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The Miami Dolphins have sold a minority stake to a Chilean billionaire, according to Sports Business Journal. It is another example of outside investors buying into pro sports teams.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261016-124105-trump-5000-check-richer-or-poorer",
+      "story_id": "trump-5000-check-richer-or-poorer",
+      "file": "cards/20261016-124105-trump-5000-check-richer-or-poorer.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-124105-trump-5000-check-richer-or-poorer.jpg",
+      "created_at": "2026-10-16T12:41:05.804152+00:00",
+      "style": "poster",
+      "slot": 8,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A new CryptoRank explainer asks whether Trump's $5,000 check would leave Americans richer or poorer. It looks at what the idea would mean for households and the wider US economy.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261016-124105-trump-5000-check-richer-or-poorer.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261016-124105-trump-5000-check-richer-or-poorer.mp4"
+    },
+    {
+      "id": "20261016-142636-india-overtakes-japan-imf-2027",
+      "story_id": "india-overtakes-japan-imf-2027",
+      "file": "cards/20261016-142636-india-overtakes-japan-imf-2027.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-142636-india-overtakes-japan-imf-2027.jpg",
+      "created_at": "2026-10-16T14:26:36.180866+00:00",
+      "style": "poster",
+      "slot": 9,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The IMF projects India will overtake Japan as the world's fourth-largest economy in 2027, with Britain also moving past Japan. These are forecasts, not results.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261016-161539-missouri-nonprofit-abortion-ban-campaign",
+      "story_id": "missouri-nonprofit-abortion-ban-campaign-2-9m",
+      "file": "cards/20261016-161539-missouri-nonprofit-abortion-ban-campaign.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-161539-missouri-nonprofit-abortion-ban-campaign.jpg",
+      "created_at": "2026-10-16T16:15:39.921004+00:00",
+      "style": "feature",
+      "slot": 10,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A new Missouri nonprofit has put $2.9 million into a campaign to reinstate the state's abortion ban. The Missouri Independent reports the funding is part of a broader push ahead of the vote.",
+      "posted": {
+        "instagram": false,
+        "facebook": false,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261016-161539-missouri-nonprofit-abortion-ban-campaign.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261016-161539-missouri-nonprofit-abortion-ban-campaign.mp4"
+    },
+    {
+      "id": "20261016-180209-no-usable-story",
+      "story_id": "no-usable-story",
+      "file": "cards/20261016-180209-no-usable-story.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-180209-no-usable-story.jpg",
+      "created_at": "2026-10-16T18:02:09.411820+00:00",
+      "style": "poster",
+      "slot": 11,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261016-195226-mosaic-florida-fertilizer-layoffs-199",
+      "story_id": "mosaic-florida-fertilizer-layoffs-199",
+      "file": "cards/20261016-195226-mosaic-florida-fertilizer-layoffs-199.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-195226-mosaic-florida-fertilizer-layoffs-199.jpg",
+      "created_at": "2026-10-16T19:52:26.673748+00:00",
+      "style": "poster",
+      "slot": 0,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Mosaic plans to lay off 199 workers at its Florida fertilizer plant as a global sulfur shortage squeezes the business. It is a reminder of how far supply shocks can reach into ordinary jobs.",
+      "posted": {
+        "instagram": false,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261016-195226-mosaic-florida-fertilizer-layoffs-199.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261016-195226-mosaic-florida-fertilizer-layoffs-199.mp4"
+    },
+    {
+      "id": "20261016-213722-fed-1-in-5-americans-falling-behind-on-d",
+      "story_id": "fed-1-in-5-americans-falling-behind-on-debt",
+      "file": "cards/20261016-213722-fed-1-in-5-americans-falling-behind-on-d.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-213722-fed-1-in-5-americans-falling-behind-on-d.jpg",
+      "created_at": "2026-10-16T21:37:22.402992+00:00",
+      "style": "poster",
+      "slot": 1,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "New Fed data shows one in five Americans are falling behind on their debt. The figures point to real pressure on household budgets.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261016-232326-nba-sportsbooks-restrict-single-play-bet",
+      "story_id": "nba-sportsbooks-restrict-single-play-bets",
+      "file": "cards/20261016-232326-nba-sportsbooks-restrict-single-play-bet.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261016-232326-nba-sportsbooks-restrict-single-play-bet.jpg",
+      "created_at": "2026-10-16T23:23:26.728740+00:00",
+      "style": "classic",
+      "slot": 2,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The NBA and sportsbooks plan to restrict bets on single plays and other low-likelihood, high-payout wagers. The change targets long-shot bets that fans place on individual moments in games.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261016-232326-nba-sportsbooks-restrict-single-play-bet.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261016-232326-nba-sportsbooks-restrict-single-play-bet.mp4"
+    },
+    {
+      "id": "20261017-010750-news-publishers-ai-lawsuits-licensing-de",
+      "story_id": "news-publishers-ai-lawsuits-licensing-deals",
+      "file": "cards/20261017-010750-news-publishers-ai-lawsuits-licensing-de.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-010750-news-publishers-ai-lawsuits-licensing-de.jpg",
+      "created_at": "2026-10-17T01:07:50.614332+00:00",
+      "style": "poster",
+      "slot": 3,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Press Gazette has tracked which news publishers are suing AI companies and which are signing deals with them. The split is shaping how the news business handles AI.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261017-025417-alcs-game-4-postponed-cleveland-weather",
+      "story_id": "alcs-game-4-postponed-cleveland-weather",
+      "file": "cards/20261017-025417-alcs-game-4-postponed-cleveland-weather.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-025417-alcs-game-4-postponed-cleveland-weather.jpg",
+      "created_at": "2026-10-17T02:54:17.212845+00:00",
+      "style": "poster",
+      "slot": 4,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The American League Championship Series Game 4 in Cleveland has been postponed due to inclement weather. Fans will have to wait for a new date.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261017-025417-alcs-game-4-postponed-cleveland-weather.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261017-025417-alcs-game-4-postponed-cleveland-weather.mp4"
+    },
+    {
+      "id": "20261017-043831-ossoff-collins-georgia-senate-final-deba",
+      "story_id": "ossoff-collins-georgia-senate-final-debate",
+      "file": "cards/20261017-043831-ossoff-collins-georgia-senate-final-deba.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-043831-ossoff-collins-georgia-senate-final-deba.jpg",
+      "created_at": "2026-10-17T04:38:31.576192+00:00",
+      "style": "feature",
+      "slot": 5,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The final Georgia Senate debate between Ossoff and Collins turned into a sharp clash ahead of the vote. Both candidates are making their last case to Georgia voters.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261017-063023-qatar-lebanon-power-grid-reconstruction-",
+      "story_id": "qatar-lebanon-power-grid-reconstruction-pledge",
+      "file": "cards/20261017-063023-qatar-lebanon-power-grid-reconstruction-.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-063023-qatar-lebanon-power-grid-reconstruction-.jpg",
+      "created_at": "2026-10-17T06:30:23.037641+00:00",
+      "style": "poster",
+      "slot": 6,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Qatar has pledged support for Lebanon's economy, power grid and reconstruction in the south. The aid comes as the country rebuilds from the war.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261017-063023-qatar-lebanon-power-grid-reconstruction-.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261017-063023-qatar-lebanon-power-grid-reconstruction-.mp4"
+    },
+    {
+      "id": "20261017-081616-deepseek-funding-round-2-4-trillion-yuan",
+      "story_id": "deepseek-funding-round-2-4-trillion-yuan",
+      "file": "cards/20261017-081616-deepseek-funding-round-2-4-trillion-yuan.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-081616-deepseek-funding-round-2-4-trillion-yuan.jpg",
+      "created_at": "2026-10-17T08:16:16.939988+00:00",
+      "style": "classic",
+      "slot": 7,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A Chinese AI startup's funding round has doubled to \u00a52.4 trillion, with battery maker CATL adding \u00a5240 billion. The scale of industrial money flowing into AI is becoming hard to ignore.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261017-100052-central-bankers-higher-rates-ai-cash-scr",
+      "story_id": "central-bankers-higher-rates-ai-cash-scramble",
+      "file": "cards/20261017-100052-central-bankers-higher-rates-ai-cash-scr.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-100052-central-bankers-higher-rates-ai-cash-scr.jpg",
+      "created_at": "2026-10-17T10:00:52.204065+00:00",
+      "style": "poster",
+      "slot": 8,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Central banks are reportedly weighing higher interest rates as the AI boom drives a scramble for cash. The move could change what everyday borrowers pay.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261017-100052-central-bankers-higher-rates-ai-cash-scr.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261017-100052-central-bankers-higher-rates-ai-cash-scr.mp4"
+    },
+    {
+      "id": "20261017-115223-ncaa-sues-ohio-governor-executive-order",
+      "story_id": "ncaa-sues-ohio-governor-executive-order",
+      "file": "cards/20261017-115223-ncaa-sues-ohio-governor-executive-order.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-115223-ncaa-sues-ohio-governor-executive-order.jpg",
+      "created_at": "2026-10-17T11:52:23.775111+00:00",
+      "style": "poster",
+      "slot": 9,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The NCAA has sued Ohio's governor over an executive order, a dispute over who controls college sports rules. The case is one to watch as it moves through the courts.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261017-133611-republicans-turn-on-trump-tariffs",
+      "story_id": "republicans-turn-on-trump-tariffs",
+      "file": "cards/20261017-133611-republicans-turn-on-trump-tariffs.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-133611-republicans-turn-on-trump-tariffs.jpg",
+      "created_at": "2026-10-17T13:36:11.672477+00:00",
+      "style": "feature",
+      "slot": 10,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Financial Times reports that Republicans are turning against Donald Trump's tariffs as they fight for political survival before the 2026 midterms. The split matters for anyone watching what tariffs do to the cost of imported goods.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261017-133611-republicans-turn-on-trump-tariffs.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261017-133611-republicans-turn-on-trump-tariffs.mp4"
+    },
+    {
+      "id": "20261017-152649-no-usable-story-empty-feed",
+      "story_id": "no-usable-story-empty-feed",
+      "file": "cards/20261017-152649-no-usable-story-empty-feed.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261017-152649-no-usable-story-empty-feed.jpg",
+      "created_at": "2026-10-17T15:26:49.051146+00:00",
+      "style": "poster",
+      "slot": 11,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "No usable artificial intelligence story was available in this run's headlines, so no card is being published for this slot.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    }
+  ],
+  "history": [
+    {
+      "story_id": "spain-housing-protests-tens-thousands",
+      "seen_at": "2026-10-03T16:47:38.838423+00:00"
+    },
+    {
+      "story_id": "new-drug-costs-quarter-million-yearly",
+      "seen_at": "2026-10-03T18:33:01.224242+00:00"
+    },
+    {
+      "story_id": "lvmh-arnault-wealth-crash",
+      "seen_at": "2026-10-03T20:18:24.872507+00:00"
+    },
+    {
+      "story_id": "england-croatia-seven-nil",
+      "seen_at": "2026-10-03T22:04:06.457658+00:00"
+    },
+    {
+      "story_id": "england-croatia-demolition",
+      "seen_at": "2026-10-03T23:55:04.231419+00:00"
+    },
+    {
+      "story_id": "us-ai-task-force-risks-report",
+      "seen_at": "2026-10-04T01:39:22.427093+00:00"
+    },
+    {
+      "story_id": "iowa-state-rb-five-touchdowns",
+      "seen_at": "2026-10-04T03:26:49.837583+00:00"
+    },
+    {
+      "story_id": "unemployment-mortgage-rates-climb",
+      "seen_at": "2026-10-04T05:11:42.531616+00:00"
+    },
+    {
+      "story_id": "gaza-apartment-airstrike-five-killed",
+      "seen_at": "2026-10-04T06:57:19.776128+00:00"
+    },
+    {
+      "story_id": "ai-boom-returns-problem",
+      "seen_at": "2026-10-04T08:47:51.225355+00:00"
+    },
+    {
+      "story_id": "arsenal-emirates-stadium-expansion-cancelled",
+      "seen_at": "2026-10-04T10:32:30.991658+00:00"
+    },
+    {
+      "story_id": "supreme-court-oil-climate-damages",
+      "seen_at": "2026-10-04T12:16:39.586393+00:00"
+    },
+    {
+      "story_id": "wnba-mainstream-culture-wars",
+      "seen_at": "2026-10-04T14:00:44.425412+00:00"
+    },
+    {
+      "story_id": "ai-doom-loops-economy",
+      "seen_at": "2026-10-04T15:45:45.651130+00:00"
+    },
+    {
+      "story_id": "spain-housing-crisis-tens-thousands-protest",
+      "seen_at": "2026-10-04T17:30:18.498457+00:00"
+    },
+    {
+      "story_id": "auto-repair-adas-costs-surge",
+      "seen_at": "2026-10-04T19:14:42.563853+00:00"
+    },
+    {
+      "story_id": "buffett-berkshire-net-worth-drop",
+      "seen_at": "2026-10-04T20:59:16.723247+00:00"
+    },
+    {
+      "story_id": "ceedee-lamb-historic-day-cowboys",
+      "seen_at": "2026-10-04T22:52:04.795369+00:00"
+    },
+    {
+      "story_id": "eu-nudifier-ban-december",
+      "seen_at": "2026-10-05T00:46:15.345474+00:00"
+    },
+    {
+      "story_id": "chargers-herbert-0-4-start",
+      "seen_at": "2026-10-05T02:31:18.446819+00:00"
+    },
+    {
+      "story_id": "ozempic-counterfeit-packaging-needles",
+      "seen_at": "2026-10-05T04:16:33.259403+00:00"
+    },
+    {
+      "story_id": "social-security-cola-2027-check",
+      "seen_at": "2026-10-05T06:02:17.315106+00:00"
+    },
+    {
+      "story_id": "israel-gaza-airstrike-casualties",
+      "seen_at": "2026-10-05T07:51:03.559711+00:00"
+    },
+    {
+      "story_id": "korea-frontier-ai-4-7-trillion-won",
+      "seen_at": "2026-10-05T09:35:48.209997+00:00"
+    },
+    {
+      "story_id": "jaguars-best-record-twelve-games",
+      "seen_at": "2026-10-05T11:21:08.438760+00:00"
+    },
+    {
+      "story_id": "bessent-treasury-forecasts-credibility",
+      "seen_at": "2026-10-05T13:06:38.626037+00:00"
+    },
+    {
+      "story_id": "uk-voters-ai-force-for-bad",
+      "seen_at": "2026-10-05T14:50:23.394328+00:00"
+    },
+    {
+      "story_id": "gatorade-recall-undeclared-colorings",
+      "seen_at": "2026-10-05T16:42:51.530755+00:00"
+    },
+    {
+      "story_id": "holiday-airfares-november-surge",
+      "seen_at": "2026-10-05T18:30:33.685658+00:00"
+    },
+    {
+      "story_id": "messi-revolutionized-us-soccer",
+      "seen_at": "2026-10-05T22:25:11.890309+00:00"
+    },
+    {
+      "story_id": "altman-musk-work-together",
+      "seen_at": "2026-10-06T00:09:31.428429+00:00"
+    },
+    {
+      "story_id": "apple-ai-race-catch-up",
+      "seen_at": "2026-10-06T01:53:57.968292+00:00"
+    },
+    {
+      "story_id": "ovechkin-final-run-retirement",
+      "seen_at": "2026-10-06T03:38:46.428118+00:00"
+    },
+    {
+      "story_id": "used-cars-texas-prices-climb",
+      "seen_at": "2026-10-06T05:23:15.905078+00:00"
+    },
+    {
+      "story_id": "yemen-houthi-government-operation",
+      "seen_at": "2026-10-06T07:08:27.384596+00:00"
+    },
+    {
+      "story_id": "nasdaq-record-ai-rally-yields",
+      "seen_at": "2026-10-06T08:55:14.340921+00:00"
+    },
+    {
+      "story_id": "crystal-palace-billion-sale",
+      "seen_at": "2026-10-06T10:39:48.481710+00:00"
+    },
+    {
+      "story_id": "trump-beef-import-policy-prices",
+      "seen_at": "2026-10-06T12:23:18.474604+00:00"
+    },
+    {
+      "story_id": "data-centers-small-town-america-overwhelm",
+      "seen_at": "2026-10-06T14:08:08.086827+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-pricing-lawsuit",
+      "seen_at": "2026-10-06T15:53:30.618151+00:00"
+    },
+    {
+      "story_id": "gatorade-recall-37-states-dyes",
+      "seen_at": "2026-10-06T17:43:34.706760+00:00"
+    },
+    {
+      "story_id": "national-frozen-foods-layoffs-439",
+      "seen_at": "2026-10-06T19:28:14.362902+00:00"
+    },
+    {
+      "story_id": "paramount-skydance-warner-merger-closed",
+      "seen_at": "2026-10-06T21:12:57.699280+00:00"
+    },
+    {
+      "story_id": "tyreek-hill-abuse-trial-day-one",
+      "seen_at": "2026-10-06T22:57:21.435137+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-price-lawsuit",
+      "seen_at": "2026-10-07T00:44:28.261754+00:00"
+    },
+    {
+      "story_id": "nfl-penalties-record-high-2025",
+      "seen_at": "2026-10-07T02:30:27.332656+00:00"
+    },
+    {
+      "story_id": "british-airways-a380-business-class-record",
+      "seen_at": "2026-10-07T04:15:30.170682+00:00"
+    },
+    {
+      "story_id": "lucid-q3-deliveries-fall",
+      "seen_at": "2026-10-07T06:01:36.002099+00:00"
+    },
+    {
+      "story_id": "saudi-houthi-airport-attacks",
+      "seen_at": "2026-10-07T07:44:55.247274+00:00"
+    },
+    {
+      "story_id": "companies-cutting-jobs-ai-investments",
+      "seen_at": "2026-10-07T09:31:05.825029+00:00"
+    },
+    {
+      "story_id": "klay-giannis-heat-teammates",
+      "seen_at": "2026-10-07T11:17:44.290146+00:00"
+    },
+    {
+      "story_id": "trump-sparrows-point-submarines",
+      "seen_at": "2026-10-07T13:02:43.950232+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-price-fixing-lawsuit",
+      "seen_at": "2026-10-07T14:53:09.798354+00:00"
+    },
+    {
+      "story_id": "cornell-rape-case-investigation-yates",
+      "seen_at": "2026-10-07T16:37:42.643685+00:00"
+    },
+    {
+      "story_id": "maynard-steel-wisconsin-layoffs",
+      "seen_at": "2026-10-07T18:27:48.256291+00:00"
+    },
+    {
+      "story_id": "billionaires-exodus-uk-160-billion",
+      "seen_at": "2026-10-07T20:15:31.687736+00:00"
+    },
+    {
+      "story_id": "used-cars-q3-prices-fall",
+      "seen_at": "2026-10-07T22:01:17.176484+00:00"
+    },
+    {
+      "story_id": "ramon-vega-fifa-presidency-challenge",
+      "seen_at": "2026-10-07T23:45:26.489390+00:00"
+    },
+    {
+      "story_id": "mcdonalds-ai-pricing-franchisees-lawsuit",
+      "seen_at": "2026-10-08T01:37:36.664223+00:00"
+    },
+    {
+      "story_id": "acuna-prediction-market-first",
+      "seen_at": "2026-10-08T03:22:23.049332+00:00"
+    },
+    {
+      "story_id": "american-dream-cost-5-3-million",
+      "seen_at": "2026-10-08T05:07:33.623051+00:00"
+    },
+    {
+      "story_id": "gaza-war-three-years-aftermath",
+      "seen_at": "2026-10-08T06:54:03.311228+00:00"
+    },
+    {
+      "story_id": "tsmc-q3-ai-chip-demand-surge",
+      "seen_at": "2026-10-08T08:39:15.379219+00:00"
+    },
+    {
+      "story_id": "mcgregor-ufc-ticket-prices-new-heights",
+      "seen_at": "2026-10-08T10:23:37.666688+00:00"
+    },
+    {
+      "story_id": "trump-fuel-economy-rollback-california",
+      "seen_at": "2026-10-08T12:10:03.652275+00:00"
+    },
+    {
+      "story_id": "rfk-vaccine-policy-blocked",
+      "seen_at": "2026-10-08T13:54:37.052026+00:00"
+    },
+    {
+      "story_id": "onondaga-county-ai-911-union-lawsuit",
+      "seen_at": "2026-10-08T15:41:56.793615+00:00"
+    },
+    {
+      "story_id": "costco-settlement-marketing-emails-14m",
+      "seen_at": "2026-10-08T17:26:43.382774+00:00"
+    },
+    {
+      "story_id": "retirees-returning-workforce-retirement-crisis",
+      "seen_at": "2026-10-08T19:12:44.794267+00:00"
+    },
+    {
+      "story_id": "pepsico-earnings-forecast-cut",
+      "seen_at": "2026-10-08T21:00:46.251912+00:00"
+    },
+    {
+      "story_id": "aja-wilson-fifth-mvp",
+      "seen_at": "2026-10-08T22:45:39.430334+00:00"
+    },
+    {
+      "story_id": "ai-hikers-lost-chatbot-directions",
+      "seen_at": "2026-10-09T00:36:56.215110+00:00"
+    },
+    {
+      "story_id": "lebron-76ers-preseason-debut",
+      "seen_at": "2026-10-09T02:21:49.495520+00:00"
+    },
+    {
+      "story_id": "pepsi-raising-prices",
+      "seen_at": "2026-10-09T04:07:48.911110+00:00"
+    },
+    {
+      "story_id": "gas-prices-cross-four-dollars",
+      "seen_at": "2026-10-09T05:55:13.053369+00:00"
+    },
+    {
+      "story_id": "gaza-rescuers-israeli-fire-seven",
+      "seen_at": "2026-10-09T07:45:27.308645+00:00"
+    },
+    {
+      "story_id": "softbank-gulf-100-billion-ai",
+      "seen_at": "2026-10-09T09:31:11.993722+00:00"
+    },
+    {
+      "story_id": "friedkin-everton-full-sale-open",
+      "seen_at": "2026-10-09T11:18:01.838262+00:00"
+    },
+    {
+      "story_id": "trump-spacex-bonds-before-space-policy",
+      "seen_at": "2026-10-09T13:02:55.568763+00:00"
+    },
+    {
+      "story_id": "ai-comedian-bots-instagram-jokes",
+      "seen_at": "2026-10-09T14:45:38.819409+00:00"
+    },
+    {
+      "story_id": "arlington-trump-arch-lawsuit",
+      "seen_at": "2026-10-09T16:30:17.390086+00:00"
+    },
+    {
+      "story_id": "electricity-prices-rose-44-states",
+      "seen_at": "2026-10-09T18:15:09.289239+00:00"
+    },
+    {
+      "story_id": "nc-gas-tax-suspension-hb3",
+      "seen_at": "2026-10-09T20:02:35.442152+00:00"
+    },
+    {
+      "story_id": "fed-survey-18-million-richest-households",
+      "seen_at": "2026-10-09T21:47:40.637246+00:00"
+    },
+    {
+      "story_id": "nba-second-apron-knicks-middle-class-statement",
+      "seen_at": "2026-10-09T23:32:50.491170+00:00"
+    },
+    {
+      "story_id": "character-ai-child-harm-lawsuit",
+      "seen_at": "2026-10-10T01:17:35.796076+00:00"
+    },
+    {
+      "story_id": "nazar-suspended-two-games-horvat-hit",
+      "seen_at": "2026-10-10T03:04:32.307437+00:00"
+    },
+    {
+      "story_id": "starbucks-chipotle-takeover-report",
+      "seen_at": "2026-10-10T04:49:13.664463+00:00"
+    },
+    {
+      "story_id": "trump-iran-war-return-midterms",
+      "seen_at": "2026-10-10T06:37:23.334734+00:00"
+    },
+    {
+      "story_id": "typesafe-ai-870m-series-a",
+      "seen_at": "2026-10-10T08:21:07.358217+00:00"
+    },
+    {
+      "story_id": "repole-churchill-downs-stake",
+      "seen_at": "2026-10-10T10:07:02.862544+00:00"
+    },
+    {
+      "story_id": "valkyries-lead-wnba-sponsorship-revenue",
+      "seen_at": "2026-10-10T11:54:25.687790+00:00"
+    },
+    {
+      "story_id": "trump-medicaid-cuts-strip-refugees-coverage",
+      "seen_at": "2026-10-10T13:38:40.351124+00:00"
+    },
+    {
+      "story_id": "ai-scam-economy-bigger-than-cocaine-trade",
+      "seen_at": "2026-10-10T15:23:30.415262+00:00"
+    },
+    {
+      "story_id": "india-delhi-lockdown-protest-detentions",
+      "seen_at": "2026-10-10T17:16:08.952859+00:00"
+    },
+    {
+      "story_id": "trump-90-medicare-rebate-disbursement",
+      "seen_at": "2026-10-10T19:01:16.811868+00:00"
+    },
+    {
+      "story_id": "elon-musk-richer-than-any-american",
+      "seen_at": "2026-10-10T20:47:48.732734+00:00"
+    },
+    {
+      "story_id": "texas-am-elko-fan-site-cesspool",
+      "seen_at": "2026-10-10T22:31:34.506323+00:00"
+    },
+    {
+      "story_id": "maryland-school-board-ai-ban",
+      "seen_at": "2026-10-11T00:17:07.058934+00:00"
+    },
+    {
+      "story_id": "pope-leo-ai-slop-criticism",
+      "seen_at": "2026-10-11T02:01:24.776343+00:00"
+    },
+    {
+      "story_id": "cooper-flagg-8m-card-family",
+      "seen_at": "2026-10-11T03:46:46.340920+00:00"
+    },
+    {
+      "story_id": "groceries-up-29-percent-five-years",
+      "seen_at": "2026-10-11T05:33:12.537899+00:00"
+    },
+    {
+      "story_id": "trump-putin-deal-zelensky-official-claim",
+      "seen_at": "2026-10-11T07:18:07.305169+00:00"
+    },
+    {
+      "story_id": "ai-bull-market-40-trillion-four-years",
+      "seen_at": "2026-10-11T09:02:18.597129+00:00"
+    },
+    {
+      "story_id": "the-picklr-bankruptcy-reorganization",
+      "seen_at": "2026-10-11T10:47:58.686767+00:00"
+    },
+    {
+      "story_id": "white-house-72000-manufacturing-jobs-2026",
+      "seen_at": "2026-10-11T12:31:36.439585+00:00"
+    },
+    {
+      "story_id": "google-playground-ai-gaming-creators",
+      "seen_at": "2026-10-11T14:26:00.952535+00:00"
+    },
+    {
+      "story_id": "doj-investigates-tv-networks-trump-pool",
+      "seen_at": "2026-10-11T16:10:02.705976+00:00"
+    },
+    {
+      "story_id": "halloween-candy-costs-jump-8-1-percent",
+      "seen_at": "2026-10-11T18:07:39.855467+00:00"
+    },
+    {
+      "story_id": "social-security-2027-cola-3-5-percent",
+      "seen_at": "2026-10-11T19:51:36.430550+00:00"
+    },
+    {
+      "story_id": "mackenzie-scott-megagifts-19-2-billion",
+      "seen_at": "2026-10-11T21:43:08.960260+00:00"
+    },
+    {
+      "story_id": "sec-fines-kentucky-field-storming",
+      "seen_at": "2026-10-11T23:27:35.007495+00:00"
+    },
+    {
+      "story_id": "trump-super-intelligence-push",
+      "seen_at": "2026-10-12T01:21:26.929092+00:00"
+    },
+    {
+      "story_id": "texans-first-win-marvin-harrison-jr-deal",
+      "seen_at": "2026-10-12T03:06:46.356613+00:00"
+    },
+    {
+      "story_id": "canada-drug-prices-soar-millions",
+      "seen_at": "2026-10-12T04:50:30.697608+00:00"
+    },
+    {
+      "story_id": "nato-commander-warns-russia-counterattack",
+      "seen_at": "2026-10-12T06:34:24.178555+00:00"
+    },
+    {
+      "story_id": "ireland-ai-startup-fund-100m",
+      "seen_at": "2026-10-12T08:19:24.082617+00:00"
+    },
+    {
+      "story_id": "no-usable-story-available",
+      "seen_at": "2026-10-12T10:04:39.383619+00:00"
+    },
+    {
+      "story_id": "cfp-espn-24-team-playoff-rights-talks",
+      "seen_at": "2026-10-12T11:50:46.422006+00:00"
+    },
+    {
+      "story_id": "trump-russia-diesel-deal-300k-tonnes",
+      "seen_at": "2026-10-12T13:36:20.361757+00:00"
+    },
+    {
+      "story_id": "indian-daters-ai-message-check-aisle",
+      "seen_at": "2026-10-12T15:21:59.014505+00:00"
+    },
+    {
+      "story_id": "ilhan-omar-home-searched-criminal-investigation",
+      "seen_at": "2026-10-12T17:09:43.644595+00:00"
+    },
+    {
+      "story_id": "delta-saudi-arabia-launch-delayed-riyadh-attacks",
+      "seen_at": "2026-10-12T18:55:57.270628+00:00"
+    },
+    {
+      "story_id": "eu-caps-chinese-hybrid-imports-350000",
+      "seen_at": "2026-10-12T20:41:09.058821+00:00"
+    },
+    {
+      "story_id": "penny-hardaway-memphis-revenue-share-2-6m",
+      "seen_at": "2026-10-12T22:27:19.765164+00:00"
+    },
+    {
+      "story_id": "imf-ai-40-percent-jobs-affected",
+      "seen_at": "2026-10-13T00:11:51.430697+00:00"
+    },
+    {
+      "story_id": "reddit-accuses-former-law-firm-perplexity",
+      "seen_at": "2026-10-13T01:58:16.177654+00:00"
+    },
+    {
+      "story_id": "dodgers-ohtani-game-3-benching-talk",
+      "seen_at": "2026-10-13T03:47:51.851131+00:00"
+    },
+    {
+      "story_id": "social-security-chief-90-more-years",
+      "seen_at": "2026-10-13T05:32:01.686569+00:00"
+    },
+    {
+      "story_id": "nato-anything-and-everything-pledge",
+      "seen_at": "2026-10-13T07:16:29.792199+00:00"
+    },
+    {
+      "story_id": "sarvam-ai-300m-raise-talks",
+      "seen_at": "2026-10-13T09:02:37.290694+00:00"
+    },
+    {
+      "story_id": "wnba-finals-ad-inventory-sold-out",
+      "seen_at": "2026-10-13T10:46:55.230775+00:00"
+    },
+    {
+      "story_id": "trump-5000-dividend-promise-ad",
+      "seen_at": "2026-10-13T12:30:34.540268+00:00"
+    },
+    {
+      "story_id": "epic-games-no-handwritten-code",
+      "seen_at": "2026-10-13T14:15:14.050974+00:00"
+    },
+    {
+      "story_id": "ai-driven-price-discrimination-retail",
+      "seen_at": "2026-10-13T16:01:14.916263+00:00"
+    },
+    {
+      "story_id": "shkreli-pharma-ban-contempt-claim",
+      "seen_at": "2026-10-13T17:46:25.765584+00:00"
+    },
+    {
+      "story_id": "hasbro-rhode-island-workers-boston-relocation",
+      "seen_at": "2026-10-13T19:38:10.046057+00:00"
+    },
+    {
+      "story_id": "unitedhealth-raises-2026-profit-outlook",
+      "seen_at": "2026-10-13T21:22:01.146661+00:00"
+    },
+    {
+      "story_id": "celtics-pritchard-44-2m-extension",
+      "seen_at": "2026-10-13T23:04:40.316174+00:00"
+    },
+    {
+      "story_id": "raye-ai-bots-concert-tickets",
+      "seen_at": "2026-10-14T00:49:39.342814+00:00"
+    },
+    {
+      "story_id": "brady-tkachuk-natural-hat-trick-brother-assists",
+      "seen_at": "2026-10-14T02:38:56.751384+00:00"
+    },
+    {
+      "story_id": "faa-saudi-arabia-airline-warning",
+      "seen_at": "2026-10-14T04:24:54.830684+00:00"
+    },
+    {
+      "story_id": "ukrainian-drones-strike-100km-russia",
+      "seen_at": "2026-10-14T06:10:09.246941+00:00"
+    },
+    {
+      "story_id": "bulgaria-black-sea-drone-ship-sunk",
+      "seen_at": "2026-10-14T07:59:46.295849+00:00"
+    },
+    {
+      "story_id": "nvidia-huang-europe-2-billion-ai-deals",
+      "seen_at": "2026-10-14T09:44:47.773216+00:00"
+    },
+    {
+      "story_id": "bc-partners-liv-2-revival",
+      "seen_at": "2026-10-14T11:28:59.310226+00:00"
+    },
+    {
+      "story_id": "gop-factory-workers-tariff-backlash",
+      "seen_at": "2026-10-14T13:15:12.211973+00:00"
+    },
+    {
+      "story_id": "ai-coding-tools-inaccessible-code-study",
+      "seen_at": "2026-10-14T15:00:11.976186+00:00"
+    },
+    {
+      "story_id": "amazon-acetaminophen-recall-112000-bottles",
+      "seen_at": "2026-10-14T16:45:51.632419+00:00"
+    },
+    {
+      "story_id": "netflix-1000-layoffs-6-percent",
+      "seen_at": "2026-10-14T18:33:02.359188+00:00"
+    },
+    {
+      "story_id": "bank-of-america-1000-contractors-mythos-patches",
+      "seen_at": "2026-10-14T20:19:28.212385+00:00"
+    },
+    {
+      "story_id": "michigan-midseason-transfers-restraining-order",
+      "seen_at": "2026-10-14T22:07:41.186581+00:00"
+    },
+    {
+      "story_id": "nba-gambling-case-three-defendants-plead-guilty",
+      "seen_at": "2026-10-14T23:51:26.030435+00:00"
+    },
+    {
+      "story_id": "states-sue-openai-child-safety",
+      "seen_at": "2026-10-15T01:35:43.512002+00:00"
+    },
+    {
+      "story_id": "stl-city-mls-21-match-unbeaten-record",
+      "seen_at": "2026-10-15T03:20:43.875134+00:00"
+    },
+    {
+      "story_id": "us-inflation-3-7-percent-september-gas",
+      "seen_at": "2026-10-15T05:04:00.639341+00:00"
+    },
+    {
+      "story_id": "ukraine-starlink-military-restrictions",
+      "seen_at": "2026-10-15T06:49:35.776743+00:00"
+    },
+    {
+      "story_id": "chip-stocks-1-trillion-ai-selloff",
+      "seen_at": "2026-10-15T08:33:37.300897+00:00"
+    },
+    {
+      "story_id": "golden-knights-sellout-streak-ends",
+      "seen_at": "2026-10-15T10:17:10.219356+00:00"
+    },
+    {
+      "story_id": "fifa-world-cup-stake-sale-plan-fails",
+      "seen_at": "2026-10-15T12:02:11.660203+00:00"
+    },
+    {
+      "story_id": "trump-fox-poll-approval-record-low",
+      "seen_at": "2026-10-15T13:47:54.152093+00:00"
+    },
+    {
+      "story_id": "disney-bids-20m-ai-firm-after-cease-and-desist",
+      "seen_at": "2026-10-15T15:39:05.391979+00:00"
+    },
+    {
+      "story_id": "hyundai-recall-94600-overheating-fire-risk",
+      "seen_at": "2026-10-15T17:23:09.258034+00:00"
+    },
+    {
+      "story_id": "us-jobless-claims-below-200000",
+      "seen_at": "2026-10-15T19:07:51.305573+00:00"
+    },
+    {
+      "story_id": "michael-dell-loses-20b-one-day",
+      "seen_at": "2026-10-15T20:53:11.796370+00:00"
+    },
+    {
+      "story_id": "caleb-williams-hamstring-tear-bears",
+      "seen_at": "2026-10-15T22:38:43.871374+00:00"
+    },
+    {
+      "story_id": "anthropic-fridge-ai-cybersecurity-warning",
+      "seen_at": "2026-10-16T00:22:40.234299+00:00"
+    },
+    {
+      "story_id": "perron-stars-20th-nhl-season",
+      "seen_at": "2026-10-16T02:08:34.664428+00:00"
+    },
+    {
+      "story_id": "broncos-blow-lead-survive-seahawks-ot",
+      "seen_at": "2026-10-16T03:52:39.777055+00:00"
+    },
+    {
+      "story_id": "kfc-switches-pepsi-to-coca-cola-us",
+      "seen_at": "2026-10-16T05:37:37.789217+00:00"
+    },
+    {
+      "story_id": "us-iran-new-sanctions-16-people-10-entities",
+      "seen_at": "2026-10-16T07:26:00.826457+00:00"
+    },
+    {
+      "story_id": "coreweave-debt-slump-ai-boom",
+      "seen_at": "2026-10-16T09:10:18.110267+00:00"
+    },
+    {
+      "story_id": "dolphins-minority-stake-chilean-billionaire",
+      "seen_at": "2026-10-16T10:54:26.003146+00:00"
+    },
+    {
+      "story_id": "trump-5000-check-richer-or-poorer",
+      "seen_at": "2026-10-16T12:41:05.804152+00:00"
+    },
+    {
+      "story_id": "india-overtakes-japan-imf-2027",
+      "seen_at": "2026-10-16T14:26:36.180866+00:00"
+    },
+    {
+      "story_id": "missouri-nonprofit-abortion-ban-campaign-2-9m",
+      "seen_at": "2026-10-16T16:15:39.921004+00:00"
+    },
+    {
+      "story_id": "no-usable-story",
+      "seen_at": "2026-10-16T18:02:09.411820+00:00"
+    },
+    {
+      "story_id": "mosaic-florida-fertilizer-layoffs-199",
+      "seen_at": "2026-10-16T19:52:26.673748+00:00"
+    },
+    {
+      "story_id": "fed-1-in-5-americans-falling-behind-on-debt",
+      "seen_at": "2026-10-16T21:37:22.402992+00:00"
+    },
+    {
+      "story_id": "nba-sportsbooks-restrict-single-play-bets",
+      "seen_at": "2026-10-16T23:23:26.728740+00:00"
+    },
+    {
+      "story_id": "news-publishers-ai-lawsuits-licensing-deals",
+      "seen_at": "2026-10-17T01:07:50.614332+00:00"
+    },
+    {
+      "story_id": "alcs-game-4-postponed-cleveland-weather",
+      "seen_at": "2026-10-17T02:54:17.212845+00:00"
+    },
+    {
+      "story_id": "ossoff-collins-georgia-senate-final-debate",
+      "seen_at": "2026-10-17T04:38:31.576192+00:00"
+    },
+    {
+      "story_id": "qatar-lebanon-power-grid-reconstruction-pledge",
+      "seen_at": "2026-10-17T06:30:23.037641+00:00"
+    },
+    {
+      "story_id": "deepseek-funding-round-2-4-trillion-yuan",
+      "seen_at": "2026-10-17T08:16:16.939988+00:00"
+    },
+    {
+      "story_id": "central-bankers-higher-rates-ai-cash-scramble",
+      "seen_at": "2026-10-17T10:00:52.204065+00:00"
+    },
+    {
+      "story_id": "ncaa-sues-ohio-governor-executive-order",
+      "seen_at": "2026-10-17T11:52:23.775111+00:00"
+    },
+    {
+      "story_id": "republicans-turn-on-trump-tariffs",
+      "seen_at": "2026-10-17T13:36:11.672477+00:00"
+    },
+    {
+      "story_id": "no-usable-story-empty-feed",
+      "seen_at": "2026-10-17T15:26:49.051146+00:00"
+    }
+  ],
+  "updated_at": "2026-10-17T15:27:41.194248+00:00"
+}
