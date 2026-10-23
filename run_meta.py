@@ -47,10 +47,10 @@ SLOT_PATTERN = [
 ]
 
 
-# Instagram and Facebook get every card (12 a day). X gets 6 of them: slots
-# 0, 2, 5, 7, 9 and 10, roughly every other one. That is three Reels and three
-# feed posts, and every design still appears, so X stays balanced.
-X_SKIP_SLOTS = {1, 3, 4, 6, 8, 11}
+# Instagram and Facebook get every card (12 a day). X gets 4 of them: slots
+# 1, 4, 7 and 10, every third one. That is two Reels and two feed posts, and
+# every design still appears, so X stays balanced.
+X_SKIP_SLOTS = {0, 2, 3, 5, 6, 8, 9, 11}
 
 
 def next_slot(cards_by_time) -> tuple[int, str, bool]:

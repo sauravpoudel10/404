@@ -4,7 +4,7 @@ Finds a trending story, renders a "404 Media" style stat card, hosts it on
 GitHub Pages, and posts it to Instagram, Facebook, and TikTok on a schedule.
 
 ```
-run_meta.py     every 2h (12/day)  trending story -> card -> Instagram + Facebook (+ X on 6)
+run_meta.py     every 2h (12/day)  trending story -> card -> Instagram + Facebook (+ X on 4)
 run_tweets.py   every 2.4h (10/day) next tweet from the day's pre-generated pool -> X
 run_tiktok.py   manual only        reposts the newest IG-published card to TikTok
 ```
