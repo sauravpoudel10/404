@@ -4,20 +4,21 @@ Anthropic's web_search bills $0.01 per query AND pulls 5-12k tokens of
 results into context. At twelve cards a day plus the tweet pool that was the
 single largest line on the bill. RSS does the same job for nothing.
 
-Two things stop the cards repeating themselves:
+Cards split two ways across the day's twelve slots:
 
-1. Breadth. A handful of business queries all surface the same story, which
-   is how five consecutive cards ended up about Shein. There are now a dozen
-   feeds across America, Europe, Asia, space, billionaires and cost-of-
-   living, so there is always somewhere else to go.
-2. Rotation. Each of the twelve daily slots reads a DIFFERENT pair of feeds
-   (see `rotation_for`). Consecutive cards therefore cannot see the same
-   headline list, which matters more than any instruction in the prompt.
+1. Eight TRENDING slots read what is hot right now, on any subject: Google
+   Trends' US search spikes (with search volume), Google News top stories,
+   and one rotating Google News section -- entertainment, sport, tech,
+   world, business, science. The rotating section is what keeps two
+   trending cards in a row from reading the identical list.
+2. Four US slots read Google News' US section, spread evenly through the
+   day.
 
-The beat is deliberately wider than money: three slots a day are AI, three
-are sport, and two carry conflict or a contested story. Feeds alone do not
-achieve that -- trends.py has to accept those stories too, since its
-relatability test was written to reject anything without a price attached.
+All of it is free RSS, and each slot still hands the model at most 90
+headlines, so the per-card Claude cost did not move when the niche beats
+(AI, sport, conflict...) were replaced.
+
+The older topical feeds stay for the tweet pool, which still reads them.
 """
 
 import re
@@ -33,6 +34,17 @@ UA = {"User-Agent": "Mozilla/5.0 (compatible; 404-pipeline/1.0)"}
 def _gnews(query: str, days: int = 1) -> str:
     return (f"https://news.google.com/rss/search?q={query}+when:{days}d"
             "&hl=en-US&gl=US&ceid=US:en")
+
+
+def _gnews_section(section: str) -> str:
+    # Redirects to an opaque /topics/ URL; requests follows it.
+    return (f"https://news.google.com/rss/headlines/section/topic/{section}"
+            "?hl=en-US&gl=US&ceid=US:en")
+
+
+# Google Trends' RSS puts the search volume and the matching news stories in
+# its own namespace.
+HT = "{https://trends.google.com/trending/rss}"
 
 
 FEEDS = {
@@ -80,25 +92,42 @@ FEEDS = {
     # Kept out of the default set so Tesla/SpaceX don't colonise every card;
     # the reply-bait tweets ask for it explicitly.
     "musk": _gnews("Tesla+OR+SpaceX+OR+xAI+OR+Starlink", days=2),
+    # --- card feeds: what is hot now, and US news --------------------------
+    "trending_searches": "https://trends.google.com/trending/rss?geo=US",
+    "top_stories": "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en",
+    "hot_entertainment": _gnews_section("ENTERTAINMENT"),
+    "hot_sports": _gnews_section("SPORTS"),
+    "hot_tech": _gnews_section("TECHNOLOGY"),
+    "hot_world": _gnews_section("WORLD"),
+    "hot_business": _gnews_section("BUSINESS"),
+    "hot_science": _gnews_section("SCIENCE"),
+    "us_news": _gnews_section("NATION"),
 }
 
-# One entry per two-hour slot. Each run reads a different pair, so two
-# consecutive cards are drawing from different pools entirely.
+# Read only when asked for by name. The tweet pool fetches "everything but
+# the AI feeds", and these would otherwise change what it sees.
+OPT_IN = {"trending_searches", "top_stories", "hot_entertainment",
+          "hot_sports", "hot_tech", "hot_world", "hot_business",
+          "hot_science", "us_news"}
+
+_TRENDING = ["trending_searches", "top_stories"]
+
+# One entry per two-hour slot: eight trending, four US, with a US slot every
+# third. Each trending slot adds a different section, so two consecutive
+# trending cards are not drawing from the identical list.
 ROTATION = [
-    ["ai", "tech"],                  # 00:00
-    ["sports", "us_local"],          # 02:00
-    ["citizen", "markets"],          # 04:00
-    ["conflict", "america"],         # 06:00
-    ["ai_money", "startups"],        # 08:00
-    # Paired with "billionaires" this slot produced a Zuckerberg net-worth
-    # card: naming the beat is not enough when the other feed is richer.
-    ["sports_money", "sports"],      # 10:00
-    ["trump", "politics"],           # 12:00
-    ["ai", "asia"],                  # 14:00
-    ["controversy", "conflict"],     # 16:00
-    ["us_local", "citizen"],         # 18:00
-    ["europe", "billionaires"],      # 20:00
-    ["sports", "space"],             # 22:00
+    _TRENDING + ["hot_entertainment"],   # 00:00
+    ["us_news"],                         # 02:00
+    _TRENDING + ["hot_sports"],          # 04:00
+    _TRENDING + ["hot_tech"],            # 06:00
+    ["us_news"],                         # 08:00
+    _TRENDING + ["hot_world"],           # 10:00
+    _TRENDING + ["hot_business"],        # 12:00
+    ["us_news"],                         # 14:00
+    _TRENDING + ["hot_entertainment"],   # 16:00
+    _TRENDING + ["hot_sports"],          # 18:00
+    ["us_news"],                         # 20:00
+    _TRENDING + ["hot_science"],         # 22:00
 ]
 
 # Feeds whose slots benefit from CNBC's business wire alongside them. A
@@ -120,7 +149,34 @@ BEATS = {
                    "boycott, protest or ban",
     "trump": "Trump and White House policy",
     "space": "space",
+    "trending_searches": "trending",
+    "us_news": "US news",
 }
+
+# Extra direction for a beat, beyond naming it. The system prompt's subject
+# list was written for the old niche beats; a trending slot has to be told
+# that any subject is fair game.
+BEAT_NOTES = {
+    "trending_searches": (
+        "Pick whatever is genuinely hottest right now, on ANY subject: "
+        "entertainment, celebrities, music, TV and film, sport, viral "
+        "moments, tech, politics, weather, money. Lines tagged "
+        "[trending_searches] are what Americans are searching for this "
+        "hour, with the search volume -- lean toward the biggest volume "
+        "that has a real news story attached. Treat deaths, crimes and "
+        "disasters with the same rules as conflict stories."
+    ),
+    "us_news": (
+        "Pick the biggest story happening in the United States. Treat "
+        "deaths, crimes and disasters with the same rules as conflict "
+        "stories."
+    ),
+}
+
+
+def note_for(hour: int) -> str:
+    """Extra direction for this slot's beat, or ""."""
+    return BEAT_NOTES.get(ROTATION[(hour // 2) % len(ROTATION)][0], "")
 
 
 def beat_for(hour: int) -> str:
@@ -181,6 +237,8 @@ def fetch(max_age_hours: int = 36, per_feed: int = 40,
             continue
         if exclude and topic in exclude:
             continue
+        if topic in OPT_IN and not (only and topic in only):
+            continue
         try:
             resp = requests.get(url, headers=UA, timeout=20)
             resp.raise_for_status()
@@ -189,6 +247,9 @@ def fetch(max_age_hours: int = 36, per_feed: int = 40,
             # One dead feed must not take the run down; the others still work.
             print(f"  feed {topic} unavailable ({type(e).__name__})")
             continue
+
+        if topic == "trending_searches":
+            items = _trend_items(items)
 
         for item in items[:per_feed]:
             title = _clean(item.findtext("title"))
@@ -201,14 +262,48 @@ def fetch(max_age_hours: int = 36, per_feed: int = 40,
             if when and when < cutoff:
                 continue
             seen.add(key)
+            summary = _clean(item.findtext("description"))[:220]
+            if topic in OPT_IN and topic != "trending_searches":
+                # Google News "summaries" are the same headline again plus
+                # other outlets' versions of it: tokens with nothing new.
+                summary = ""
             out.append({
                 "topic": topic,
                 "title": title,
-                "summary": _clean(item.findtext("description"))[:220],
+                "summary": summary,
                 "published": when.isoformat() if when else "",
             })
 
     out.sort(key=lambda h: h["published"], reverse=True)
+    # Search spikes first: they are the "what is hot" signal and are few, so
+    # the 90-line cap in as_context must never be what cuts them.
+    out.sort(key=lambda h: h["topic"] != "trending_searches")
+    return out
+
+
+def _trend_items(items: list[ET.Element]) -> list[ET.Element]:
+    """Turn Google Trends entries into ordinary headline items.
+
+    A bare search term is not something the model may write from -- it has
+    no facts in it. Each entry is rewritten as the term, its volume, and the
+    news story Google attaches to it; terms with no story are dropped.
+    """
+    out = []
+    for item in items:
+        term = _clean(item.findtext("title"))
+        stories = [_clean(n.findtext(f"{HT}news_item_title"))
+                   for n in item.findall(f"{HT}news_item")]
+        stories = [t for t in stories if t]
+        if not term or not stories:
+            continue
+        traffic = _clean(item.findtext(f"{HT}approx_traffic"))
+        new = ET.Element("item")
+        ET.SubElement(new, "title").text = (
+            f"{term} ({traffic} US searches): {stories[0]}" if traffic
+            else f"{term}: {stories[0]}")
+        ET.SubElement(new, "description").text = " | ".join(stories[1:2])
+        ET.SubElement(new, "pubDate").text = item.findtext("pubDate")
+        out.append(new)
     return out
 
 

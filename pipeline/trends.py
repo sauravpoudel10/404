@@ -224,6 +224,7 @@ def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
     slot = datetime.now(timezone.utc).hour
     topics = feeds.rotation_for(slot)
     beat = feeds.beat_for(slot)
+    note = feeds.note_for(slot)
     headlines = feeds.fetch(only=topics)
     fresh = feeds.drop_covered(headlines, exclude_ids)
     print(f"  slot {slot:02d}:00 reads {topics}"
@@ -242,6 +243,7 @@ def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
                        f"usable {beat} story here may you pick something "
                        f"else." if beat else
                        "\n\nPick the biggest story and write the card.")
+                    + (f"\n\n{note}" if note else "")
                     + avoid),
     }]
 
