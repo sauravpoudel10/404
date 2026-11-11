@@ -2,17 +2,16 @@
 
 Story discovery comes from free RSS (see feeds.py), not the paid web-search
 tool. Search billed $0.01 per query and pulled 5-12k tokens of results into
-context on every one of the twelve daily runs; headlines cost nothing and
+context on every one of the daily card runs; headlines cost nothing and
 are about a fifth the size.
 
 The call returns the same JSON shape automate.py already renders, plus a
 `story_id` used to keep the pipeline from posting the same story twice
-across the day's twelve runs.
+across the day's runs.
 """
 
 import json
 import re
-from datetime import datetime, timezone
 
 from anthropic import Anthropic
 
@@ -135,7 +134,7 @@ Use ONLY facts and figures that appear in the headlines you were given. You have
 # Constraining generation to this schema is what makes the parse reliable.
 # Free-form JSON from the model is *usually* valid, but an unescaped quote
 # inside a quote-heavy news sentence shows up often enough to break a job
-# that runs twelve times a day.
+# that runs eighteen times a day.
 CARD_SCHEMA = {
     "type": "object",
     "properties": {
@@ -210,8 +209,12 @@ def _extract_json(text: str) -> dict:
     raise ValueError(f"No parseable card JSON in model reply:\n{text[:800]}")
 
 
-def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
-    """Return card content for a trending story not in `exclude_ids`."""
+def find_story(exclude_ids: list[str], style: str = "feature",
+               slot: int = 0) -> dict:
+    """Return card content for a story not in `exclude_ids`.
+
+    `slot` is the card's position in the cycle; it picks the feeds and beat.
+    """
     client = Anthropic(api_key=config.ANTHROPIC_API_KEY())
 
     avoid = ""
@@ -221,13 +224,12 @@ def find_story(exclude_ids: list[str], style: str = "feature") -> dict:
             + "\n".join(f"- {sid}" for sid in exclude_ids[-40:])
         )
 
-    slot = datetime.now(timezone.utc).hour
     topics = feeds.rotation_for(slot)
     beat = feeds.beat_for(slot)
     note = feeds.note_for(slot)
     headlines = feeds.fetch(only=topics)
     fresh = feeds.drop_covered(headlines, exclude_ids)
-    print(f"  slot {slot:02d}:00 reads {topics}"
+    print(f"  slot {slot} reads {topics}"
           f"{f' [beat: {beat}]' if beat else ''} -> {len(headlines)} headlines, "
           f"{len(headlines) - len(fresh)} already covered")
     # Keep a floor: if suppression empties the slot, better a near-repeat

@@ -1,4 +1,4 @@
-"""Every 2 hours: find a trending story, build a card, post to IG + Facebook.
+"""18 cards a day: find a story, build a card, post to IG + Facebook (+ X).
 
     python run_meta.py [--no-batch] [--dry-run]
 
@@ -20,37 +20,47 @@ sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from datetime import datetime, timezone  # noqa: E402
 
-from pipeline import assets, cards, meta, text, trends, video, x  # noqa: E402
+from pipeline import assets, cards, feeds, meta, text, trends, video, x  # noqa: E402
 
-# Minimum spacing between cards. The cron fires hourly; this is what
-# actually sets the cadence.
-MIN_GAP_MINUTES = 100
+# Minimum spacing between cards. The cron fires far more often; this is what
+# actually sets the cadence. 18 a day is one every 80 minutes; 75 because
+# pulse only checks every ten minutes, so real gaps land near 80.
+MIN_GAP_MINUTES = 75
 
-# One full day, twelve slots. Eight posters, two classic, two feature -- and
-# six Reels against six feed posts. Style and format are laid out together
-# rather than alternated independently, because independent alternation locks
-# them: every Reel ends up in one design and every feed post in another. Here
-# each design appears in both formats.
+# One cycle of 18 cards, a day's worth. The beat for each slot (8 trending,
+# 4 US, 6 war) is in feeds.ROTATION at the same index. Twelve posters, three
+# classic, three feature, and Reels alternating with feed posts. Style and
+# format are laid out together rather than alternated independently, because
+# independent alternation locks them: every Reel ends up in one design and
+# every feed post in another. Here each design appears in both formats.
 SLOT_PATTERN = [
-    ("poster", True),
-    ("poster", False),
-    ("classic", True),
-    ("poster", False),
-    ("poster", True),
-    ("feature", False),
-    ("poster", True),
-    ("classic", False),
-    ("poster", True),
-    ("poster", False),
-    ("feature", True),
-    ("poster", False),
+    ("poster", True),     # 0  trending
+    ("poster", False),    # 1  war
+    ("classic", True),    # 2  trending
+    ("poster", False),    # 3  US
+    ("poster", True),     # 4  trending
+    ("feature", False),   # 5  war
+    ("poster", True),     # 6  trending
+    ("classic", False),   # 7  US
+    ("poster", True),     # 8  war
+    ("poster", False),    # 9  trending
+    ("poster", True),     # 10 war
+    ("feature", False),   # 11 trending
+    ("poster", True),     # 12 US
+    ("poster", False),    # 13 trending
+    ("classic", True),    # 14 war
+    ("poster", False),    # 15 trending
+    ("feature", True),    # 16 US
+    ("poster", False),    # 17 war
 ]
+assert len(SLOT_PATTERN) == len(feeds.ROTATION)
 
-
-# Instagram and Facebook get every card (12 a day). X gets 4 of them: slots
-# 1, 4, 7 and 10, every third one. That is two Reels and two feed posts, and
-# every design still appears, so X stays balanced.
-X_SKIP_SLOTS = {0, 2, 3, 5, 6, 8, 9, 11}
+# Instagram and Facebook get every card (18 a day). X gets 10 of them: every
+# war card (slots 1, 5, 8, 10, 14, 17) plus four others -- trending 0 and 9,
+# US 3 and 12 -- for five Reels and five feed posts.
+X_WAR_SLOTS = {i for i in range(len(SLOT_PATTERN))
+               if feeds.beat_for(i) == "war and conflict"}
+X_SLOTS = X_WAR_SLOTS | {0, 3, 9, 12}
 
 
 def next_slot(cards_by_time) -> tuple[int, str, bool]:
@@ -120,8 +130,8 @@ def main():
     print(f"→ slot {slot}/{len(SLOT_PATTERN)}: {style} card, "
           f"{'REEL' if as_reel else 'feed post'}")
 
-    print("→ searching for a trending story")
-    content = trends.find_story(seen, style=style)
+    print(f"→ searching for a {feeds.beat_for(slot) or 'trending'} story")
+    content = trends.find_story(seen, style=style, slot=slot)
     print(f"  {content['story_id']}: {content.get('headline_source', '')}")
     print(f"  headline: {content['headline']}")
 
@@ -179,8 +189,8 @@ def main():
     ]
 
     for name, fn in targets:
-        if name == "x" and slot in X_SKIP_SLOTS:
-            print(f"→ skipping x (slot {slot} is off X's 8-a-day schedule)")
+        if name == "x" and slot not in X_SLOTS:
+            print(f"→ skipping x (slot {slot} is not one of X's 10 a day)")
             continue
         try:
             print(f"→ posting to {name}")

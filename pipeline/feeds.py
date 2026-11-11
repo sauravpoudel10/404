@@ -1,22 +1,25 @@
 """Free news headlines, used instead of the paid web-search tool.
 
 Anthropic's web_search bills $0.01 per query AND pulls 5-12k tokens of
-results into context. At twelve cards a day plus the tweet pool that was the
+results into context. At a dozen-plus cards a day plus the tweet pool that was the
 single largest line on the bill. RSS does the same job for nothing.
 
-Cards split two ways across the day's twelve slots:
+Cards follow an 18-slot cycle, one slot per card (see ROTATION):
 
 1. Eight TRENDING slots read what is hot right now, on any subject: Google
    Trends' US search spikes (with search volume), Google News top stories,
    and one rotating Google News section -- entertainment, sport, tech,
    world, business, science. The rotating section is what keeps two
    trending cards in a row from reading the identical list.
-2. Four US slots read Google News' US section, spread evenly through the
-   day.
+2. Four US slots read Google News' US section.
+3. Six WAR slots read one rotating war feed (Ukraine, Israel and Gaza, Iran,
+   wider military action) alongside the general conflict feed.
 
-All of it is free RSS, and each slot still hands the model at most 90
-headlines, so the per-card Claude cost did not move when the niche beats
-(AI, sport, conflict...) were replaced.
+The slot is the card's position in the cycle, not the clock, so every 18
+cards hold exactly that mix however the posting times drift.
+
+All of it is free RSS, and each slot hands the model at most 90 headlines,
+so a card costs the same whichever beat it is on.
 
 The older topical feeds stay for the tweet pool, which still reads them.
 """
@@ -102,32 +105,44 @@ FEEDS = {
     "hot_business": _gnews_section("BUSINESS"),
     "hot_science": _gnews_section("SCIENCE"),
     "us_news": _gnews_section("NATION"),
+    # Plain phrases rather than OR-chains, which starve Google News queries.
+    "war_ukraine": _gnews("Ukraine+war", days=2),
+    "war_israel": _gnews("Israel+Gaza", days=2),
+    "war_iran": _gnews("Iran+strikes", days=2),
+    "war_military": _gnews("military+strike", days=2),
 }
 
 # Read only when asked for by name. The tweet pool fetches "everything but
 # the AI feeds", and these would otherwise change what it sees.
 OPT_IN = {"trending_searches", "top_stories", "hot_entertainment",
           "hot_sports", "hot_tech", "hot_world", "hot_business",
-          "hot_science", "us_news"}
+          "hot_science", "us_news", "war_ukraine", "war_israel",
+          "war_iran", "war_military"}
 
 _TRENDING = ["trending_searches", "top_stories"]
 
-# One entry per two-hour slot: eight trending, four US, with a US slot every
-# third. Each trending slot adds a different section, so two consecutive
-# trending cards are not drawing from the identical list.
+# One entry per card in an 18-card cycle: 8 trending, 4 US, 6 war. Laid out
+# in two identical runs of nine (T W T U T W T U W) so no beat ever runs
+# twice in a row. run_meta.SLOT_PATTERN has the same length and indexing.
 ROTATION = [
-    _TRENDING + ["hot_entertainment"],   # 00:00
-    ["us_news"],                         # 02:00
-    _TRENDING + ["hot_sports"],          # 04:00
-    _TRENDING + ["hot_tech"],            # 06:00
-    ["us_news"],                         # 08:00
-    _TRENDING + ["hot_world"],           # 10:00
-    _TRENDING + ["hot_business"],        # 12:00
-    ["us_news"],                         # 14:00
-    _TRENDING + ["hot_entertainment"],   # 16:00
-    _TRENDING + ["hot_sports"],          # 18:00
-    ["us_news"],                         # 20:00
-    _TRENDING + ["hot_science"],         # 22:00
+    _TRENDING + ["hot_entertainment"],   # 0
+    ["war_ukraine", "conflict"],         # 1
+    _TRENDING + ["hot_sports"],          # 2
+    ["us_news"],                         # 3
+    _TRENDING + ["hot_tech"],            # 4
+    ["war_israel", "conflict"],          # 5
+    _TRENDING + ["hot_world"],           # 6
+    ["us_news"],                         # 7
+    ["war_military", "conflict"],        # 8
+    _TRENDING + ["hot_business"],        # 9
+    ["war_ukraine", "conflict"],         # 10
+    _TRENDING + ["hot_entertainment"],   # 11
+    ["us_news"],                         # 12
+    _TRENDING + ["hot_sports"],          # 13
+    ["war_iran", "conflict"],            # 14
+    _TRENDING + ["hot_science"],         # 15
+    ["us_news"],                         # 16
+    ["war_military", "conflict"],        # 17
 ]
 
 # Feeds whose slots benefit from CNBC's business wire alongside them. A
@@ -151,11 +166,24 @@ BEATS = {
     "space": "space",
     "trending_searches": "trending",
     "us_news": "US news",
+    "war_ukraine": "war and conflict",
+    "war_israel": "war and conflict",
+    "war_iran": "war and conflict",
+    "war_military": "war and conflict",
 }
 
 # Extra direction for a beat, beyond naming it. The system prompt's subject
 # list was written for the old niche beats; a trending slot has to be told
 # that any subject is fair game.
+_WAR_NOTE = (
+        "Pick the most significant development in a war or armed "
+        "conflict: a strike, an advance, a ceasefire, talks, aid, what it "
+        "does to prices or shipping. The conflict rules in your "
+        "instructions apply in full: only what the headlines state, "
+        "casualty figures only as a named source reported them, no blame, "
+        "no graphic detail, and a calm image."
+    )
+
 BEAT_NOTES = {
     "trending_searches": (
         "Pick whatever is genuinely hottest right now, on ANY subject: "
@@ -171,30 +199,34 @@ BEAT_NOTES = {
         "deaths, crimes and disasters with the same rules as conflict "
         "stories."
     ),
+    "war_ukraine": _WAR_NOTE,
+    "war_israel": _WAR_NOTE,
+    "war_iran": _WAR_NOTE,
+    "war_military": _WAR_NOTE,
 }
 
 
-def note_for(hour: int) -> str:
+def note_for(slot: int) -> str:
     """Extra direction for this slot's beat, or ""."""
-    return BEAT_NOTES.get(ROTATION[(hour // 2) % len(ROTATION)][0], "")
+    return BEAT_NOTES.get(ROTATION[slot % len(ROTATION)][0], "")
 
 
-def beat_for(hour: int) -> str:
+def beat_for(slot: int) -> str:
     """The beat this slot must cover, or "" where the slot is open."""
-    return BEATS.get(ROTATION[(hour // 2) % len(ROTATION)][0], "")
+    return BEATS.get(ROTATION[slot % len(ROTATION)][0], "")
 
 TAG_RE = re.compile(r"<[^>]+>")
 WS_RE = re.compile(r"\s+")
 
 
-def rotation_for(hour: int) -> list[str]:
+def rotation_for(slot: int) -> list[str]:
     """Feeds this slot should read.
 
     CNBC is added only to money slots. On a sport or conflict slot it gave
     the model a business story to fall back on, and the slot quietly turned
     back into another markets card.
     """
-    picked = ROTATION[(hour // 2) % len(ROTATION)]
+    picked = ROTATION[slot % len(ROTATION)]
     # Only on a slot whose LEAD feed is money. Testing "any" let CNBC onto
     # the sport slot through its paired feed, and the slot produced a
     # factory story.
@@ -343,6 +375,12 @@ STOP = {
     "its", "new", "now", "one", "two", "but", "not", "all", "can", "may",
     "out", "top", "get", "see", "big", "hit", "cut", "set", "end", "key",
     "use", "own", "far", "yet", "off", "per", "via", "amid", "who", "you",
+    # The war beat runs six times a day. Its places and verbs are in every
+    # headline, so they cannot mark a story as covered: one Israel card
+    # otherwise suppressed every Israel headline for two weeks.
+    "war", "wars", "israel", "israeli", "gaza", "ukraine", "ukrainian",
+    "russia", "russian", "iran", "iranian", "strike", "strikes", "killed",
+    "military", "attack", "attacks", "drone", "drones",
 }
 WORD_RE = re.compile(r"[a-z]+")
 

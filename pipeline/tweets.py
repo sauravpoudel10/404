@@ -1,8 +1,8 @@
-"""A day's worth of standalone tweets, generated once and drained every ~2.4 hours.
+"""A day's worth of standalone tweets, generated once and drained every ~100 minutes.
 
-10 posts a day in three shapes: 4 AI questions, 3 ranked statistics lists
-with country flags, and 3 general questions. Generating in bulk is what
-keeps this cheap -- three API calls a day rather than 10.
+14 posts a day in four shapes: 4 AI questions, 4 war updates, 3 ranked
+statistics lists with country flags, and 3 general questions. Generating in
+bulk is what keeps this cheap -- four API calls a day rather than 14.
 
 The mix follows what the open-sourced ranker scores. A reply is one signal
 and a reply the author engages with is a second, separate one, so most of
@@ -43,11 +43,11 @@ from .text import normalise_list
 
 POOL_FILE = "tweets.json"
 
-# Counts are fixed so the daily X spend doesn't move: 10 posts either way.
+# Counts are fixed so the daily X spend doesn't move: 14 posts either way.
 # Weighted toward posts that end in a real question, because a reply and an
 # author-engaged reply are two separately scored signals in the ranker,
 # while a list mostly earns a silent bookmark.
-KIND_COUNTS = {"ai_ask": 4, "list": 3, "ask": 3}
+KIND_COUNTS = {"ai_ask": 4, "war": 4, "list": 3, "ask": 3}
 POOL_SIZE = sum(KIND_COUNTS.values())
 
 # Ranked-list subjects, grouped into families. Two things depend on the
@@ -250,8 +250,42 @@ material you were given and ending on one genuine question.
 
 Cover clearly different ground: markets, company results, sovereign wealth, \
 housing, energy, trade, sport economics, salaries, consumer prices. Do NOT \
-write about AI models -- those are covered elsewhere.
+write about AI models or wars -- those are covered elsewhere.
 """ + ASK_RULES
+
+
+# Its own feeds, its own call, and stricter rules than the rest: these
+# publish unreviewed, and a wrong casualty figure about a war is the most
+# damaging thing this account could post.
+WAR_SYSTEM = """You write standalone posts for a news account covering wars \
+and armed conflicts.
+
+Write exactly {count} posts, each about a DIFFERENT conflict or a clearly \
+different development: a strike, an advance, a ceasefire or talks, aid, \
+sanctions, or what the fighting does to energy, food or shipping.
+
+Each post:
+- Leads with the concrete development, in plain words a reader outside the \
+region understands: who, what, where.
+- May end with ONE neutral question about consequences -- prices, shipping, \
+talks, what happens next. Never ask the reader to take a side, assign \
+blame, or judge either party. Most posts should simply report.
+- Under 270 characters. No emoji.
+
+Strict rules -- these publish automatically with nobody reading them first:
+- State only what the headlines in front of you state. Never add a figure, \
+a cause or a motive that is not there.
+- Casualty and displacement figures ONLY if a headline gives them, written \
+as that source reported them ("the UN says", "officials report"). Never \
+estimate, round up or total them yourself.
+- Where a claim is disputed or comes from one side, say who is claiming it.
+- No blame, no characterising one party's conduct, no graphic detail.
+- If the headlines on a conflict are thin or contradictory, write about a \
+different one rather than guessing.
+""" + COMMON_RULES
+
+WAR_FEEDS = ["war_ukraine", "war_israel", "war_iran", "war_military",
+             "conflict"]
 
 
 GENERAL_SYSTEM = """You write standalone tweets for a media account covering \
@@ -437,14 +471,38 @@ def unsourced_spec(text: str, grounding: str) -> str:
     return ""
 
 
+def unsourced_number(text: str, grounding: str) -> str:
+    """The first figure in `text` that appears nowhere in `grounding`, or "".
+
+    Stricter than unsourced_spec: on a war post ANY number -- a death toll,
+    a count of strikes, a sum of aid -- is the kind of thing that must not
+    be invented.
+    """
+    haystack = _flat(grounding)
+    for match in MAGNITUDE_RE.finditer(text):
+        if _flat(match.group(0)) not in haystack:
+            return match.group(0)
+    for match in re.finditer(r"\d[\d.,]*", text):
+        needle = _flat(match.group(0).rstrip(".,"))
+        if needle and needle not in haystack:
+            return match.group(0)
+    return ""
+
+
 def drop_unsourced(tweets: list[dict], grounding: str) -> list[dict]:
-    """Remove AI posts quoting a spec the source never supplied."""
+    """Remove AI posts quoting a spec, and war posts quoting any figure,
+    that the source never supplied."""
     kept = []
     for tweet in tweets:
         if tweet.get("kind") == "ai_ask":
             bad = unsourced_spec(tweet.get("text", ""), grounding)
             if bad:
                 print(f"    dropped ai post: unsourced spec {bad!r}")
+                continue
+        if tweet.get("kind") == "war":
+            bad = unsourced_number(tweet.get("text", ""), grounding)
+            if bad:
+                print(f"    dropped war post: unsourced figure {bad!r}")
                 continue
         kept.append(tweet)
     return kept
@@ -485,7 +543,8 @@ def clean_list_rows(tweet: dict, subject: str = "", year: str = "") -> dict:
 
 def generate_pool(count: int = POOL_SIZE,
                   history: dict[str, str] | None = None) -> list[dict]:
-    """Three grounded calls: AI questions, ranked lists, general questions.
+    """Four grounded calls: AI questions, war updates, ranked lists, general
+    questions.
 
     Nothing here is written from the model's own recollection. The lists get
     published tables, the AI posts get live X trends plus an AI headline
@@ -500,7 +559,7 @@ def generate_pool(count: int = POOL_SIZE,
 
     # Fetch first, then size the calls to what actually came back. A source
     # that has gone missing costs one list, not a fabricated one, and the
-    # day still posts 10 times because the shortfall goes to questions.
+    # day still posts 14 times because the shortfall goes to questions.
     datasets = [(name, rows, reference.detect_year(rows)) for name, rows in
                 ((name, reference.fetch(name)) for name in subjects) if rows]
     n_list = len(datasets)
@@ -530,8 +589,20 @@ def generate_pool(count: int = POOL_SIZE,
         ["ai_ask"],
     )
     out = drop_unsourced(out, grounding)
-    # Whatever the guard removed becomes a general question, so the day
-    # still posts 10 times rather than going short.
+
+    n_war = KIND_COUNTS["war"]
+    war_news = feeds.as_context(feeds.fetch(only=WAR_FEEDS), limit=80)
+    print(f"  war headlines: {len(war_news.splitlines())}")
+    if war_news:
+        out += drop_unsourced(_call(
+            WAR_SYSTEM.format(count=n_war),
+            f"War and conflict headlines:{sep}{war_news}{sep}"
+            f"Write today's {n_war} posts.",
+            ["war"],
+        ), war_news)
+
+    # Whatever the guards removed becomes a general question, so the day
+    # still posts 14 times rather than going short.
     n_ask = count - len(out) - n_list
     out += _call(
         GENERAL_SYSTEM.format(n_list=n_list),
@@ -561,8 +632,8 @@ def generate_pool(count: int = POOL_SIZE,
 def interleave(generated: list[dict]) -> list[dict]:
     """Spread the kinds across the day instead of posting them in blocks.
 
-    Drained one every two hours, an unshuffled pool would post five AI
-    questions back to back and then four lists. Alternating a question with a list
+    Drained one every ~100 minutes, an unshuffled pool would post four AI
+    questions back to back and then four war updates. Alternating a question with a list
     keeps consecutive posts in different shapes, which matters more on a
     timeline than the order the model happened to return.
     """
@@ -570,7 +641,7 @@ def interleave(generated: list[dict]) -> list[dict]:
     for t in generated:
         buckets.setdefault(t.get("kind", "normal"), []).append(t)
 
-    order, pattern = [], ["ai_ask", "list", "ask", "ai_ask", "list"]
+    order, pattern = [], ["ai_ask", "war", "list", "ask"]
     while any(buckets.values()):
         placed = False
         for kind in pattern:
