@@ -1,0 +1,1555 @@
+{
+  "cards": [
+    {
+      "id": "20261112-171623-dc-logan-circle-gym-shooting-1-dead-4-hu",
+      "story_id": "dc-logan-circle-gym-shooting-1-dead-4-hurt",
+      "file": "cards/20261112-171623-dc-logan-circle-gym-shooting-1-dead-4-hu.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261112-171623-dc-logan-circle-gym-shooting-1-dead-4-hu.jpg",
+      "created_at": "2026-11-12T17:16:23.972040+00:00",
+      "style": "feature",
+      "slot": 16,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "One person is dead and four others were hurt in a shooting at a gym in DC's Logan Circle, according to WJLA. Details are still emerging.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261112-171623-dc-logan-circle-gym-shooting-1-dead-4-hu.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261112-171623-dc-logan-circle-gym-shooting-1-dead-4-hu.mp4"
+    },
+    {
+      "id": "20261112-184138-ukraine-strikes-russias-largest-oil-refi",
+      "story_id": "ukraine-strikes-russias-largest-oil-refineries",
+      "file": "cards/20261112-184138-ukraine-strikes-russias-largest-oil-refi.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261112-184138-ukraine-strikes-russias-largest-oil-refi.jpg",
+      "created_at": "2026-11-12T18:41:38.035676+00:00",
+      "style": "poster",
+      "slot": 17,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "UNITED24 Media reports Ukraine has struck all five of Russia's largest oil refineries in less than two weeks. The campaign concerns the fuel that reaches Russian drivers and markets.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261112-200604-outlook-zero-day-active-exploitation-mic",
+      "story_id": "outlook-zero-day-active-exploitation-microsoft",
+      "file": "cards/20261112-200604-outlook-zero-day-active-exploitation-mic.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261112-200604-outlook-zero-day-active-exploitation-mic.jpg",
+      "created_at": "2026-11-12T20:06:04.854134+00:00",
+      "style": "poster",
+      "slot": 0,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Microsoft has confirmed active exploitation of a new Outlook zero-day and patched nearly 1,100 security vulnerabilities. Users should install updates as soon as they become available.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261112-200604-outlook-zero-day-active-exploitation-mic.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261112-200604-outlook-zero-day-active-exploitation-mic.mp4"
+    },
+    {
+      "id": "20261112-213051-ukraine-drone-russian-warship-gulf-of-fi",
+      "story_id": "ukraine-drone-russian-warship-gulf-of-finland",
+      "file": "cards/20261112-213051-ukraine-drone-russian-warship-gulf-of-fi.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261112-213051-ukraine-drone-russian-warship-gulf-of-fi.jpg",
+      "created_at": "2026-11-12T21:30:51.661653+00:00",
+      "style": "poster",
+      "slot": 1,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A Ukrainian drone reportedly struck a Russian warship in the Gulf of Finland, according to the BBC. The report adds to a wider run of Baltic-area developments tied to the war.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261112-225612-beau-jessup-dies-at-27-nyc",
+      "story_id": "beau-jessup-dies-at-27-nyc",
+      "file": "cards/20261112-225612-beau-jessup-dies-at-27-nyc.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261112-225612-beau-jessup-dies-at-27-nyc.jpg",
+      "created_at": "2026-11-12T22:56:12.974910+00:00",
+      "style": "classic",
+      "slot": 2,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Beau Rose Jessup, the daughter of British actress Lisa Maxwell, has died at 27 in New York City, according to reports. Tributes are being shared as her name trends.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261112-225612-beau-jessup-dies-at-27-nyc.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261112-225612-beau-jessup-dies-at-27-nyc.mp4"
+    },
+    {
+      "id": "20261113-002236-nyc-building-collapse-8-dead",
+      "story_id": "nyc-building-collapse-8-dead",
+      "file": "cards/20261113-002236-nyc-building-collapse-8-dead.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-002236-nyc-building-collapse-8-dead.jpg",
+      "created_at": "2026-11-13T00:22:36.560670+00:00",
+      "style": "poster",
+      "slot": 3,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Officials say eight people, including two children, died after a building collapse in New York City. The story is still developing as officials provide updates.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-014446-paramount-superman-cavill-10-years-repor",
+      "story_id": "paramount-superman-cavill-10-years-report",
+      "file": "cards/20261113-014446-paramount-superman-cavill-10-years-repor.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-014446-paramount-superman-cavill-10-years-repor.jpg",
+      "created_at": "2026-11-13T01:44:46.953038+00:00",
+      "style": "poster",
+      "slot": 4,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A report says Paramount could pause Superman for a decade if Henry Cavill turns down a return, while Cavill says playing the role was an honor.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-014446-paramount-superman-cavill-10-years-repor.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-014446-paramount-superman-cavill-10-years-repor.mp4"
+    },
+    {
+      "id": "20261113-030938-israel-strike-gaza-hospital-killing-6",
+      "story_id": "israel-strike-gaza-hospital-killing-6",
+      "file": "cards/20261113-030938-israel-strike-gaza-hospital-killing-6.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-030938-israel-strike-gaza-hospital-killing-6.jpg",
+      "created_at": "2026-11-13T03:09:38.572103+00:00",
+      "style": "feature",
+      "slot": 5,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Daily Gate City reports that an Israeli strike hit one of the main hospitals still operating in Gaza, killing 6 people. The story is one of several recent reports on the state of care in the territory.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-043425-cardi-b-son-first-birthday-photos-diggs",
+      "story_id": "cardi-b-son-first-birthday-photos-diggs",
+      "file": "cards/20261113-043425-cardi-b-son-first-birthday-photos-diggs.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-043425-cardi-b-son-first-birthday-photos-diggs.jpg",
+      "created_at": "2026-11-13T04:34:25.913481+00:00",
+      "style": "poster",
+      "slot": 6,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Cardi B has shared the first photos of her son with Stefon Diggs as he turned one, including his uncommon name. A balloon-filled birthday party marked the milestone.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-043425-cardi-b-son-first-birthday-photos-diggs.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-043425-cardi-b-son-first-birthday-photos-diggs.mp4"
+    },
+    {
+      "id": "20261113-055843-jensen-huang-congress-china-chip-exports",
+      "story_id": "jensen-huang-congress-china-chip-exports",
+      "file": "cards/20261113-055843-jensen-huang-congress-china-chip-exports.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-055843-jensen-huang-congress-china-chip-exports.jpg",
+      "created_at": "2026-11-13T05:58:43.599720+00:00",
+      "style": "classic",
+      "slot": 7,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Nvidia CEO Jensen Huang is expected to testify before Congress as lawmakers push for a crackdown on chip exports to China. Senator Jim Banks wants Commerce figure Howard Lutnick to testify as well.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-072321-pentagon-names-six-troops-killed-kuwait",
+      "story_id": "pentagon-names-six-troops-killed-kuwait",
+      "file": "cards/20261113-072321-pentagon-names-six-troops-killed-kuwait.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-072321-pentagon-names-six-troops-killed-kuwait.jpg",
+      "created_at": "2026-11-13T07:23:21.887970+00:00",
+      "style": "poster",
+      "slot": 8,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The Pentagon has identified all six American troops killed in Kuwait during the ongoing Iran war. President Trump has also threatened to renew strikes against Iran.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-072321-pentagon-names-six-troops-killed-kuwait.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-072321-pentagon-names-six-troops-killed-kuwait.mp4"
+    },
+    {
+      "id": "20261113-084639-gta-6-pc-port-take-two-ai-clones",
+      "story_id": "gta-6-pc-port-take-two-ai-clones",
+      "file": "cards/20261113-084639-gta-6-pc-port-take-two-ai-clones.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-084639-gta-6-pc-port-take-two-ai-clones.jpg",
+      "created_at": "2026-11-13T08:46:39.264216+00:00",
+      "style": "poster",
+      "slot": 9,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Take-Two is reportedly strengthening its legal defenses against AI-built clones of GTA 6 as fans look for a PC release date. A former Rockstar tech director says the PC port could arrive sooner than expected.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-101043-russia-claims-11000-foreign-military-dea",
+      "story_id": "russia-claims-11000-foreign-military-deaths-ukraine",
+      "file": "cards/20261113-101043-russia-claims-11000-foreign-military-dea.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-101043-russia-claims-11000-foreign-military-dea.jpg",
+      "created_at": "2026-11-13T10:10:43.023142+00:00",
+      "style": "poster",
+      "slot": 10,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Russia has put the number of foreign military deaths in its war on Ukraine at over 11,000, according to its own records as reported by The Japan Times. The figure comes from Russia and has not been independently confirmed in the headlines.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-101043-russia-claims-11000-foreign-military-dea.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-101043-russia-claims-11000-foreign-military-dea.mp4"
+    },
+    {
+      "id": "20261113-113505-spacex-starship-double-landing-attempt",
+      "story_id": "spacex-starship-double-landing-attempt",
+      "file": "cards/20261113-113505-spacex-starship-double-landing-attempt.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-113505-spacex-starship-double-landing-attempt.jpg",
+      "created_at": "2026-11-13T11:35:05.200110+00:00",
+      "style": "feature",
+      "slot": 11,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "SpaceX is pushing for a double landing with its next Starship test flight, a feat the company's rocketry effort has never achieved. The attempt is one of the most-searched space stories in the US right now.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-125923-kansas-soccer-field-driver-not-charged",
+      "story_id": "kansas-soccer-field-driver-not-charged",
+      "file": "cards/20261113-125923-kansas-soccer-field-driver-not-charged.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-125923-kansas-soccer-field-driver-not-charged.jpg",
+      "created_at": "2026-11-13T12:59:23.524077+00:00",
+      "style": "poster",
+      "slot": 12,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Officials say a woman who drove onto a Kansas soccer field, killing 2 people, will not face charges. The decision has been made public.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-125923-kansas-soccer-field-driver-not-charged.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-125923-kansas-soccer-field-driver-not-charged.mp4"
+    },
+    {
+      "id": "20261113-142413-taylor-swift-cma-awards-performance-retu",
+      "story_id": "taylor-swift-cma-awards-performance-return",
+      "file": "cards/20261113-142413-taylor-swift-cma-awards-performance-retu.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-142413-taylor-swift-cma-awards-performance-retu.jpg",
+      "created_at": "2026-11-13T14:24:13.296492+00:00",
+      "style": "poster",
+      "slot": 13,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Taylor Swift is set to perform at the CMA Awards for the first time in 13 years, one of the most-searched entertainment stories in the US right now.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-154901-iran-radar-bahrain-drones-centcom",
+      "story_id": "iran-radar-bahrain-drones-centcom",
+      "file": "cards/20261113-154901-iran-radar-bahrain-drones-centcom.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-154901-iran-radar-bahrain-drones-centcom.jpg",
+      "created_at": "2026-11-13T15:49:01.389178+00:00",
+      "style": "classic",
+      "slot": 14,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Iran says it targeted a US radar site in Bahrain, but CENTCOM denies that claim and says two drones were shot down. The US says it intercepted Iranian drone attacks.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-154901-iran-radar-bahrain-drones-centcom.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-154901-iran-radar-bahrain-drones-centcom.mp4"
+    },
+    {
+      "id": "20261113-171245-doug-mcdermott-retires-nba",
+      "story_id": "doug-mcdermott-retires-nba",
+      "file": "cards/20261113-171245-doug-mcdermott-retires-nba.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-171245-doug-mcdermott-retires-nba.jpg",
+      "created_at": "2026-11-13T17:12:45.737910+00:00",
+      "style": "poster",
+      "slot": 15,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Creighton legend Doug McDermott has retired after 12 NBA seasons with the Bulls, Knicks, Thunder, Spurs and more. His career spanned several teams across the league.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-183752-california-50-foot-waves-storms",
+      "story_id": "california-50-foot-waves-storms",
+      "file": "cards/20261113-183752-california-50-foot-waves-storms.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-183752-california-50-foot-waves-storms.jpg",
+      "created_at": "2026-11-13T18:37:52.996875+00:00",
+      "style": "feature",
+      "slot": 16,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The New York Times reports California could face 50-foot waves as storms slam its coast. The swells are expected to reach the shoreline.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-183752-california-50-foot-waves-storms.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-183752-california-50-foot-waves-storms.mp4"
+    },
+    {
+      "id": "20261113-200258-trump-cuba-military-action-considered",
+      "story_id": "trump-cuba-military-action-considered",
+      "file": "cards/20261113-200258-trump-cuba-military-action-considered.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-200258-trump-cuba-military-action-considered.jpg",
+      "created_at": "2026-11-13T20:02:58.274549+00:00",
+      "style": "poster",
+      "slot": 17,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Trump told NBC News he wants to get Cuba done before 2029 and would consider military action. Several outlets reported his comments on the matter.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261113-212731-vader-lightsaber-auction-record-4-87m",
+      "story_id": "vader-lightsaber-auction-record-4-87m",
+      "file": "cards/20261113-212731-vader-lightsaber-auction-record-4-87m.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-212731-vader-lightsaber-auction-record-4-87m.jpg",
+      "created_at": "2026-11-13T21:27:31.491918+00:00",
+      "style": "poster",
+      "slot": 0,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "A Darth Vader lightsaber from the Star Wars films has sold for a record $4.87 million at auction. The sale comes as Star Wars marks 50 years with a new documentary.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261113-212731-vader-lightsaber-auction-record-4-87m.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261113-212731-vader-lightsaber-auction-record-4-87m.mp4"
+    },
+    {
+      "id": "20261113-225305-eu-five-countries-ukraine-peace-talks",
+      "story_id": "eu-five-countries-ukraine-peace-talks",
+      "file": "cards/20261113-225305-eu-five-countries-ukraine-peace-talks.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261113-225305-eu-five-countries-ukraine-peace-talks.jpg",
+      "created_at": "2026-11-13T22:53:05.993870+00:00",
+      "style": "poster",
+      "slot": 1,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The EU has agreed on five countries to represent Europe in Ukraine peace talks, while reports say the bloc still lacks a single voice. The move comes as European leaders push for a seat at the table.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261114-001746-tacony-palmyra-bridge-cargo-ship-strike-",
+      "story_id": "tacony-palmyra-bridge-cargo-ship-strike-reopens",
+      "file": "cards/20261114-001746-tacony-palmyra-bridge-cargo-ship-strike-.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-001746-tacony-palmyra-bridge-cargo-ship-strike-.jpg",
+      "created_at": "2026-11-14T00:17:46.211533+00:00",
+      "style": "classic",
+      "slot": 2,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The Tacony-Palmyra Bridge reopened hours after reports of a cargo ship strike. Traffic is moving across it again.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261114-001746-tacony-palmyra-bridge-cargo-ship-strike-.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261114-001746-tacony-palmyra-bridge-cargo-ship-strike-.mp4"
+    },
+    {
+      "id": "20261114-014422-medicaid-work-requirements-delayed-six-m",
+      "story_id": "medicaid-work-requirements-delayed-six-months",
+      "file": "cards/20261114-014422-medicaid-work-requirements-delayed-six-m.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-014422-medicaid-work-requirements-delayed-six-m.jpg",
+      "created_at": "2026-11-14T01:44:22.427330+00:00",
+      "style": "poster",
+      "slot": 3,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The Trump administration has delayed Medicaid work requirements by six months, according to NBC News. The change gives states and enrollees more time before the rules take effect.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261114-030210-thunder-vs-clippers-friday-game",
+      "story_id": "thunder-vs-clippers-friday-game",
+      "file": "cards/20261114-030210-thunder-vs-clippers-friday-game.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-030210-thunder-vs-clippers-friday-game.jpg",
+      "created_at": "2026-11-14T03:02:10.666070+00:00",
+      "style": "poster",
+      "slot": 4,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Thunder and Clippers are the most-searched matchup in the US right now, with live updates and highlights for Friday's game. Tune in for the full story as it unfolds.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261114-030210-thunder-vs-clippers-friday-game.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261114-030210-thunder-vs-clippers-friday-game.mp4"
+    },
+    {
+      "id": "20261114-042728-ukraine-1200-drones-mass-attack-russia",
+      "story_id": "ukraine-1200-drones-mass-attack-russia",
+      "file": "cards/20261114-042728-ukraine-1200-drones-mass-attack-russia.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-042728-ukraine-1200-drones-mass-attack-russia.jpg",
+      "created_at": "2026-11-14T04:27:28.660704+00:00",
+      "style": "feature",
+      "slot": 5,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Nine.com.au reports Ukraine launched 1200 drones at Russia in a mass attack. The figure is the number the report leads with.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261114-055121-nvidia-ceo-transition-week-of-chaos",
+      "story_id": "nvidia-ceo-transition-week-of-chaos",
+      "file": "cards/20261114-055121-nvidia-ceo-transition-week-of-chaos.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-055121-nvidia-ceo-transition-week-of-chaos.jpg",
+      "created_at": "2026-11-14T05:51:21.223050+00:00",
+      "style": "poster",
+      "slot": 6,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Nvidia announced a CEO transition after a week of turbulence, and searches for the chipmaker have spiked among US readers. Here is where the story stands.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      },
+      "video_file": "cards/20261114-055121-nvidia-ceo-transition-week-of-chaos.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261114-055121-nvidia-ceo-transition-week-of-chaos.mp4"
+    },
+    {
+      "id": "20261114-071714-boebert-loses-colorado-house-race",
+      "story_id": "boebert-loses-colorado-house-race",
+      "file": "cards/20261114-071714-boebert-loses-colorado-house-race.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-071714-boebert-loses-colorado-house-race.jpg",
+      "created_at": "2026-11-14T07:17:14.285396+00:00",
+      "style": "classic",
+      "slot": 7,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Lauren Boebert, a Trump-backed Maga firebrand, lost her Colorado congressional race, according to The Guardian. The result closes a bruising stretch for the Republican firebrand.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261114-084209-rubio-no-further-iran-military-action",
+      "story_id": "rubio-no-further-iran-military-action",
+      "file": "cards/20261114-084209-rubio-no-further-iran-military-action.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-084209-rubio-no-further-iran-military-action.jpg",
+      "created_at": "2026-11-14T08:42:09.364905+00:00",
+      "style": "poster",
+      "slot": 8,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "US Secretary of State Marco Rubio says further American military action is not needed against Iran, pointing to the economic pain inflicted on the country. Iran has responded by warning of a decisive response to any renewed attacks.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261114-084209-rubio-no-further-iran-military-action.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261114-084209-rubio-no-further-iran-military-action.mp4"
+    },
+    {
+      "id": "20261114-100646-vivienne-pitt-eating-disorder-hospitaliz",
+      "story_id": "vivienne-pitt-eating-disorder-hospitalization-la-exhibit",
+      "file": "cards/20261114-100646-vivienne-pitt-eating-disorder-hospitaliz.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-100646-vivienne-pitt-eating-disorder-hospitaliz.jpg",
+      "created_at": "2026-11-14T10:06:46.297972+00:00",
+      "style": "poster",
+      "slot": 9,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Vivienne, Brad Pitt's daughter, revealed at a Los Angeles art exhibit that she was hospitalized for an eating disorder. She said the experience 'wasn't easy' and noted she had dropped her dad's last name.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261114-113052-us-floats-donbas-for-nato-zelensky",
+      "story_id": "us-floats-donbas-for-nato-zelensky",
+      "file": "cards/20261114-113052-us-floats-donbas-for-nato-zelensky.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-113052-us-floats-donbas-for-nato-zelensky.jpg",
+      "created_at": "2026-11-14T11:30:52.348770+00:00",
+      "style": "poster",
+      "slot": 10,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Zelensky says the US has floated Ukraine giving up Donbas in exchange for Nato membership, according to the BBC. The report describes a proposal rather than an agreed deal.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261114-113052-us-floats-donbas-for-nato-zelensky.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261114-113052-us-floats-donbas-for-nato-zelensky.mp4"
+    },
+    {
+      "id": "20261114-125437-daune-morris-broken-leg-car-accident",
+      "story_id": "daune-morris-broken-leg-car-accident",
+      "file": "cards/20261114-125437-daune-morris-broken-leg-car-accident.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-125437-daune-morris-broken-leg-car-accident.jpg",
+      "created_at": "2026-11-14T12:54:37.390635+00:00",
+      "style": "feature",
+      "slot": 11,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Tennessee running back Daune Morris suffered a broken leg in a car accident, a major loss for the Volunteers before their game against Texas A&M. Fans are sending well wishes as the team adjusts.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261114-141916-airlines-thousands-flights-canceled-grou",
+      "story_id": "airlines-thousands-flights-canceled-ground-stop",
+      "file": "cards/20261114-141916-airlines-thousands-flights-canceled-grou.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-141916-airlines-thousands-flights-canceled-grou.jpg",
+      "created_at": "2026-11-14T14:19:16.841998+00:00",
+      "style": "poster",
+      "slot": 12,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "Thousands of flights were canceled as airlines worked to recover from a nationwide ground stop. Travelers across the country are facing disrupted plans.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261114-141916-airlines-thousands-flights-canceled-grou.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261114-141916-airlines-thousands-flights-canceled-grou.mp4"
+    },
+    {
+      "id": "20261114-154452-el-nino-arrives-california-ocean-records",
+      "story_id": "el-nino-arrives-california-ocean-records",
+      "file": "cards/20261114-154452-el-nino-arrives-california-ocean-records.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-154452-el-nino-arrives-california-ocean-records.jpg",
+      "created_at": "2026-11-14T15:44:52.733722+00:00",
+      "style": "poster",
+      "slot": 13,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "El Ni\u00f1o has arrived, and California's ocean temperatures are reportedly setting records. Here is what the shift could mean for where you live.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": false,
+        "tiktok": false
+      }
+    },
+    {
+      "id": "20261114-170837-iran-7000-missiles-drones-gulf-gcc-un",
+      "story_id": "iran-7000-missiles-drones-gulf-gcc-un",
+      "file": "cards/20261114-170837-iran-7000-missiles-drones-gulf-gcc-un.jpg",
+      "url": "https://sauravpoudel10.github.io/404/cards/20261114-170837-iran-7000-missiles-drones-gulf-gcc-un.jpg",
+      "created_at": "2026-11-14T17:08:37.087703+00:00",
+      "style": "classic",
+      "slot": 14,
+      "image": {
+        "source": "batch",
+        "note": ""
+      },
+      "caption": "The head of the Gulf Cooperation Council told the UN that Iran has fired over 7,000 missiles and drones at Gulf nations since the war began. The figure is the GCC chief's own account, as reported in the headlines.",
+      "posted": {
+        "instagram": true,
+        "facebook": true,
+        "x": true,
+        "tiktok": false
+      },
+      "video_file": "cards/20261114-170837-iran-7000-missiles-drones-gulf-gcc-un.mp4",
+      "video_url": "https://sauravpoudel10.github.io/404/cards/20261114-170837-iran-7000-missiles-drones-gulf-gcc-un.mp4"
+    }
+  ],
+  "history": [
+    {
+      "story_id": "mcdonalds-mcrib-meat-lawsuit-proceeds",
+      "seen_at": "2026-10-31T17:47:19.326159+00:00"
+    },
+    {
+      "story_id": "daimler-north-portland-plant-closure-375-layoffs",
+      "seen_at": "2026-10-31T19:32:50.873762+00:00"
+    },
+    {
+      "story_id": "patrick-stewart-estate-114m",
+      "seen_at": "2026-10-31T21:16:28.775899+00:00"
+    },
+    {
+      "story_id": "wnba-finals-game-7-valkyries-dream",
+      "seen_at": "2026-10-31T23:01:26.379524+00:00"
+    },
+    {
+      "story_id": "naacp-xai-data-center-pollution-suit",
+      "seen_at": "2026-11-01T00:44:40.213224+00:00"
+    },
+    {
+      "story_id": "colorado-big-12-win-385-days",
+      "seen_at": "2026-11-01T02:30:21.387974+00:00"
+    },
+    {
+      "story_id": "healthcare-gov-premiums-double-digit-2027",
+      "seen_at": "2026-11-01T04:14:35.292241+00:00"
+    },
+    {
+      "story_id": "cheaper-cars-selling-faster-q3",
+      "seen_at": "2026-11-01T06:00:57.922908+00:00"
+    },
+    {
+      "story_id": "iran-khamenei-expands-us-retaliation-plans",
+      "seen_at": "2026-11-01T07:45:14.604954+00:00"
+    },
+    {
+      "story_id": "ai-investors-racing-insurance-tech-downturn",
+      "seen_at": "2026-11-01T09:29:52.705577+00:00"
+    },
+    {
+      "story_id": "wnba-finals-game-6-viewership-scheduling-uproar",
+      "seen_at": "2026-11-01T11:20:23.966197+00:00"
+    },
+    {
+      "story_id": "federal-debt-tops-40-trillion",
+      "seen_at": "2026-11-01T13:05:47.678345+00:00"
+    },
+    {
+      "story_id": "minnesota-nudification-ban-xai-pause-rejected",
+      "seen_at": "2026-11-01T14:51:45.156254+00:00"
+    },
+    {
+      "story_id": "gatorade-recall-122k-cases-undeclared-dyes",
+      "seen_at": "2026-11-01T16:36:30.658989+00:00"
+    },
+    {
+      "story_id": "shedeur-sanders-browns-qb-future",
+      "seen_at": "2026-11-01T18:22:17.720779+00:00"
+    },
+    {
+      "story_id": "us-midterms-50-million-votes-cast",
+      "seen_at": "2026-11-01T20:07:40.000066+00:00"
+    },
+    {
+      "story_id": "trump-habba-mildon-50m-contract",
+      "seen_at": "2026-11-01T21:52:15.327443+00:00"
+    },
+    {
+      "story_id": "justin-tucker-chiefs-signing",
+      "seen_at": "2026-11-01T23:36:27.765484+00:00"
+    },
+    {
+      "story_id": "fbi-north-korea-binance-6-3b-heist",
+      "seen_at": "2026-11-02T01:25:38.213307+00:00"
+    },
+    {
+      "story_id": "florida-business-jet-crash-nine-dead",
+      "seen_at": "2026-11-02T03:10:53.603603+00:00"
+    },
+    {
+      "story_id": "eagles-running-backs-injuries-jaydon-blue",
+      "seen_at": "2026-11-02T04:54:47.087998+00:00"
+    },
+    {
+      "story_id": "gta-6-600000-animations-passersby",
+      "seen_at": "2026-11-02T06:40:27.884050+00:00"
+    },
+    {
+      "story_id": "trump-farmers-15b-aid-before-midterms",
+      "seen_at": "2026-11-02T08:29:38.921136+00:00"
+    },
+    {
+      "story_id": "central-florida-flooding-rain-forecast-weekend",
+      "seen_at": "2026-11-02T10:14:04.814319+00:00"
+    },
+    {
+      "story_id": "kimi-antonelli-youngest-f1-world-champion",
+      "seen_at": "2026-11-02T11:58:53.043345+00:00"
+    },
+    {
+      "story_id": "ronaldo-off-al-nassr-acl-squad-saudi-security",
+      "seen_at": "2026-11-02T13:45:20.269077+00:00"
+    },
+    {
+      "story_id": "us-halloween-weekend-shootings-dozen-killed",
+      "seen_at": "2026-11-02T15:31:13.869946+00:00"
+    },
+    {
+      "story_id": "judge-dismisses-ex-fbi-agents-hunter-biden-probe",
+      "seen_at": "2026-11-02T17:16:46.224483+00:00"
+    },
+    {
+      "story_id": "matthew-wright-ellen-show-producer-dies",
+      "seen_at": "2026-11-02T19:06:12.065540+00:00"
+    },
+    {
+      "story_id": "california-billionaire-tax-250-1-spending",
+      "seen_at": "2026-11-02T20:51:04.329387+00:00"
+    },
+    {
+      "story_id": "cardinals-minshew-starting-qb-seahawks",
+      "seen_at": "2026-11-02T22:37:05.708175+00:00"
+    },
+    {
+      "story_id": "boumtje-boumtje-2027-draft-eligibility",
+      "seen_at": "2026-11-03T00:22:43.687503+00:00"
+    },
+    {
+      "story_id": "portland-public-schools-65m-budget-gap-layoffs",
+      "seen_at": "2026-11-03T02:07:43.854556+00:00"
+    },
+    {
+      "story_id": "supreme-court-rejects-trump-california-ballot-request",
+      "seen_at": "2026-11-03T03:52:10.324769+00:00"
+    },
+    {
+      "story_id": "klay-thompson-heat-1-4-start",
+      "seen_at": "2026-11-03T05:37:25.822190+00:00"
+    },
+    {
+      "story_id": "kevin-durant-nba-cup-heated-exchange",
+      "seen_at": "2026-11-03T07:25:44.319842+00:00"
+    },
+    {
+      "story_id": "judge-dismisses-trump-harvard-admissions-probe",
+      "seen_at": "2026-11-03T09:11:04.445386+00:00"
+    },
+    {
+      "story_id": "tenerife-jesus-de-miguel-death-cup-suspended",
+      "seen_at": "2026-11-03T10:57:07.194403+00:00"
+    },
+    {
+      "story_id": "shopify-shares-surge-revenue-34-percent",
+      "seen_at": "2026-11-03T12:42:32.216076+00:00"
+    },
+    {
+      "story_id": "georgia-2026-poll-bottoms-jackson-03-percent",
+      "seen_at": "2026-11-03T14:27:27.869856+00:00"
+    },
+    {
+      "story_id": "elder-scrolls-6-named-sentinel",
+      "seen_at": "2026-11-03T16:19:15.594704+00:00"
+    },
+    {
+      "story_id": "galatasaray-stuttgart-youth-league-2-2",
+      "seen_at": "2026-11-03T18:08:20.318193+00:00"
+    },
+    {
+      "story_id": "villarreal-psg-ucl-clash-luis-enrique-warning",
+      "seen_at": "2026-11-03T20:01:40.863399+00:00"
+    },
+    {
+      "story_id": "trump-stops-4b-israel-aid-election-day",
+      "seen_at": "2026-11-03T21:44:32.314836+00:00"
+    },
+    {
+      "story_id": "wild-vs-flyers-road-trip-sweep",
+      "seen_at": "2026-11-03T23:32:41.476532+00:00"
+    },
+    {
+      "story_id": "laconia-polling-location-alleged-assault",
+      "seen_at": "2026-11-04T01:18:43.316080+00:00"
+    },
+    {
+      "story_id": "democrats-win-senate-battleground-seats-2026",
+      "seen_at": "2026-11-04T03:02:48.435441+00:00"
+    },
+    {
+      "story_id": "spangle-wa-shooting-officers-injured",
+      "seen_at": "2026-11-04T04:47:31.736210+00:00"
+    },
+    {
+      "story_id": "la-county-sheriff-luna-villanueva-early-returns",
+      "seen_at": "2026-11-04T06:32:48.435831+00:00"
+    },
+    {
+      "story_id": "hinojosa-defeats-abbott-texas-governor",
+      "seen_at": "2026-11-04T08:25:07.493379+00:00"
+    },
+    {
+      "story_id": "claire-liu-hong-kong-open-prozorova-straight-sets",
+      "seen_at": "2026-11-04T10:09:55.985612+00:00"
+    },
+    {
+      "story_id": "zelda-ocarina-of-time-remake-review",
+      "seen_at": "2026-11-04T11:55:36.968384+00:00"
+    },
+    {
+      "story_id": "zverev-musetti-paris-masters",
+      "seen_at": "2026-11-04T13:41:06.091333+00:00"
+    },
+    {
+      "story_id": "voters-revolt-against-ai-midterms",
+      "seen_at": "2026-11-04T15:25:20.487306+00:00"
+    },
+    {
+      "story_id": "djokovic-paris-masters-vacherot-win",
+      "seen_at": "2026-11-04T17:16:20.625579+00:00"
+    },
+    {
+      "story_id": "mike-johnson-wont-stay-gop-leader",
+      "seen_at": "2026-11-04T19:02:07.400037+00:00"
+    },
+    {
+      "story_id": "jeffries-poised-first-black-speaker",
+      "seen_at": "2026-11-04T20:47:38.694104+00:00"
+    },
+    {
+      "story_id": "cher-michael-douglas-oscars-shade",
+      "seen_at": "2026-11-04T22:39:17.503687+00:00"
+    },
+    {
+      "story_id": "us-marine-dies-camp-schwab-japan-training",
+      "seen_at": "2026-11-05T00:23:36.201765+00:00"
+    },
+    {
+      "story_id": "navy-seal-women-advance-further-record",
+      "seen_at": "2026-11-05T02:10:38.869764+00:00"
+    },
+    {
+      "story_id": "troy-jackson-defeats-susan-collins-maine",
+      "seen_at": "2026-11-05T03:54:37.648045+00:00"
+    },
+    {
+      "story_id": "powerball-835m-jackpot-nj-tickets",
+      "seen_at": "2026-11-05T05:40:26.758386+00:00"
+    },
+    {
+      "story_id": "dean-norris-secret-divorce-bankruptcy",
+      "seen_at": "2026-11-05T07:24:59.929169+00:00"
+    },
+    {
+      "story_id": "learjet-crash-florida-kills-nine",
+      "seen_at": "2026-11-05T09:10:13.679012+00:00"
+    },
+    {
+      "story_id": "adam-driver-kylo-ren-hunt-for-ben-solo-over",
+      "seen_at": "2026-11-05T11:03:08.599294+00:00"
+    },
+    {
+      "story_id": "ben-shelton-ferrero-2027-staff",
+      "seen_at": "2026-11-05T12:47:28.277368+00:00"
+    },
+    {
+      "story_id": "75-percent-americans-could-have-democratic-governor",
+      "seen_at": "2026-11-05T14:33:21.610593+00:00"
+    },
+    {
+      "story_id": "wembanyama-52-point-24-rebound-8-block-spurs-win",
+      "seen_at": "2026-11-05T16:19:20.236678+00:00"
+    },
+    {
+      "story_id": "sparta-praha-bournemouth-europa-league-prague",
+      "seen_at": "2026-11-05T18:03:40.618507+00:00"
+    },
+    {
+      "story_id": "juventus-az-alkmaar-europa-league-live",
+      "seen_at": "2026-11-05T19:47:43.123636+00:00"
+    },
+    {
+      "story_id": "newsom-commutes-548-death-row-sentences",
+      "seen_at": "2026-11-05T21:32:19.837736+00:00"
+    },
+    {
+      "story_id": "nier-automata-update-366gb-size-jump",
+      "seen_at": "2026-11-05T23:17:48.500947+00:00"
+    },
+    {
+      "story_id": "kospi-korean-chip-stocks-ai-sell-off",
+      "seen_at": "2026-11-06T01:02:00.667155+00:00"
+    },
+    {
+      "story_id": "brooklyn-sunset-park-fire-6-killed",
+      "seen_at": "2026-11-06T02:47:20.819207+00:00"
+    },
+    {
+      "story_id": "stallone-schwarzenegger-feud-reflection",
+      "seen_at": "2026-11-06T04:31:10.645112+00:00"
+    },
+    {
+      "story_id": "draymond-green-dillon-brooks-altercation",
+      "seen_at": "2026-11-06T06:22:02.142814+00:00"
+    },
+    {
+      "story_id": "democrats-flip-40-house-seats-2026-midterms",
+      "seen_at": "2026-11-06T08:06:26.091239+00:00"
+    },
+    {
+      "story_id": "lakewood-rtd-bus-shooting-officer-killed",
+      "seen_at": "2026-11-06T09:50:37.463339+00:00"
+    },
+    {
+      "story_id": "mexican-judge-bribery-fbi-arrest-narco-case",
+      "seen_at": "2026-11-06T11:36:13.461607+00:00"
+    },
+    {
+      "story_id": "jim-clyburn-wins-18th-term",
+      "seen_at": "2026-11-06T13:21:44.637094+00:00"
+    },
+    {
+      "story_id": "ai-impersonation-scheme-129-million-charged",
+      "seen_at": "2026-11-06T15:09:40.116362+00:00"
+    },
+    {
+      "story_id": "thomas-markle-arrested-abuse-material-charges",
+      "seen_at": "2026-11-06T16:52:24.501225+00:00"
+    },
+    {
+      "story_id": "treveyon-henderson-hospitalized-neurological-symptoms",
+      "seen_at": "2026-11-06T18:40:49.773966+00:00"
+    },
+    {
+      "story_id": "nithya-raman-wins-la-mayor-over-bass",
+      "seen_at": "2026-11-06T20:29:56.668664+00:00"
+    },
+    {
+      "story_id": "kristaps-porzingis-step-away-health-warriors",
+      "seen_at": "2026-11-06T22:14:16.639724+00:00"
+    },
+    {
+      "story_id": "sixers-cavaliers-lebron-homecoming-search-surge",
+      "seen_at": "2026-11-06T23:59:00.472642+00:00"
+    },
+    {
+      "story_id": "brandon-miller-injury-hornets-nba-cup-celtics",
+      "seen_at": "2026-11-07T01:48:23.885436+00:00"
+    },
+    {
+      "story_id": "florida-homestead-tax-break-11-8-billion-hole",
+      "seen_at": "2026-11-07T03:33:35.055537+00:00"
+    },
+    {
+      "story_id": "luka-doncic-lakers-history-spaceship",
+      "seen_at": "2026-11-07T05:18:27.117970+00:00"
+    },
+    {
+      "story_id": "andreescu-cali-match-halted-emergency-alarm",
+      "seen_at": "2026-11-07T07:08:40.683257+00:00"
+    },
+    {
+      "story_id": "iran-war-cost-38-billion-19-us-lives",
+      "seen_at": "2026-11-07T08:52:53.569962+00:00"
+    },
+    {
+      "story_id": "fox-completes-22b-roku-acquisition",
+      "seen_at": "2026-11-07T10:37:44.940817+00:00"
+    },
+    {
+      "story_id": "carson-daly-saturday-today-gig",
+      "seen_at": "2026-11-07T12:22:18.779220+00:00"
+    },
+    {
+      "story_id": "citibank-gunman-2-5k-debt-sheriff",
+      "seen_at": "2026-11-07T14:10:04.193863+00:00"
+    },
+    {
+      "story_id": "stephen-miller-trump-chief-of-staff",
+      "seen_at": "2026-11-07T15:56:16.536526+00:00"
+    },
+    {
+      "story_id": "richard-lloyd-television-guitarist-dies",
+      "seen_at": "2026-11-07T17:40:48.307807+00:00"
+    },
+    {
+      "story_id": "valencia-real-madrid-aguirre-mourinho-laliga",
+      "seen_at": "2026-11-07T19:25:23.599863+00:00"
+    },
+    {
+      "story_id": "colom-mississippi-senate-count-razor-thin",
+      "seen_at": "2026-11-07T21:10:53.390089+00:00"
+    },
+    {
+      "story_id": "love-is-blind-shannon-williams-divorce",
+      "seen_at": "2026-11-07T22:55:46.423335+00:00"
+    },
+    {
+      "story_id": "kardashian-skims-advent-calendar-roasted",
+      "seen_at": "2026-11-08T00:40:55.062035+00:00"
+    },
+    {
+      "story_id": "portland-city-workers-strike-monday",
+      "seen_at": "2026-11-08T02:26:36.124875+00:00"
+    },
+    {
+      "story_id": "cameron-diaz-bad-day-netflix-trailer",
+      "seen_at": "2026-11-08T04:10:41.181826+00:00"
+    },
+    {
+      "story_id": "james-talarico-snl-cold-open-five-dollar-texts",
+      "seen_at": "2026-11-08T05:53:57.469048+00:00"
+    },
+    {
+      "story_id": "bitcoin-selloff-eases-76000-etf-outflows",
+      "seen_at": "2026-11-08T07:39:39.654540+00:00"
+    },
+    {
+      "story_id": "western-washington-storm-100k-power-outages",
+      "seen_at": "2026-11-08T09:26:35.432068+00:00"
+    },
+    {
+      "story_id": "eu-gas-prices-surge-140-storage-14-year-low",
+      "seen_at": "2026-11-08T11:11:12.425803+00:00"
+    },
+    {
+      "story_id": "jujutsu-kaisen-culling-game-posters-season-4",
+      "seen_at": "2026-11-08T12:55:08.383208+00:00"
+    },
+    {
+      "story_id": "new-jersey-town-26m-theft-post-election",
+      "seen_at": "2026-11-08T14:40:32.141884+00:00"
+    },
+    {
+      "story_id": "brest-lyon-ligue1-maciel-debut",
+      "seen_at": "2026-11-08T16:24:28.569580+00:00"
+    },
+    {
+      "story_id": "alex-singleton-afc-defensive-player-month",
+      "seen_at": "2026-11-08T18:09:27.603517+00:00"
+    },
+    {
+      "story_id": "colts-josh-downs-trade-fourth-round-offer",
+      "seen_at": "2026-11-08T19:53:46.459191+00:00"
+    },
+    {
+      "story_id": "winston-salem-state-campus-shooting-arrest",
+      "seen_at": "2026-11-08T21:40:19.846371+00:00"
+    },
+    {
+      "story_id": "iihf-russia-hockey-ban-overturned-sports-court",
+      "seen_at": "2026-11-08T23:24:38.737616+00:00"
+    },
+    {
+      "story_id": "gary-sinise-son-mac-gifts-hope",
+      "seen_at": "2026-11-09T01:08:09.015089+00:00"
+    },
+    {
+      "story_id": "hegseth-impeachment-hard-yes-house-democrat",
+      "seen_at": "2026-11-09T02:53:49.778210+00:00"
+    },
+    {
+      "story_id": "biden-cancer-limits-memoir-promotion",
+      "seen_at": "2026-11-09T04:37:59.984217+00:00"
+    },
+    {
+      "story_id": "delhi-diwali-eve-air-pollution-66x-who",
+      "seen_at": "2026-11-09T06:23:26.055156+00:00"
+    },
+    {
+      "story_id": "santa-barbara-half-marathon-runners-ill",
+      "seen_at": "2026-11-09T08:08:21.589295+00:00"
+    },
+    {
+      "story_id": "wake-county-cyclists-struck-turner-killed",
+      "seen_at": "2026-11-09T09:52:04.441080+00:00"
+    },
+    {
+      "story_id": "elizabeth-holmes-look-alike-contest-lafayette-park",
+      "seen_at": "2026-11-09T11:38:03.165622+00:00"
+    },
+    {
+      "story_id": "dave-chappelle-charlie-kirk-joke-backlash",
+      "seen_at": "2026-11-09T13:22:50.161553+00:00"
+    },
+    {
+      "story_id": "democrats-midterm-wins-grocery-bills",
+      "seen_at": "2026-11-09T15:05:27.989381+00:00"
+    },
+    {
+      "story_id": "gta-6-pre-download-november-10",
+      "seen_at": "2026-11-09T16:50:53.065550+00:00"
+    },
+    {
+      "story_id": "fda-ozempic-zepbound-eye-risk-warnings",
+      "seen_at": "2026-11-09T18:35:20.646200+00:00"
+    },
+    {
+      "story_id": "georgia-state-house-democrats-flip-12-chambers",
+      "seen_at": "2026-11-09T20:20:07.161179+00:00"
+    },
+    {
+      "story_id": "vikings-sign-odell-beckham-jr",
+      "seen_at": "2026-11-09T22:05:54.156884+00:00"
+    },
+    {
+      "story_id": "jordon-hudson-belichick-ring-cam-lawsuit",
+      "seen_at": "2026-11-09T23:54:23.641935+00:00"
+    },
+    {
+      "story_id": "russell-brand-sentenced-10-5-years-rape",
+      "seen_at": "2026-11-10T01:39:09.590213+00:00"
+    },
+    {
+      "story_id": "california-billionaire-tax-rejected",
+      "seen_at": "2026-11-10T03:27:16.222303+00:00"
+    },
+    {
+      "story_id": "wainwright-cfb-fire-15-soldiers-ventilators",
+      "seen_at": "2026-11-10T05:20:06.181856+00:00"
+    },
+    {
+      "story_id": "india-nz-3rd-odi-hamilton-series-lead",
+      "seen_at": "2026-11-10T07:04:30.913197+00:00"
+    },
+    {
+      "story_id": "states-10b-rural-health-medicaid-cuts",
+      "seen_at": "2026-11-10T08:49:26.606257+00:00"
+    },
+    {
+      "story_id": "ss-united-states-sunk-artificial-reef",
+      "seen_at": "2026-11-10T10:34:15.734177+00:00"
+    },
+    {
+      "story_id": "mel-kiper-2027-mock-draft-six-qbs-round-one",
+      "seen_at": "2026-11-10T12:22:18.824521+00:00"
+    },
+    {
+      "story_id": "usda-proposed-rule-kick-millions-off-snap",
+      "seen_at": "2026-11-10T14:12:26.706614+00:00"
+    },
+    {
+      "story_id": "us-refuses-un-human-rights-council-review",
+      "seen_at": "2026-11-10T16:00:54.930872+00:00"
+    },
+    {
+      "story_id": "raiders-49ers-levis-stadium-brawl-45-ejections",
+      "seen_at": "2026-11-10T17:46:42.550704+00:00"
+    },
+    {
+      "story_id": "zelda-ocarina-of-time-remake-metacritic-records",
+      "seen_at": "2026-11-10T19:32:32.487550+00:00"
+    },
+    {
+      "story_id": "florida-jet-crash-cockpit-voice-recorder-recovered",
+      "seen_at": "2026-11-10T21:16:01.036647+00:00"
+    },
+    {
+      "story_id": "naresh-bhatt-guilty-verdict-wife-murder-trial",
+      "seen_at": "2026-11-10T23:01:23.088207+00:00"
+    },
+    {
+      "story_id": "ryan-seacrest-dunwoody-high-football-gift",
+      "seen_at": "2026-11-11T00:46:24.359631+00:00"
+    },
+    {
+      "story_id": "epstein-report-federal-authorities-could-have-prevented",
+      "seen_at": "2026-11-11T02:30:01.046130+00:00"
+    },
+    {
+      "story_id": "big-walk-house-house-clarifies-ai-use-final-stage",
+      "seen_at": "2026-11-11T04:14:56.348201+00:00"
+    },
+    {
+      "story_id": "tigers-sign-emilio-pagan-11m-one-year",
+      "seen_at": "2026-11-11T06:01:00.238101+00:00"
+    },
+    {
+      "story_id": "russia-claims-146-drones-leningrad-region",
+      "seen_at": "2026-11-11T07:25:48.708456+00:00"
+    },
+    {
+      "story_id": "blue-angels-scott-laux-removed-flight-demo",
+      "seen_at": "2026-11-11T08:49:23.008766+00:00"
+    },
+    {
+      "story_id": "trump-bbc-10b-suit-dismissal-bid-fails",
+      "seen_at": "2026-11-11T10:12:54.032696+00:00"
+    },
+    {
+      "story_id": "connor-hellebuyck-winnipeg-return-trade-request",
+      "seen_at": "2026-11-11T11:38:49.802768+00:00"
+    },
+    {
+      "story_id": "abu-dhabi-russia-ukraine-us-talks",
+      "seen_at": "2026-11-11T13:03:55.372200+00:00"
+    },
+    {
+      "story_id": "chase-elliott-pit-road-stackup-radio-fury",
+      "seen_at": "2026-11-11T14:30:34.789883+00:00"
+    },
+    {
+      "story_id": "kennedy-family-sues-trump-arch",
+      "seen_at": "2026-11-11T15:54:42.150362+00:00"
+    },
+    {
+      "story_id": "ukrainian-strike-russian-a50-repair-plant",
+      "seen_at": "2026-11-11T17:22:54.306239+00:00"
+    },
+    {
+      "story_id": "russian-ambassador-darchiev-dies-suddenly",
+      "seen_at": "2026-11-11T18:46:46.149586+00:00"
+    },
+    {
+      "story_id": "ukraine-captures-first-indonesian-pow",
+      "seen_at": "2026-11-11T20:10:38.114581+00:00"
+    },
+    {
+      "story_id": "randall-england-dies-general-hospital-villain-actor",
+      "seen_at": "2026-11-11T21:37:47.153718+00:00"
+    },
+    {
+      "story_id": "brooklyn-building-collapse-1-dead",
+      "seen_at": "2026-11-11T23:00:28.309176+00:00"
+    },
+    {
+      "story_id": "scarlett-johansson-studio-pitch-criticism",
+      "seen_at": "2026-11-12T00:24:01.333018+00:00"
+    },
+    {
+      "story_id": "gaza-150000-tents-await-israeli-permission",
+      "seen_at": "2026-11-12T01:49:17.575198+00:00"
+    },
+    {
+      "story_id": "chicago-fire-cast-roasts-dumped-woman-ex-video",
+      "seen_at": "2026-11-12T03:13:03.391178+00:00"
+    },
+    {
+      "story_id": "scott-colom-mississippi-senate-first-black-senator",
+      "seen_at": "2026-11-12T04:36:43.820161+00:00"
+    },
+    {
+      "story_id": "iran-strikes-oman-island-hormuz",
+      "seen_at": "2026-11-12T06:00:56.093928+00:00"
+    },
+    {
+      "story_id": "dustin-hoffman-broke-after-the-graduate",
+      "seen_at": "2026-11-12T07:25:15.113168+00:00"
+    },
+    {
+      "story_id": "us-envoys-witkoff-kushner-moscow-putin-talks",
+      "seen_at": "2026-11-12T08:51:03.679815+00:00"
+    },
+    {
+      "story_id": "nor-easter-first-snow-eastern-us",
+      "seen_at": "2026-11-12T10:16:12.359743+00:00"
+    },
+    {
+      "story_id": "north-hollywood-crash-three-women-killed",
+      "seen_at": "2026-11-12T11:40:17.378876+00:00"
+    },
+    {
+      "story_id": "mark-mcguinn-dies-at-58",
+      "seen_at": "2026-11-12T13:02:57.274648+00:00"
+    },
+    {
+      "story_id": "vance-in-person-talks-tehran-end-conflict",
+      "seen_at": "2026-11-12T14:28:00.622056+00:00"
+    },
+    {
+      "story_id": "tyra-banks-single-dating-again",
+      "seen_at": "2026-11-12T15:52:05.382805+00:00"
+    },
+    {
+      "story_id": "dc-logan-circle-gym-shooting-1-dead-4-hurt",
+      "seen_at": "2026-11-12T17:16:23.972040+00:00"
+    },
+    {
+      "story_id": "ukraine-strikes-russias-largest-oil-refineries",
+      "seen_at": "2026-11-12T18:41:38.035676+00:00"
+    },
+    {
+      "story_id": "outlook-zero-day-active-exploitation-microsoft",
+      "seen_at": "2026-11-12T20:06:04.854134+00:00"
+    },
+    {
+      "story_id": "ukraine-drone-russian-warship-gulf-of-finland",
+      "seen_at": "2026-11-12T21:30:51.661653+00:00"
+    },
+    {
+      "story_id": "beau-jessup-dies-at-27-nyc",
+      "seen_at": "2026-11-12T22:56:12.974910+00:00"
+    },
+    {
+      "story_id": "nyc-building-collapse-8-dead",
+      "seen_at": "2026-11-13T00:22:36.560670+00:00"
+    },
+    {
+      "story_id": "paramount-superman-cavill-10-years-report",
+      "seen_at": "2026-11-13T01:44:46.953038+00:00"
+    },
+    {
+      "story_id": "israel-strike-gaza-hospital-killing-6",
+      "seen_at": "2026-11-13T03:09:38.572103+00:00"
+    },
+    {
+      "story_id": "cardi-b-son-first-birthday-photos-diggs",
+      "seen_at": "2026-11-13T04:34:25.913481+00:00"
+    },
+    {
+      "story_id": "jensen-huang-congress-china-chip-exports",
+      "seen_at": "2026-11-13T05:58:43.599720+00:00"
+    },
+    {
+      "story_id": "pentagon-names-six-troops-killed-kuwait",
+      "seen_at": "2026-11-13T07:23:21.887970+00:00"
+    },
+    {
+      "story_id": "gta-6-pc-port-take-two-ai-clones",
+      "seen_at": "2026-11-13T08:46:39.264216+00:00"
+    },
+    {
+      "story_id": "russia-claims-11000-foreign-military-deaths-ukraine",
+      "seen_at": "2026-11-13T10:10:43.023142+00:00"
+    },
+    {
+      "story_id": "spacex-starship-double-landing-attempt",
+      "seen_at": "2026-11-13T11:35:05.200110+00:00"
+    },
+    {
+      "story_id": "kansas-soccer-field-driver-not-charged",
+      "seen_at": "2026-11-13T12:59:23.524077+00:00"
+    },
+    {
+      "story_id": "taylor-swift-cma-awards-performance-return",
+      "seen_at": "2026-11-13T14:24:13.296492+00:00"
+    },
+    {
+      "story_id": "iran-radar-bahrain-drones-centcom",
+      "seen_at": "2026-11-13T15:49:01.389178+00:00"
+    },
+    {
+      "story_id": "doug-mcdermott-retires-nba",
+      "seen_at": "2026-11-13T17:12:45.737910+00:00"
+    },
+    {
+      "story_id": "california-50-foot-waves-storms",
+      "seen_at": "2026-11-13T18:37:52.996875+00:00"
+    },
+    {
+      "story_id": "trump-cuba-military-action-considered",
+      "seen_at": "2026-11-13T20:02:58.274549+00:00"
+    },
+    {
+      "story_id": "vader-lightsaber-auction-record-4-87m",
+      "seen_at": "2026-11-13T21:27:31.491918+00:00"
+    },
+    {
+      "story_id": "eu-five-countries-ukraine-peace-talks",
+      "seen_at": "2026-11-13T22:53:05.993870+00:00"
+    },
+    {
+      "story_id": "tacony-palmyra-bridge-cargo-ship-strike-reopens",
+      "seen_at": "2026-11-14T00:17:46.211533+00:00"
+    },
+    {
+      "story_id": "medicaid-work-requirements-delayed-six-months",
+      "seen_at": "2026-11-14T01:44:22.427330+00:00"
+    },
+    {
+      "story_id": "thunder-vs-clippers-friday-game",
+      "seen_at": "2026-11-14T03:02:10.666070+00:00"
+    },
+    {
+      "story_id": "ukraine-1200-drones-mass-attack-russia",
+      "seen_at": "2026-11-14T04:27:28.660704+00:00"
+    },
+    {
+      "story_id": "nvidia-ceo-transition-week-of-chaos",
+      "seen_at": "2026-11-14T05:51:21.223050+00:00"
+    },
+    {
+      "story_id": "boebert-loses-colorado-house-race",
+      "seen_at": "2026-11-14T07:17:14.285396+00:00"
+    },
+    {
+      "story_id": "rubio-no-further-iran-military-action",
+      "seen_at": "2026-11-14T08:42:09.364905+00:00"
+    },
+    {
+      "story_id": "vivienne-pitt-eating-disorder-hospitalization-la-exhibit",
+      "seen_at": "2026-11-14T10:06:46.297972+00:00"
+    },
+    {
+      "story_id": "us-floats-donbas-for-nato-zelensky",
+      "seen_at": "2026-11-14T11:30:52.348770+00:00"
+    },
+    {
+      "story_id": "daune-morris-broken-leg-car-accident",
+      "seen_at": "2026-11-14T12:54:37.390635+00:00"
+    },
+    {
+      "story_id": "airlines-thousands-flights-canceled-ground-stop",
+      "seen_at": "2026-11-14T14:19:16.841998+00:00"
+    },
+    {
+      "story_id": "el-nino-arrives-california-ocean-records",
+      "seen_at": "2026-11-14T15:44:52.733722+00:00"
+    },
+    {
+      "story_id": "iran-7000-missiles-drones-gulf-gcc-un",
+      "seen_at": "2026-11-14T17:08:37.087703+00:00"
+    }
+  ],
+  "updated_at": "2026-11-14T17:09:38.199476+00:00"
+}
