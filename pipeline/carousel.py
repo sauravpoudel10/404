@@ -175,7 +175,9 @@ def cover(c: dict, image, brand: str | None) -> str:
     t_step = t_size * 1.04
     title_last = tag_first - s_size - 30
     title_first = title_last - t_step * (len(t_lines) - 1)
-    fade_top = max(300, title_first - t_size - 160)
+    # Start the fade well above the title and ramp it gently: a short, steep
+    # ramp showed as a hard line across the photo on the first live cover.
+    fade_top = max(240, title_first - t_size - 420)
 
     colours = {"green": GREEN, "white": "#FFFFFF"}
     body = _photo(image)
@@ -195,7 +197,9 @@ def cover(c: dict, image, brand: str | None) -> str:
     body += _footer(brand, footer_y)
     defs = ('<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">'
             '<stop offset="0%" stop-color="#000" stop-opacity="0"/>'
-            '<stop offset="38%" stop-color="#000" stop-opacity="0.78"/>'
+            '<stop offset="25%" stop-color="#000" stop-opacity="0.18"/>'
+            '<stop offset="50%" stop-color="#000" stop-opacity="0.55"/>'
+            '<stop offset="70%" stop-color="#000" stop-opacity="0.85"/>'
             '<stop offset="100%" stop-color="#000" stop-opacity="0.96"/>'
             '</linearGradient>')
     return _svg(body, defs)
