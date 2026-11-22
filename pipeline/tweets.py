@@ -1,8 +1,15 @@
-"""A day's worth of standalone tweets, generated once and drained every ~100 minutes.
+"""A day's worth of standalone tweets, generated once and drained every ~72 minutes.
 
-14 posts a day in four shapes: 4 AI questions, 4 war updates, 3 ranked
-statistics lists with country flags, and 3 general questions. Generating in
-bulk is what keeps this cheap -- four API calls a day rather than 14.
+20 posts a day in three shapes: 7 on whatever is trending, 7 venture and
+stock-market updates, and 6 war updates. Generating in bulk is what keeps
+this cheap -- three API calls a day rather than 20. Every figure in every
+post must appear in the headlines the call was given, or the post is
+dropped before it reaches the pool.
+
+The AI-question and ranked-list machinery further down (prompts, list
+catalogue, reference tables) is idle under this mix but kept, so either
+shape can be brought back without rebuilding it. The notes below on lists
+and grounding describe that machinery.
 
 The mix follows what the open-sourced ranker scores. A reply is one signal
 and a reply the author engages with is a second, separate one, so most of
@@ -43,11 +50,11 @@ from .text import normalise_list
 
 POOL_FILE = "tweets.json"
 
-# Counts are fixed so the daily X spend doesn't move: 14 posts either way.
+# Counts are fixed so the daily X spend doesn't move: 20 posts either way.
 # Weighted toward posts that end in a real question, because a reply and an
 # author-engaged reply are two separately scored signals in the ranker,
 # while a list mostly earns a silent bookmark.
-KIND_COUNTS = {"ai_ask": 4, "war": 4, "list": 3, "ask": 3}
+KIND_COUNTS = {"trending": 7, "market": 7, "war": 6}
 POOL_SIZE = sum(KIND_COUNTS.values())
 
 # Ranked-list subjects, grouped into families. Two things depend on the
@@ -287,6 +294,49 @@ different one rather than guessing.
 WAR_FEEDS = ["war_ukraine", "war_israel", "war_iran", "war_military",
              "conflict"]
 
+# Shared by the trending and market posts: report first, at most one
+# neutral question, never bait.
+UPDATE_RULES = """
+Each post:
+- Leads with the concrete news in plain words: who, what, and the number \
+where there is one.
+- May end with ONE genuine question that follows from it and that a reader \
+could answer in a line. Never "thoughts?", "agree?", "RT if" or any \
+engagement bait, and never @mention anyone. Many posts should simply report.
+- Under 270 characters. No emoji.
+- Where a figure is a company's or a person's own claim, say whose.
+""" + COMMON_RULES
+
+TRENDING_SYSTEM = """You write standalone posts for a news account about \
+what people are talking about right now.
+
+Write exactly {count} posts, each on a DIFFERENT trending story. Any subject \
+counts -- entertainment, celebrities, sport, tech, viral moments, politics, \
+weather -- as long as it is genuinely big right now. Lines tagged \
+[trending_searches] are what Americans are searching for this hour, with \
+the volume; lean toward the biggest. Do NOT write about wars, stock markets \
+or venture funding -- those are covered elsewhere. Treat deaths, crimes and \
+disasters soberly: facts from the headlines only, no graphic detail.
+""" + UPDATE_RULES
+
+MARKET_SYSTEM = """You write standalone posts for a news account covering \
+venture capital, startups and the stock market.
+
+Write exactly {count} posts. Cover BOTH halves of the beat, at least three \
+of each: venture -- funding rounds, valuations, IPOs, acquisitions, notable \
+startups -- and the stock market -- index moves, big single-stock moves, \
+earnings, the Fed and rates. Every post on a different company or event.
+
+A number is the point of these posts: the round size, the valuation, the \
+percentage move, the index level. Use only figures that appear in the \
+headlines. Never give investment advice or say what anyone should buy or \
+sell.
+""" + UPDATE_RULES
+
+TRENDING_FEEDS = ["trending_searches", "top_stories", "hot_entertainment",
+                  "hot_sports", "hot_tech"]
+MARKET_FEEDS = ["markets", "startups", "deals", "cnbc", "hot_business"]
+
 
 GENERAL_SYSTEM = """You write standalone tweets for a media account covering \
 venture capital, asset management, market statistics and politics.
@@ -474,8 +524,8 @@ def unsourced_spec(text: str, grounding: str) -> str:
 def unsourced_number(text: str, grounding: str) -> str:
     """The first figure in `text` that appears nowhere in `grounding`, or "".
 
-    Stricter than unsourced_spec: on a war post ANY number -- a death toll,
-    a count of strikes, a sum of aid -- is the kind of thing that must not
+    Stricter than unsourced_spec: on a news post ANY number -- a death toll,
+    a round size, a percentage move -- is the kind of thing that must not
     be invented.
     """
     haystack = _flat(grounding)
@@ -490,7 +540,7 @@ def unsourced_number(text: str, grounding: str) -> str:
 
 
 def drop_unsourced(tweets: list[dict], grounding: str) -> list[dict]:
-    """Remove AI posts quoting a spec, and war posts quoting any figure,
+    """Remove AI posts quoting a spec, and news posts quoting any figure,
     that the source never supplied."""
     kept = []
     for tweet in tweets:
@@ -499,10 +549,10 @@ def drop_unsourced(tweets: list[dict], grounding: str) -> list[dict]:
             if bad:
                 print(f"    dropped ai post: unsourced spec {bad!r}")
                 continue
-        if tweet.get("kind") == "war":
+        if tweet.get("kind") in ("war", "trending", "market"):
             bad = unsourced_number(tweet.get("text", ""), grounding)
             if bad:
-                print(f"    dropped war post: unsourced figure {bad!r}")
+                print(f"    dropped {tweet['kind']} post: unsourced figure {bad!r}")
                 continue
         kept.append(tweet)
     return kept
@@ -543,97 +593,51 @@ def clean_list_rows(tweet: dict, subject: str = "", year: str = "") -> dict:
 
 def generate_pool(count: int = POOL_SIZE,
                   history: dict[str, str] | None = None) -> list[dict]:
-    """Four grounded calls: AI questions, war updates, ranked lists, general
-    questions.
+    """Three grounded calls: trending, venture and markets, war.
 
-    Nothing here is written from the model's own recollection. The lists get
-    published tables, the AI posts get live X trends plus an AI headline
-    feed, and the general posts get the rest of the RSS. A model asked what
-    is trending answers with what was trending when it was trained.
+    Nothing is written from the model's own recollection: each call gets its
+    own free RSS headlines, the trending call also gets live X trends, and
+    any post quoting a figure those headlines lack is dropped. A model asked
+    what is trending answers with what was trending when it was trained.
+
+    `history` is unused under this mix; it is accepted so refill() keeps
+    carrying the list history for when lists come back.
     """
-    n_ai = KIND_COUNTS["ai_ask"]
-    n_list = KIND_COUNTS["list"]
-
-    subjects = pick_list_subjects(n_list, history or {},
-                                  datetime.now(timezone.utc).date())
-
-    # Fetch first, then size the calls to what actually came back. A source
-    # that has gone missing costs one list, not a fabricated one, and the
-    # day still posts 14 times because the shortfall goes to questions.
-    datasets = [(name, rows, reference.detect_year(rows)) for name, rows in
-                ((name, reference.fetch(name)) for name in subjects) if rows]
-    n_list = len(datasets)
-    print(f"  {n_list} grounded lists: "
-          f"{', '.join(name for name, _, _ in datasets)}")
-
-    trends = trending.as_context(trending.fetch())
-    ai_news = feeds.as_context(feeds.fetch(only=["ai", "ai_money", "musk"]),
-                               limit=60)
-    general = feeds.as_context(
-        feeds.fetch(exclude=["ai", "ai_money", "musk"]), limit=80)
-    print(f"  X trends: {len(trends.splitlines())} · "
-          f"AI headlines: {len(ai_news.splitlines())} · "
-          f"general: {len(general.splitlines())}")
-
     sep = chr(10) * 2          # blank line between context and task
+    out: list[dict] = []
 
-    trend_block = (f"Trending on X right now:{sep}{trends}{sep}"
-                   if trends else "")
-    grounding = f"{trends}{sep}{ai_news}"
-    out = _call(
-        AI_ASK_SYSTEM.format(count=n_ai),
-        f"{trend_block}AI headlines:{sep}{ai_news}{sep}"
-        f"Write today's {n_ai} posts. Where a trend above is about AI and "
-        f"has real volume behind it, write about that -- it is what people "
-        f"are arguing about today.",
-        ["ai_ask"],
-    )
-    out = drop_unsourced(out, grounding)
+    x_trends = trending.as_context(trending.fetch())
+    trend_block = (f"Trending on X right now:{sep}{x_trends}{sep}"
+                   if x_trends else "")
 
-    n_war = KIND_COUNTS["war"]
-    war_news = feeds.as_context(feeds.fetch(only=WAR_FEEDS), limit=80)
-    print(f"  war headlines: {len(war_news.splitlines())}")
-    if war_news:
-        out += drop_unsourced(_call(
-            WAR_SYSTEM.format(count=n_war),
-            f"War and conflict headlines:{sep}{war_news}{sep}"
-            f"Write today's {n_war} posts.",
-            ["war"],
-        ), war_news)
-
-    # Whatever the guards removed becomes a general question, so the day
-    # still posts 14 times rather than going short.
-    n_ask = count - len(out) - n_list
-    out += _call(
-        GENERAL_SYSTEM.format(n_list=n_list),
-        f"Datasets for the {n_list} lists, in order:{sep}"
-        + f"{sep}".join(reference.as_context(name, rows)
-                        for name, rows, _ in datasets)
-        + f"{sep}Write today's {n_list} lists.",
-        ["list"],
-    )
-    out += _call(
-        ASK_SYSTEM.format(count=n_ask),
-        f"{trend_block}Current headlines:{sep}{general}{sep}"
-        f"Write today's {n_ask} posts.",
-        ["ask"],
-    )
-
-    # Tag each list with the subject it was asked for, so the pool can
-    # record what has been used without re-deriving it from the title.
-    lists = iter((name, year) for name, _, year in datasets)
-    for tweet in out:
-        if tweet.get("kind") == "list":
-            tweet["subject"], tweet["year"] = next(lists, ("", ""))
-    return [clean_list_rows(t, t.get("subject", ""), t.get("year", ""))
-            for t in out]
+    plan = [
+        ("trending", TRENDING_SYSTEM, TRENDING_FEEDS, "Current headlines"),
+        ("market", MARKET_SYSTEM, MARKET_FEEDS, "Venture and market headlines"),
+        ("war", WAR_SYSTEM, WAR_FEEDS, "War and conflict headlines"),
+    ]
+    for kind, system, feed_names, label in plan:
+        n = KIND_COUNTS[kind]
+        news = feeds.as_context(feeds.fetch(only=feed_names), limit=90)
+        print(f"  {kind}: {len(news.splitlines())} headlines")
+        if not news:
+            continue
+        block = trend_block if kind == "trending" else ""
+        grounding = f"{x_trends}{sep}{news}" if block else news
+        written = _call(system.format(count=n),
+                        f"{block}{label}:{sep}{news}{sep}"
+                        f"Write today's {n} posts.",
+                        [kind])
+        kept = drop_unsourced(written, grounding)
+        print(f"    {len(kept)}/{len(written)} kept")
+        out += kept
+    return out
 
 
 def interleave(generated: list[dict]) -> list[dict]:
     """Spread the kinds across the day instead of posting them in blocks.
 
-    Drained one every ~100 minutes, an unshuffled pool would post four AI
-    questions back to back and then four war updates. Alternating a question with a list
+    Drained one every ~72 minutes, an unshuffled pool would post seven
+    trending posts back to back and then seven market updates. Alternating a question with a list
     keeps consecutive posts in different shapes, which matters more on a
     timeline than the order the model happened to return.
     """
@@ -641,7 +645,7 @@ def interleave(generated: list[dict]) -> list[dict]:
     for t in generated:
         buckets.setdefault(t.get("kind", "normal"), []).append(t)
 
-    order, pattern = [], ["ai_ask", "war", "list", "ask"]
+    order, pattern = [], ["trending", "market", "war"]
     while any(buckets.values()):
         placed = False
         for kind in pattern:

@@ -110,14 +110,15 @@ def upload_video(mp4: bytes, timeout: int = 300) -> str:
     return media_id
 
 
-def _send(text: str, media_id: str | None):
+def _send(text: str, media_id: str | list[str] | None):
     payload: dict = {"text": text}
     if media_id:
-        payload["media"] = {"media_ids": [media_id]}
+        ids = [media_id] if isinstance(media_id, str) else list(media_id)
+        payload["media"] = {"media_ids": ids}
     return _session().post(TWEETS_URL, json=payload, timeout=60)
 
 
-def post(text: str, media_id: str | None = None) -> str:
+def post(text: str, media_id: str | list[str] | None = None) -> str:
     body = clean_text(text)
     resp = _send(body, media_id)
 
@@ -136,8 +137,15 @@ def post(text: str, media_id: str | None = None) -> str:
     return resp.json()["data"]["id"]
 
 
-def post_card(caption: str, jpeg: bytes | None = None, mp4: bytes | None = None) -> str:
-    """Post a card as video when one is supplied, else as an image."""
+def post_card(caption: str, jpeg: bytes | None = None, mp4: bytes | None = None,
+              jpegs: list[bytes] | None = None) -> str:
+    """Post a card as video when one is supplied, else as an image.
+
+    `jpegs` posts a carousel. X allows four images per post, so a five-slide
+    carousel goes out as its first four.
+    """
+    if jpegs:
+        return post(caption, [upload_image(j) for j in jpegs[:4]])
     if mp4 is not None:
         return post(caption, upload_video(mp4))
     if jpeg is not None:

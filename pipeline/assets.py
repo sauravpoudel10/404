@@ -122,6 +122,8 @@ def _prune(repo: Path, manifest: dict) -> dict:
             (repo / card["file"]).unlink(missing_ok=True)
             if card.get("video_file"):
                 (repo / card["video_file"]).unlink(missing_ok=True)
+            for extra in card.get("slide_files", []):
+                (repo / extra).unlink(missing_ok=True)
     manifest["cards"] = keep
 
     # story_ids outlive their images: the dedupe window should be longer than
@@ -162,8 +164,13 @@ def read_manifest() -> dict:
 
 def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None,
                  style: str = "", slot: int | None = None,
-                 image: dict | None = None) -> dict:
-    """Upload one card (and optionally its Reel), expire stale ones."""
+                 image: dict | None = None,
+                 slides: list[bytes] | None = None) -> dict:
+    """Upload one card (and optionally its Reel), expire stale ones.
+
+    For a carousel, `jpeg` is the cover and `slides` the slides after it;
+    the card's `slides` field then lists every slide URL, cover first.
+    """
     stamp = datetime.now(timezone.utc)
     slug = f"{stamp:%Y%m%d-%H%M%S}-{content['story_id'][:40]}"
     rel = f"{CARDS_DIR}/{slug}.jpg"
@@ -194,6 +201,14 @@ def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None,
             (repo / video_rel).write_bytes(mp4)
             card["video_file"] = video_rel
             card["video_url"] = f"{config.PUBLIC_BASE_URL}/{video_rel}"
+        if slides:
+            card["slide_files"] = []
+            for i, data in enumerate(slides, start=2):
+                slide_rel = f"{CARDS_DIR}/{slug}-{i}.jpg"
+                (repo / slide_rel).write_bytes(data)
+                card["slide_files"].append(slide_rel)
+            card["slides"] = [card["url"]] + [
+                f"{config.PUBLIC_BASE_URL}/{r}" for r in card["slide_files"]]
         manifest["cards"].append(card)
         manifest["history"].append(
             {"story_id": content["story_id"], "seen_at": stamp.isoformat()}

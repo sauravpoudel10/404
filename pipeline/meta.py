@@ -8,6 +8,7 @@ an error that says nothing about the real cause (usually an unreachable or
 non-JPEG image).
 """
 
+import json
 import time
 
 import requests
@@ -136,3 +137,60 @@ def post_facebook(image_url: str, caption: str) -> str:
         "access_token": _page_token(),
     })
     return published.get("post_id") or published["id"]
+
+
+def post_instagram_carousel(image_urls: list[str], caption: str) -> str:
+    """Publish 2-10 images as one carousel post.
+
+    One container per image (flagged as a carousel item), each polled until
+    Meta has fetched it, then a CAROUSEL container naming them as children,
+    polled again, then published.
+    """
+    token = config.META_TOKEN()
+    ig_user = config.IG_USER_ID()
+
+    children = []
+    for url in image_urls:
+        child = _post(f"{ig_user}/media", {
+            "image_url": url,
+            "is_carousel_item": "true",
+            "access_token": token,
+        })["id"]
+        _wait_for_container(child, token)
+        children.append(child)
+
+    parent = _post(f"{ig_user}/media", {
+        "media_type": "CAROUSEL",
+        "children": ",".join(children),
+        "caption": caption,
+        "access_token": token,
+    })["id"]
+    _wait_for_container(parent, token)
+
+    published = _post(f"{ig_user}/media_publish", {
+        "creation_id": parent,
+        "access_token": token,
+    })
+    return published["id"]
+
+
+def post_facebook_album(image_urls: list[str], caption: str) -> str:
+    """Publish several images as one Page post.
+
+    Each photo is uploaded unpublished, then a single feed post attaches
+    them all -- the Page equivalent of an Instagram carousel.
+    """
+    token = _page_token()
+    page = config.FB_PAGE_ID()
+    ids = [
+        _post(f"{page}/photos", {
+            "url": url,
+            "published": "false",
+            "access_token": token,
+        })["id"]
+        for url in image_urls
+    ]
+    data = {"message": caption, "access_token": token}
+    for i, media_id in enumerate(ids):
+        data[f"attached_media[{i}]"] = json.dumps({"media_fbid": media_id})
+    return _post(f"{page}/feed", data)["id"]

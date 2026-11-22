@@ -4,18 +4,20 @@ Anthropic's web_search bills $0.01 per query AND pulls 5-12k tokens of
 results into context. At a dozen-plus cards a day plus the tweet pool that was the
 single largest line on the bill. RSS does the same job for nothing.
 
-Cards follow an 18-slot cycle, one slot per card (see ROTATION):
+Cards follow a 20-slot cycle, one slot per card (see ROTATION):
 
-1. Eight TRENDING slots read what is hot right now, on any subject: Google
+1. Five TRENDING slots read what is hot right now, on any subject: Google
    Trends' US search spikes (with search volume), Google News top stories,
    and one rotating Google News section -- entertainment, sport, tech,
-   world, business, science. The rotating section is what keeps two
-   trending cards in a row from reading the identical list.
+   world, science. The rotating section is what keeps two trending cards
+   from reading the identical list.
 2. Four US slots read Google News' US section.
 3. Six WAR slots read one rotating war feed (Ukraine, Israel and Gaza, Iran,
    wider military action) alongside the general conflict feed.
+4. Five VENTURE slots post a carousel instead of a card (venture.py,
+   carousel.py): three led by funding-round feeds, two by the stock market.
 
-The slot is the card's position in the cycle, not the clock, so every 18
+The slot is the card's position in the cycle, not the clock, so every 20
 cards hold exactly that mix however the posting times drift.
 
 All of it is free RSS, and each slot hands the model at most 90 headlines,
@@ -110,6 +112,11 @@ FEEDS = {
     "war_israel": _gnews("Israel+Gaza", days=2),
     "war_iran": _gnews("Iran+strikes", days=2),
     "war_military": _gnews("military+strike", days=2),
+    # Venture carousels. "Series A" and "seed" alone pull in TV series and
+    # tournament seeds, so these lean on "raises".
+    "venture_raises": _gnews("startup+raises", days=3),
+    "venture_rounds": _gnews("raises+funding+round", days=3),
+    "ipo": _gnews("IPO", days=2),
 }
 
 # Read only when asked for by name. The tweet pool fetches "everything but
@@ -117,32 +124,38 @@ FEEDS = {
 OPT_IN = {"trending_searches", "top_stories", "hot_entertainment",
           "hot_sports", "hot_tech", "hot_world", "hot_business",
           "hot_science", "us_news", "war_ukraine", "war_israel",
-          "war_iran", "war_military"}
+          "war_iran", "war_military", "venture_raises", "venture_rounds",
+          "ipo"}
 
 _TRENDING = ["trending_searches", "top_stories"]
 
-# One entry per card in an 18-card cycle: 8 trending, 4 US, 6 war. Laid out
-# in two identical runs of nine (T W T U T W T U W) so no beat ever runs
-# twice in a row. run_meta.SLOT_PATTERN has the same length and indexing.
+_VENTURE = ["venture_raises", "venture_rounds", "startups", "ipo"]
+_MARKETS = ["markets", "ipo", "hot_business"]   # rotation_for adds CNBC
+
+# One entry per card in a 20-card cycle: 5 trending, 4 US, 6 war, 5 venture.
+# No beat runs twice in a row, including across the wrap from 19 to 0.
+# run_meta.SLOT_PATTERN has the same length and indexing.
 ROTATION = [
-    _TRENDING + ["hot_entertainment"],   # 0
-    ["war_ukraine", "conflict"],         # 1
-    _TRENDING + ["hot_sports"],          # 2
-    ["us_news"],                         # 3
-    _TRENDING + ["hot_tech"],            # 4
-    ["war_israel", "conflict"],          # 5
-    _TRENDING + ["hot_world"],           # 6
-    ["us_news"],                         # 7
-    ["war_military", "conflict"],        # 8
-    _TRENDING + ["hot_business"],        # 9
-    ["war_ukraine", "conflict"],         # 10
-    _TRENDING + ["hot_entertainment"],   # 11
-    ["us_news"],                         # 12
-    _TRENDING + ["hot_sports"],          # 13
-    ["war_iran", "conflict"],            # 14
-    _TRENDING + ["hot_science"],         # 15
-    ["us_news"],                         # 16
-    ["war_military", "conflict"],        # 17
+    _TRENDING + ["hot_entertainment"],   # 0  trending
+    ["war_ukraine", "conflict"],         # 1  war
+    _VENTURE,                            # 2  venture
+    ["us_news"],                         # 3  US
+    ["war_israel", "conflict"],          # 4  war
+    _TRENDING + ["hot_sports"],          # 5  trending
+    _MARKETS,                            # 6  venture (markets)
+    ["war_military", "conflict"],        # 7  war
+    ["us_news"],                         # 8  US
+    _VENTURE,                            # 9  venture
+    _TRENDING + ["hot_tech"],            # 10 trending
+    ["war_ukraine", "conflict"],         # 11 war
+    _MARKETS,                            # 12 venture (markets)
+    ["us_news"],                         # 13 US
+    ["war_iran", "conflict"],            # 14 war
+    _TRENDING + ["hot_world"],           # 15 trending
+    _VENTURE,                            # 16 venture
+    ["us_news"],                         # 17 US
+    _TRENDING + ["hot_science"],         # 18 trending
+    ["war_military", "conflict"],        # 19 war
 ]
 
 # Feeds whose slots benefit from CNBC's business wire alongside them. A
@@ -170,7 +183,16 @@ BEATS = {
     "war_israel": "war and conflict",
     "war_iran": "war and conflict",
     "war_military": "war and conflict",
+    "venture_raises": "venture and startups",
+    "markets": "the stock market",
 }
+
+# Lead feeds whose slots post a venture carousel rather than a card.
+VENTURE_LEADS = {"venture_raises", "markets"}
+
+
+def is_venture(slot: int) -> bool:
+    return ROTATION[slot % len(ROTATION)][0] in VENTURE_LEADS
 
 # Extra direction for a beat, beyond naming it. The system prompt's subject
 # list was written for the old niche beats; a trending slot has to be told
@@ -185,6 +207,15 @@ _WAR_NOTE = (
     )
 
 BEAT_NOTES = {
+    "venture_raises": (
+        "This slot is VENTURE: pick a startup funding round, IPO or "
+        "acquisition with a named company and a dollar figure."
+    ),
+    "markets": (
+        "This slot is the STOCK MARKET: pick a big index or single-stock "
+        "move, an IPO debut or an earnings shock, with its percentage or "
+        "dollar figure. A funding round is the fallback, not the target."
+    ),
     "trending_searches": (
         "Pick whatever is genuinely hottest right now, on ANY subject: "
         "entertainment, celebrities, music, TV and film, sport, viral "
