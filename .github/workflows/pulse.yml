@@ -81,7 +81,10 @@ jobs:
           done
 
       - name: Re-arm the chain
-        if: always()
+        # Not when cancelled: a cancelled run was replaced by a newer one,
+        # and re-arming here would start yet another run that cancels it --
+        # which is how a manual "carousel now" run got wiped out.
+        if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
