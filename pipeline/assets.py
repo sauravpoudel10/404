@@ -165,7 +165,8 @@ def read_manifest() -> dict:
 def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None,
                  style: str = "", slot: int | None = None,
                  image: dict | None = None,
-                 slides: list[bytes] | None = None) -> dict:
+                 slides: list[bytes] | None = None,
+                 extra: bool = False) -> dict:
     """Upload one card (and optionally its Reel), expire stale ones.
 
     For a carousel, `jpeg` is the cover and `slides` the slides after it;
@@ -192,6 +193,7 @@ def publish_card(jpeg: bytes, content: dict, mp4: bytes | None = None,
             "slot": slot,
             "image": image or {},
             "caption": content.get("caption", ""),
+            "extra": extra,
             "posted": {"instagram": False, "facebook": False,
                        "x": False, "tiktok": False},
         }

@@ -84,6 +84,9 @@ def next_slot(cards_by_time) -> tuple[int, str, bool]:
     at all -- the scheduler fires far more often than it posts, so hour
     arithmetic alternates nothing.
     """
+    # An extra, on-demand carousel sits outside the rotation: the next card
+    # carries on from the last scheduled one, so the daily mix still holds.
+    cards_by_time = [c for c in cards_by_time if not c.get("extra")]
     if not cards_by_time:
         return (0,) + SLOT_PATTERN[0]
     last = cards_by_time[-1]
@@ -134,9 +137,13 @@ def build_card(slot, style, slot_reel, seen, args):
     return card, content, jpeg, mp4, as_reel
 
 
-def build_carousel(slot, seen, args):
-    """Write, render and host a venture carousel."""
-    brand = CAROUSEL_BRANDS.get(slot)
+def build_carousel(slot, seen, args, extra=False):
+    """Write, render and host a venture carousel.
+
+    `extra` marks an on-demand carousel: no powered-by credit (those are
+    allotted one per brand per day) and kept out of the rotation.
+    """
+    brand = None if extra else CAROUSEL_BRANDS.get(slot)
     print(f"→ slot {slot}/{len(SLOT_PATTERN)}: venture carousel"
           f"{f', powered by {brand}' if brand else ''}")
 
@@ -154,7 +161,8 @@ def build_carousel(slot, seen, args):
 
     print("→ publishing to GitHub Pages")
     card = assets.publish_card(slides[0], content, style="carousel", slot=slot,
-                               image=image_status, slides=slides[1:])
+                               image=image_status, slides=slides[1:],
+                               extra=extra)
     for url in card["slides"]:
         print(f"  {url}")
     return card, content, slides
@@ -174,6 +182,9 @@ def main():
                         help="card design; 'auto' alternates by slot")
     parser.add_argument("--force", action="store_true",
                         help="post even if the last card is recent")
+    parser.add_argument("--extra-carousel", action="store_true",
+                        help="post one venture carousel now, outside the "
+                             "rotation; the schedule then carries on")
     args = parser.parse_args()
 
     print("→ reading manifest")
@@ -183,7 +194,8 @@ def main():
 
     # The workflow fires hourly because GitHub drops scheduled events; the
     # spacing is enforced here instead of by cron.
-    if not args.force and not args.dry_run and manifest.get("cards"):
+    if (not args.force and not args.dry_run and not args.extra_carousel
+            and manifest.get("cards")):
         last = max(c["created_at"] for c in manifest["cards"])
         age = (datetime.now(timezone.utc)
                - datetime.fromisoformat(last)).total_seconds() / 60
@@ -198,7 +210,14 @@ def main():
     slot, slot_style, slot_reel = next_slot(cards_by_time)
 
     style = slot_style if args.style == "auto" else args.style
-    if style == "carousel":
+    if args.extra_carousel:
+        # Read the feeds of the next venture slot in the rotation.
+        n = len(SLOT_PATTERN)
+        slot = next(i % n for i in range(slot, slot + n) if feeds.is_venture(i % n))
+        style = "carousel"
+        card, content, slides = build_carousel(slot, seen, args, extra=True)
+        mp4, jpeg, as_reel = None, slides[0], False
+    elif style == "carousel":
         card, content, slides = build_carousel(slot, seen, args)
         mp4, jpeg, as_reel = None, slides[0], False
     else:

@@ -15,6 +15,11 @@ on:
   schedule:
     - cron: "*/30 * * * *"        # safety net only; one landing restarts the chain
   workflow_dispatch:
+    inputs:
+      carousel_now:
+        description: "Post one venture carousel immediately, then carry on with the schedule"
+        type: boolean
+        default: false
 
 permissions:
   contents: write                 # push cards to gh-pages
@@ -59,6 +64,13 @@ jobs:
           PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
         run: |
           set +e                       # one bad cycle must not end the chain
+          # Inside the chain rather than a separate workflow: both write the
+          # gh-pages manifest, and two writers at once would clobber it.
+          if [ "${{ inputs.carousel_now }}" = "true" ]; then
+            echo "::group::extra carousel"
+            python run_meta.py --extra-carousel
+            echo "::endgroup::"
+          fi
           END=$(( SECONDS + 5*3600 ))  # ~5h, leaving margin under the timeout
           while [ $SECONDS -lt $END ]; do
             echo "::group::cycle at $(date -u +%H:%M:%S)"
