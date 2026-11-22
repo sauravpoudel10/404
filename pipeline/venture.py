@@ -162,8 +162,7 @@ def find_story(exclude_ids: list[str], slot: int, attempts: int = 2) -> dict:
     """Carousel content for slot `slot`, or raise if nothing sourced comes back."""
     client = Anthropic(api_key=config.ANTHROPIC_API_KEY())
 
-    topics = feeds.rotation_for(slot)
-    headlines = feeds.fetch(only=topics)
+    topics, headlines = feeds.fetch_slot(slot)
     fresh = feeds.drop_covered(headlines, exclude_ids)
     print(f"  slot {slot} reads {topics} [carousel: {feeds.beat_for(slot)}] -> "
           f"{len(headlines)} headlines, {len(headlines) - len(fresh)} already covered")

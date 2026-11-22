@@ -250,6 +250,38 @@ TAG_RE = re.compile(r"<[^>]+>")
 WS_RE = re.compile(r"\s+")
 
 
+# Search feeds to add when a slot's own feeds come back thin. Google News'
+# section feeds redirect, and on a GitHub runner the US section once
+# returned nothing at all -- the model was then handed an empty list and
+# wrote a "no story found" card that went out to every platform.
+FALLBACKS = {
+    "us_news": ["america", "politics"],
+    "venture_raises": ["startups", "deals"],
+    "markets": ["cnbc", "deals"],
+    "trending_searches": ["hot_world"],
+}
+MIN_HEADLINES = 8
+
+
+def fetch_slot(slot: int) -> tuple[list[str], list[dict]]:
+    """(feeds read, headlines) for a slot, topped up from FALLBACKS if thin.
+
+    Raises rather than return a near-empty list: a slot with nothing to
+    write from must post nothing, not a card saying so.
+    """
+    topics = rotation_for(slot)
+    headlines = fetch(only=topics)
+    extra = [t for t in FALLBACKS.get(topics[0], []) if t not in topics]
+    if len(headlines) < 15 and extra:
+        print(f"  only {len(headlines)} headlines from {topics}; adding {extra}")
+        topics = topics + extra
+        headlines = fetch(only=topics)
+    if len(headlines) < MIN_HEADLINES:
+        raise RuntimeError(f"Only {len(headlines)} headlines for slot {slot} "
+                           f"({topics}); not posting from an empty feed.")
+    return topics, headlines
+
+
 def rotation_for(slot: int) -> list[str]:
     """Feeds this slot should read.
 

@@ -224,10 +224,9 @@ def find_story(exclude_ids: list[str], style: str = "feature",
             + "\n".join(f"- {sid}" for sid in exclude_ids[-40:])
         )
 
-    topics = feeds.rotation_for(slot)
+    topics, headlines = feeds.fetch_slot(slot)
     beat = feeds.beat_for(slot)
     note = feeds.note_for(slot)
-    headlines = feeds.fetch(only=topics)
     fresh = feeds.drop_covered(headlines, exclude_ids)
     print(f"  slot {slot} reads {topics}"
           f"{f' [beat: {beat}]' if beat else ''} -> {len(headlines)} headlines, "
