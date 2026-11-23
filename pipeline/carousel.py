@@ -168,16 +168,20 @@ def cover(c: dict, image, brand: str | None) -> str:
     t_size, t_lines = _fit(title, "bold", 96, 56, max_w, 2)
     s_size, s_lines = _fit(_words(c["tagline"], "white"), "text", 38, 28, max_w, 3)
 
+    # Title anchored high, at a fixed top, with the tagline straight under
+    # it; the footer stays pinned to the bottom edge. Anchoring the title to
+    # the footer instead put it in the bottom fifth of the frame.
     footer_y = 1290
-    tag_last = footer_y - 78
-    s_step = s_size * 1.28
-    tag_first = tag_last - s_step * (len(s_lines) - 1)
+    title_top = 640
     t_step = t_size * 1.04
-    title_last = tag_first - s_size - 30
-    title_first = title_last - t_step * (len(t_lines) - 1)
-    # Start the fade well above the title and ramp it gently: a short, steep
-    # ramp showed as a hard line across the photo on the first live cover.
-    fade_top = max(240, title_first - t_size - 420)
+    title_first = title_top + t_size * 0.75
+    title_last = title_first + t_step * (len(t_lines) - 1)
+    s_step = s_size * 1.28
+    tag_first = title_last + s_size + 34
+    # The fade has to be well under way by the title, but a short steep ramp
+    # shows as a hard line across the photo, so it starts 280px higher.
+    fade_top = title_top - 280
+    title_stop = (title_top - fade_top) / (H - fade_top) * 100
 
     colours = {"green": GREEN, "white": "#FFFFFF"}
     body = _photo(image)
@@ -197,9 +201,9 @@ def cover(c: dict, image, brand: str | None) -> str:
     body += _footer(brand, footer_y)
     defs = ('<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">'
             '<stop offset="0%" stop-color="#000" stop-opacity="0"/>'
-            '<stop offset="25%" stop-color="#000" stop-opacity="0.18"/>'
-            '<stop offset="50%" stop-color="#000" stop-opacity="0.55"/>'
-            '<stop offset="70%" stop-color="#000" stop-opacity="0.85"/>'
+            f'<stop offset="{title_stop / 2:.1f}%" stop-color="#000" stop-opacity="0.22"/>'
+            f'<stop offset="{title_stop:.1f}%" stop-color="#000" stop-opacity="0.62"/>'
+            f'<stop offset="{title_stop + 20:.1f}%" stop-color="#000" stop-opacity="0.86"/>'
             '<stop offset="100%" stop-color="#000" stop-opacity="0.96"/>'
             '</linearGradient>')
     return _svg(body, defs)
